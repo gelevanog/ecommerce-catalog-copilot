@@ -13,7 +13,9 @@
 ![mypy strict](https://img.shields.io/badge/mypy-strict-2a6db2)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 
-<!-- demo-video -->
+https://github.com/user-attachments/assets/941d32f2-f3a7-427f-ad30-47bd8bafe520
+
+<sub>77-second walkthrough with voiceover. Can't play it? [Download the MP4](docs/demo.mp4).</sub>
 
 ![The review screen of one product: the photo with the attributes the vision model saw (pink, solid, 4 items), a feed-vs-photo table where the pack size is a conflict (feed says 5, photo shows 4) with "use feed" and "use photo" buttons, the generated listing with character counters and evidence chips under every field, a hovered chip showing the feed cell (larkspur_pricelist.xlsx, row 60, "Marlow Side Plates Set of 5") and the image evidence ("4, confidence 1.00"), and on the right the checks (the conflict and an ignored supplier claim "Guaranteed to last a lifetime") and the facts with the spreadsheet cell each came from](docs/screenshots/hero.png)
 
