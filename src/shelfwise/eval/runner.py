@@ -497,7 +497,7 @@ def run_main(
         "meta_description": (store.meta_description.min, store.meta_description.max),
     }
     by_record = {r.id: g for g, r in matched.values()}
-    report = {
+    report: dict[str, Any] = {
         "name": name,
         "provider": copilot.provider_label(),
         "import": imported,
