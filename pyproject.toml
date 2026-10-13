@@ -1,0 +1,58 @@
+[project]
+name = "shelfwise"
+version = "0.1.0"
+description = "Shelfwise: an AI catalog copilot for Shopify and WooCommerce. Imports messy supplier feeds and product photos, extracts attributes with a vision model, writes SEO copy and translations in your brand voice, checks every claim against evidence and exports only what a person approved."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Ivan Savchenko" }]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "graphql-core>=3.2",
+    "httpx",
+    "mcp==2.3.0",
+    "openpyxl>=3.1",
+    "pillow>=11",
+    "pydantic>=2.10",
+    "pydantic-settings",
+    "python-multipart",
+    "pyyaml",
+    "typer",
+    "uvicorn[standard]",
+]
+
+[dependency-groups]
+dev = ["mypy", "pytest", "ruff", "types-pyyaml", "types-openpyxl"]
+
+[project.scripts]
+shelfwise = "shelfwise.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shelfwise"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF", "PTH", "N", "C4", "PIE", "RET", "S608"]
+ignore = ["E501", "RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.File", "fastapi.Form", "fastapi.Query", "fastapi.Body", "typer.Option", "typer.Argument"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+packages = ["shelfwise"]

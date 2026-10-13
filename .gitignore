@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.venv/
+.cache/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.env
+*.db
+*.db-journal
+/data/workspace/
+/exports/
+report.xml
+node_modules/
+web/.next/
+web/out/
+web/next-env.d.ts

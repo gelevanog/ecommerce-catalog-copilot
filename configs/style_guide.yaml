@@ -1,0 +1,50 @@
+# Brand voice for the demo store "Fernhill & Co." (fictional). The model gets the voice, the rules and the two
+# examples; code enforces the rules it can check (lengths, banned words, claims, the title pattern).
+brand: "Fernhill & Co."
+voice: >-
+  Warm, plain and specific, like a knowledgeable shop assistant. Speak to the customer as "you". Describe what the
+  product is, what it is made of and how it is used. Short sentences. No hype, no exclamation marks, no emoji.
+title_pattern: "{Brand} {Product name} – {key attribute}"
+title_rules:
+  - "Start with the vendor's brand, then the product name from the feed in title case."
+  - "End with one or two key attributes (color, material or pack size) after an en dash."
+  - "No size in the title (sizes are variants)."
+description_rules:
+  - "Two short paragraphs in HTML: what it is and what it is made of; how to use and care for it."
+  - "Only state specs that are in the facts list: dimensions, weight, capacity, materials, care, features."
+  - "Write measurements the way the facts give them (metric first)."
+bullets_rules:
+  - "3 to 5 bullets, each one fact, starting with a capital letter and no full stop."
+seo_rules:
+  - "Meta title: the product name and the key attribute, then ' | Fernhill & Co.' if it fits in 60 characters."
+  - "Meta description: one or two sentences, 70 to 160 characters, mentioning the material and the use."
+alt_text_rules:
+  - "Describe what is in the picture (color, pattern, count) in under 125 characters; never 'image of'."
+avoid_words: ["amazing", "stunning", "must-have", "game-changer", "luxurious", "elevate", "unleash", "perfect", "ultimate"]
+examples:
+  - title: "Larkspur Harbor Tee – Navy Stripe Cotton"
+    bullets:
+      - "100% cotton jersey"
+      - "Crew neck with a relaxed fit"
+      - "Machine wash cold, tumble dry low"
+  - title: "Northbay Meadow Mug – Set of 2, Blue Polka Dot"
+    bullets:
+      - "Glazed stoneware, 350 ml"
+      - "Dishwasher and microwave safe"
+      - "Set of 2 mugs"
+# Terms that are never translated, and required translations of product terms (checked in every translation).
+glossary:
+  keep: ["Fernhill & Co.", "Larkspur", "Northbay"]
+  terms:
+    cotton: { de: "Baumwolle", es: "algodón", fr: "coton" }
+    wool: { de: "Wolle", es: "lana", fr: "laine" }
+    linen: { de: "Leinen", es: "lino", fr: "lin" }
+    leather: { de: "Leder", es: "cuero", fr: "cuir" }
+    stoneware: { de: "Steinzeug", es: "gres", fr: "grès" }
+    porcelain: { de: "Porzellan", es: "porcelana", fr: "porcelaine" }
+    glass: { de: "Glas", es: "vidrio", fr: "verre" }
+    stainless steel: { de: "Edelstahl", es: "acero inoxidable", fr: "acier inoxydable" }
+    dishwasher safe: { de: "spülmaschinen", es: "lavavajillas", fr: "lave-vaisselle" }
+    terracotta: { de: "Terrakotta", es: "terracota", fr: "terre cuite" }
+    canvas: { de: "Canvas|Segeltuch", es: "lona", fr: "toile" }
+    bamboo: { de: "Bambus", es: "bambú", fr: "bambou" }

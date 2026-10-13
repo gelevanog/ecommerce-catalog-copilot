@@ -1,0 +1,79 @@
+# Store settings for the demo store "Fernhill & Co." (fictional): currency, languages, product types, the limits
+# every listing is validated against, and the claims policy. Copy this file and edit it for a real store.
+store:
+  name: "Fernhill & Co."
+  currency: USD
+  languages: [de, es, fr]
+  default_vendor: ""
+  # Currency conversion for supplier prices (fixed table, so a re-import gives the same prices).
+  fx_to_store_currency: { USD: 1.0, EUR: 1.08, GBP: 1.27 }
+  # The product types the store uses (Shopify "Type"); the model must pick one of these.
+  product_types:
+    - T-Shirts
+    - Sweaters
+    - Socks
+    - Hats
+    - Scarves
+    - Tote Bags
+    - Backpacks
+    - Sneakers
+    - Mugs
+    - Plates
+    - Vases
+    - Throw Pillows
+    - Candles
+    - Lamps
+    - Water Bottles
+    - Towels
+    - Planters
+    - Cutting Boards
+    - Blankets
+    - Drinking Glasses
+
+limits:
+  title: { min: 20, max: 70 }
+  meta_title: { min: 25, max: 60 }
+  meta_description: { min: 70, max: 160 }
+  bullets: { min_count: 3, max_count: 5, max_chars: 160 }
+  body: { min_words: 40, max_words: 180 }
+  alt_text: { max_chars: 125 }
+  tags: { min_count: 3, max_count: 10 }
+  # Translations run longer than English; their meta description may be this much longer before it is an error.
+  translation_length_slack: 1.15
+
+claims:
+  # Never allowed, whatever the feed says (superlatives, guarantees, medical and health claims, generic green claims
+  # that EU Directive 2024/825 bans without recognised certification).
+  banned:
+    - { pattern: "\\bbest(?:[- ]selling| seller)?\\b", reason: "superlative" }
+    - { pattern: "#\\s?1\\b|\\bnumber one\\b|\\bno\\. ?1\\b", reason: "superlative" }
+    - { pattern: "\\bworld'?s (?:best|finest|first)\\b|\\bunbeatable\\b|\\bunrivall?ed\\b", reason: "superlative" }
+    - { pattern: "\\b(?:cheapest|lowest price)\\b", reason: "price claim" }
+    - { pattern: "\\bguarantee[ds]?\\b|\\blifetime\\b", reason: "guarantee" }
+    - { pattern: "\\b(?:cures?|heals?|treats?|relieves?|prevents?)\\b.{0,30}\\b(?:pain|insomnia|stress|anxiety|disease|illness|allerg\\w*)", reason: "medical claim" }
+    - { pattern: "\\b(?:anti-?bacterial|antimicrobial|hypoallergenic|therapeutic|detox\\w*|clinically|medical[- ]grade)\\b", reason: "health claim" }
+    - { pattern: "\\bfda[- ]approved\\b|\\bfda\\b", reason: "regulatory claim" }
+    - { pattern: "\\b(?:eco[- ]?friendly|environmentally friendly|sustainable|green choice|planet[- ]friendly|carbon[- ]neutral|climate[- ]neutral)\\b", reason: "generic environmental claim" }
+  # Claims that need a fact behind them (the feed or the image must say so).
+  needs_evidence:
+    organic: ["organic"]
+    recycled: ["recycled"]
+    dishwasher safe: ["dishwasher safe", "dishwasher-safe"]
+    microwave safe: ["microwave safe", "microwave-safe"]
+    machine washable: ["machine wash", "machine washable", "machine-washable"]
+    hand wash: ["hand wash", "hand-wash"]
+    waterproof: ["waterproof", "water-resistant", "water resistant", "watertight"]
+    leak-proof: ["leak-proof", "leakproof", "leak proof"]
+    insulated: ["insulated", "double-walled", "double walled", "keeps drinks"]
+    bpa-free: ["bpa-free", "bpa free"]
+    handmade: ["handmade", "hand-made", "handcrafted", "hand-crafted", "hand-poured", "hand poured", "hand-finished"]
+    vegan: ["vegan"]
+    unscented: ["unscented", "fragrance-free"]
+    made in: ["made in"]
+    feather: ["feather"]
+    laptop sleeve: ["laptop sleeve", "laptop compartment"]
+    adjustable: ["adjustable"]
+    pre-shrunk: ["pre-shrunk", "preshrunk"]
+    drainage: ["drainage hole", "drainage"]
+    saucer: ["saucer"]
+    burn time: ["burn time", "hours of burn"]
