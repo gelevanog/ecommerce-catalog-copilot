@@ -391,7 +391,7 @@ tests/            unit and integration tests (offline, no keys)
 ## Testing
 
 ```bash
-make test        # 140 tests: parsers, mapping, import, cross-check, claims, store rules, translations, the LLM layer
+make test        # 141 tests: parsers, mapping, import, cross-check, claims, store rules, translations, the LLM layer
                  # (guard, budget, request shape), the pipeline with scripted models, review rules, CSV export,
                  # pushes to both mocks, the API, the MCP server (in-memory client), the eval harness, the generator
 make lint typecheck web-lint web-build
