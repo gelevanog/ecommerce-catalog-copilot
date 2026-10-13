@@ -288,3 +288,11 @@ def test_fields_left_in_english_are_flagged(store: StoreConfig) -> None:
                                meta_title="Moss Becher", meta_description="Zwei Becher aus Steinzeug.")
     flagged = [i.field for i in check_translation(source, target, "de", store) if i.code == "translation_untranslated"]
     assert flagged == ["translations.de.bullets[0]"]
+
+
+def test_flowers_and_names_are_not_pattern_claims(store: StoreConfig) -> None:
+    p = product(fact("color", "green", fid="F1"))
+    ev = build_evidence(p.facts, decide(p, seen(color="green", pattern="solid")), [], "Larkspur Sorrel Flower Pot")
+    assert [i.code for i in check_text("title", "Larkspur Sorrel Flower Pot – Green", ev, store).issues] == []
+    assert [i.code for i in check_text("body_html", "A vase for fresh flowers.", ev, store).issues] == []
+    assert "unsupported_pattern" in [i.code for i in check_text("body_html", "A floral print vase.", ev, store).issues]

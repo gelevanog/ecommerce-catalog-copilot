@@ -141,6 +141,7 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
                 "alt_text": s.alt_text_max,
             },
             "models": cp.provider_label(),
+            "listing_models": sorted({m for r in cp.db.products() for m in r.stats.models}),
             "taxonomy": taxonomy_source(),
             "voice": s.style.get("voice", ""),
             "banned": sorted({b.reason for b in s.banned}),

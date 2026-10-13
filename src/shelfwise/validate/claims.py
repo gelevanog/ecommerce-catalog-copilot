@@ -63,7 +63,7 @@ _COLOR_RE = re.compile(
 )
 PATTERN_CLAIM = re.compile(
     r"\b(striped|stripes?|pinstripes?|polka[- ]dots?|dotted|spotted|checked|checks|checkered|plaid|gingham|tartan|"
-    r"floral|flowers?|botanical|geometric|chevron|zig-?zag)\b",
+    r"floral|flower(?:ed| print| pattern)|botanical print|geometric|chevron|zig-?zag)\b",
     re.IGNORECASE,
 )
 _UNITS: dict[str, tuple[str, float]] = {
@@ -340,7 +340,8 @@ def check_text(field_name: str, text: str, ev: EvidenceSet, store: StoreConfig, 
                 )
             )
     # patterns
-    for match in PATTERN_CLAIM.finditer(body):
+    # "flowers" in a vase's copy or "Flower Pot" in a product name are not pattern claims
+    for match in PATTERN_CLAIM.finditer(_without_words(body, ev.name_words)):
         pattern = canonical("pattern", match.group(1))
         if pattern is None or pattern == "solid":
             continue
