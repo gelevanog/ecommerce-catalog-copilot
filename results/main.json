@@ -117,15 +117,17 @@
    "product_type_pct": 100.0
   },
   "claims": {
-   "english_fields": 627,
-   "fields_with_unsupported_claim": 0,
-   "hallucination_rate_pct": 0.0,
-   "products_with_unsupported_claim_first_draft": 1,
-   "unsupported_claims_first_draft": 1,
-   "products_with_unsupported_claim_final": 0,
-   "products_corrected": 2,
+   "english_fields": 626,
+   "fields_with_unsupported_claim": 1,
+   "hallucination_rate_pct": 0.2,
+   "products_with_unsupported_claim_first_draft": 9,
+   "unsupported_claims_first_draft": 14,
+   "products_with_unsupported_claim_final": 1,
+   "products_corrected": 10,
    "banned_claims_final": 0,
-   "by_code_final": {}
+   "by_code_final": {
+    "unsupported_spec": 1
+   }
   },
   "seo_length": {
    "title": {
@@ -157,9 +159,9 @@
    "examples": []
   },
   "status": {
-   "ready": 38,
+   "ready": 37,
    "blocked": 4,
-   "needs_review": 22
+   "needs_review": 23
   }
  },
  "translations": {
@@ -213,16 +215,16 @@
  },
  "throughput_rerun_from_cache": {
   "products": 64,
-  "wall_seconds": 109.6,
+  "wall_seconds": 121.9,
   "workers": 3,
-  "products_per_hour": 2102.0,
+  "products_per_hour": 1889.6,
   "seconds_per_product_p50": 0.0,
-  "seconds_per_product_p90": 0.1,
-  "model_calls": 199,
-  "calls_per_product": 3.11,
+  "seconds_per_product_p90": 38.7,
+  "model_calls": 207,
+  "calls_per_product": 3.23,
   "cached_calls": 190,
-  "input_tokens_per_product": 3413,
-  "output_tokens_per_product": 6557,
+  "input_tokens_per_product": 3671,
+  "output_tokens_per_product": 6923,
   "models": [
    "dots-studio/dots-3-note-preview:free",
    "nvidia/nemotron-3-super-120b-a12b:free"

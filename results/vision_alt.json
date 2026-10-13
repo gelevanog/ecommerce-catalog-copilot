@@ -1,0 +1,61 @@
+{
+ "name": "vision_alt",
+ "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+ "attributes": {
+  "color": {
+   "image_accuracy": 78.1,
+   "image_correct": 50,
+   "n": 64,
+   "feed_coverage": 68.8,
+   "feed_accuracy": 81.8,
+   "merged_coverage": 98.4,
+   "merged_accuracy": 88.9,
+   "image_accuracy_lenient": 85.9
+  },
+  "pattern": {
+   "image_accuracy": 71.9,
+   "image_correct": 46,
+   "n": 64,
+   "feed_coverage": 10.9,
+   "feed_accuracy": 71.4,
+   "merged_coverage": 92.2,
+   "merged_accuracy": 78.0
+  },
+  "material": {
+   "image_accuracy": 12.5,
+   "image_correct": 8,
+   "n": 64,
+   "feed_coverage": 79.7,
+   "feed_accuracy": 98.0,
+   "merged_coverage": 85.9,
+   "merged_accuracy": 94.5
+  },
+  "count": {
+   "image_accuracy": 87.5,
+   "image_correct": 56,
+   "n": 64,
+   "feed_coverage": 25.0,
+   "feed_accuracy": 75.0,
+   "merged_coverage": 93.8,
+   "merged_accuracy": 95.0
+  },
+  "style": {
+   "image_accuracy": 29.7,
+   "image_correct": 19,
+   "n": 64,
+   "feed_coverage": 0.0,
+   "feed_accuracy": null,
+   "merged_coverage": 92.2,
+   "merged_accuracy": 32.2
+  },
+  "conflicts": {
+   "planted_feed_errors": 11,
+   "caught": 9,
+   "recall": 81.8,
+   "feed_values_right": 49,
+   "false_alarms": 2
+  }
+ },
+ "errors": 5,
+ "seconds_p50": 19.4
+}
