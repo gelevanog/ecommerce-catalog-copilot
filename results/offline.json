@@ -149,6 +149,26 @@
     "pct": 100.0
    }
   },
+  "against_gold": {
+   "listings_with_wrong_color": 11,
+   "listings_with_wrong_count": 4,
+   "listings_with_wrong_material": 0,
+   "listings_with_any": 15,
+   "examples": [
+    "P007: color 'Gray' (true burgundy)",
+    "P018: color 'Black' (true navy)",
+    "P021: color 'Gray' (true green)",
+    "P023: color 'Gray' (true olive)",
+    "P026: 'Set of 4' (true 2)",
+    "P027: color 'Black' (true navy)",
+    "P031: color 'Gray' (true white)",
+    "P034: color 'Purple' (true navy)",
+    "P037: color 'Gray' (true white)",
+    "P053: color 'Brown' (true burgundy)",
+    "P054: color 'Black' (true brown)",
+    "P058: 'Set of 4' (true 2)"
+   ]
+  },
   "status": {
    "ready": 43,
    "blocked": 4,
@@ -163,7 +183,8 @@
    "glossary_pct": 100.0,
    "glossary_terms": 61,
    "brand_kept_pct": 100.0,
-   "length_ok_pct": 100.0
+   "length_ok_pct": 100.0,
+   "fields_left_in_english_pct": 19.8
   },
   "es": {
    "translated": 64,
@@ -172,7 +193,8 @@
    "glossary_pct": 100.0,
    "glossary_terms": 61,
    "brand_kept_pct": 100.0,
-   "length_ok_pct": 100.0
+   "length_ok_pct": 100.0,
+   "fields_left_in_english_pct": 19.4
   },
   "fr": {
    "translated": 64,
@@ -181,14 +203,15 @@
    "glossary_pct": 100.0,
    "glossary_terms": 61,
    "brand_kept_pct": 100.0,
-   "length_ok_pct": 100.0
+   "length_ok_pct": 100.0,
+   "fields_left_in_english_pct": 20.6
   }
  },
  "throughput": {
   "products": 64,
-  "wall_seconds": 4.7,
+  "wall_seconds": 5.4,
   "workers": 2,
-  "products_per_hour": 49125.4,
+  "products_per_hour": 42634.5,
   "seconds_per_product_p50": 0.1,
   "seconds_per_product_p90": 0.2,
   "model_calls": 192,

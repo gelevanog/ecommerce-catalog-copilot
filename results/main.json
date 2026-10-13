@@ -1,0 +1,253 @@
+{
+ "name": "main",
+ "provider": {
+  "provider": "openrouter",
+  "vision": "openrouter/dots-studio/dots-3-note-preview:free",
+  "text": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+  "free_only": "true"
+ },
+ "import": {
+  "rows": 107,
+  "products_expected": 64,
+  "products_imported": 64,
+  "products_matched": 64,
+  "column_mapping": {
+   "correct": 29,
+   "total": 29,
+   "wrong": []
+  },
+  "variants_grouped": {
+   "correct": 64,
+   "total": 64
+  },
+  "duplicates": {
+   "expected": 6,
+   "merged_rows": 6,
+   "found": 6
+  },
+  "variant_problems": {
+   "planted": 4,
+   "flagged": 4,
+   "false_flags": 0
+  },
+  "units": {
+   "dimensions": {
+    "correct": 45,
+    "total": 45
+   },
+   "weight": {
+    "correct": 64,
+    "total": 64
+   },
+   "capacity": {
+    "correct": 9,
+    "total": 9
+   },
+   "price": {
+    "correct": 63,
+    "total": 64
+   }
+  },
+  "supplier_claims_kept_as_facts": {
+   "leaked": 0,
+   "total": 22
+  }
+ },
+ "attributes": {
+  "color": {
+   "image_accuracy": 75.0,
+   "image_correct": 48,
+   "n": 64,
+   "feed_coverage": 68.8,
+   "feed_accuracy": 81.8,
+   "merged_coverage": 100.0,
+   "merged_accuracy": 78.1,
+   "image_accuracy_lenient": 92.2
+  },
+  "pattern": {
+   "image_accuracy": 90.6,
+   "image_correct": 58,
+   "n": 64,
+   "feed_coverage": 10.9,
+   "feed_accuracy": 71.4,
+   "merged_coverage": 100.0,
+   "merged_accuracy": 90.6
+  },
+  "material": {
+   "image_accuracy": 23.4,
+   "image_correct": 15,
+   "n": 64,
+   "feed_coverage": 79.7,
+   "feed_accuracy": 98.0,
+   "merged_coverage": 87.5,
+   "merged_accuracy": 96.4
+  },
+  "count": {
+   "image_accuracy": 100.0,
+   "image_correct": 64,
+   "n": 64,
+   "feed_coverage": 25.0,
+   "feed_accuracy": 75.0,
+   "merged_coverage": 100.0,
+   "merged_accuracy": 100.0
+  },
+  "style": {
+   "image_accuracy": 32.8,
+   "image_correct": 21,
+   "n": 64,
+   "feed_coverage": 0.0,
+   "feed_accuracy": null,
+   "merged_coverage": 100.0,
+   "merged_accuracy": 32.8
+  },
+  "conflicts": {
+   "planted_feed_errors": 11,
+   "caught": 9,
+   "recall": 81.8,
+   "feed_values_right": 49,
+   "false_alarms": 2
+  }
+ },
+ "listings": {
+  "listings": 64,
+  "category": {
+   "exact": 56,
+   "exact_pct": 87.5,
+   "same_branch_pct": 100.0,
+   "product_type_pct": 100.0
+  },
+  "claims": {
+   "english_fields": 627,
+   "fields_with_unsupported_claim": 0,
+   "hallucination_rate_pct": 0.0,
+   "products_with_unsupported_claim_first_draft": 5,
+   "unsupported_claims_first_draft": 17,
+   "products_with_unsupported_claim_final": 0,
+   "products_corrected": 6,
+   "banned_claims_final": 0,
+   "by_code_final": {}
+  },
+  "seo_length": {
+   "title": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   },
+   "meta_title": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   },
+   "meta_description": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   },
+   "all_three": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   }
+  },
+  "against_gold": {
+   "listings_with_wrong_color": 1,
+   "listings_with_wrong_count": 0,
+   "listings_with_wrong_material": 0,
+   "listings_with_any": 1,
+   "examples": [
+    "P022: color 'Gray' (true white)"
+   ]
+  },
+  "status": {
+   "ready": 38,
+   "blocked": 4,
+   "needs_review": 22
+  }
+ },
+ "translations": {
+  "de": {
+   "translated": 64,
+   "language_ok_pct": 100.0,
+   "numbers_kept_pct": 100.0,
+   "glossary_pct": 98.3,
+   "glossary_terms": 60,
+   "brand_kept_pct": 100.0,
+   "length_ok_pct": 100.0,
+   "fields_left_in_english_pct": 0.9
+  },
+  "es": {
+   "translated": 64,
+   "language_ok_pct": 100.0,
+   "numbers_kept_pct": 100.0,
+   "glossary_pct": 100.0,
+   "glossary_terms": 60,
+   "brand_kept_pct": 100.0,
+   "length_ok_pct": 100.0,
+   "fields_left_in_english_pct": 0.5
+  },
+  "fr": {
+   "translated": 64,
+   "language_ok_pct": 100.0,
+   "numbers_kept_pct": 100.0,
+   "glossary_pct": 100.0,
+   "glossary_terms": 60,
+   "brand_kept_pct": 100.0,
+   "length_ok_pct": 100.0,
+   "fields_left_in_english_pct": 0.4
+  }
+ },
+ "throughput": {
+  "products": 64,
+  "wall_seconds": 1564.9,
+  "workers": 3,
+  "products_per_hour": 147.2,
+  "seconds_per_product_p50": 71.7,
+  "seconds_per_product_p90": 106.1,
+  "model_calls": 194,
+  "calls_per_product": 3.03,
+  "cached_calls": 14,
+  "input_tokens_per_product": 3338,
+  "output_tokens_per_product": 6484,
+  "models": [
+   "dots-studio/dots-3-note-preview:free",
+   "nvidia/nemotron-3-super-120b-a12b:free"
+  ]
+ },
+ "throughput_rerun_from_cache": {
+  "products": 64,
+  "wall_seconds": 86.2,
+  "workers": 3,
+  "products_per_hour": 2673.0,
+  "seconds_per_product_p50": 0.0,
+  "seconds_per_product_p90": 0.0,
+  "model_calls": 202,
+  "calls_per_product": 3.16,
+  "cached_calls": 194,
+  "input_tokens_per_product": 3513,
+  "output_tokens_per_product": 6794,
+  "models": [
+   "dots-studio/dots-3-note-preview:free",
+   "nvidia/nemotron-3-super-120b-a12b:free"
+  ]
+ },
+ "first_run": {
+  "note": "the first full run (cold cache); this file's other numbers are the re-run with the final code, answered from the cache except for the calls whose prompt changed",
+  "claims": {
+   "english_fields": 597,
+   "fields_with_unsupported_claim": 0,
+   "hallucination_rate_pct": 0.0,
+   "products_with_unsupported_claim_first_draft": 5,
+   "unsupported_claims_first_draft": 17,
+   "products_with_unsupported_claim_final": 0,
+   "products_corrected": 5,
+   "banned_claims_final": 0,
+   "by_code_final": {}
+  },
+  "category": {
+   "exact": 53,
+   "exact_pct": 86.9,
+   "same_branch_pct": 100.0,
+   "product_type_pct": 100.0
+  }
+ }
+}

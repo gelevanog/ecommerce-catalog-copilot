@@ -507,6 +507,14 @@ def run_main(
         "throughput": throughput(records, wall, copilot.settings.llm_concurrency),
     }
     settings.results_dir.mkdir(parents=True, exist_ok=True)
+    previous = settings.results_dir / f"{name}.json"
+    tp = report["throughput"]
+    if previous.exists() and tp["model_calls"] and tp["cached_calls"] > tp["model_calls"] / 2:
+        # a re-run answered from the disk cache measures nothing: keep the cold run's timing and say so
+        old = json.loads(previous.read_text(encoding="utf-8")).get("throughput", {})
+        if old and old.get("cached_calls", 0) <= old.get("model_calls", 0) / 2:
+            report["throughput"] = old
+            report["throughput_rerun_from_cache"] = tp
     with (settings.results_dir / f"{name}_products.jsonl").open("w", encoding="utf-8") as handle:
         for r in records:
             handle.write(json.dumps(compact(by_record.get(r.id), r), ensure_ascii=False) + "\n")
