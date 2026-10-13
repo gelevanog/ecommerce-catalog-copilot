@@ -12,9 +12,45 @@ from shelfwise.validate.claims import plain
 
 STOPWORDS: dict[str, set[str]] = {
     "en": {"the", "and", "with", "for", "your", "you", "this", "made", "from", "of", "in", "is", "a", "to", "it", "on"},
-    "de": {"der", "die", "das", "und", "mit", "für", "ihr", "ihre", "aus", "ist", "ein", "eine", "zu", "den", "im", "sie", "von"},
-    "es": {"el", "la", "los", "las", "y", "con", "para", "tu", "de", "en", "es", "un", "una", "del", "su", "que", "por"},
-    "fr": {"le", "la", "les", "et", "avec", "pour", "votre", "vous", "de", "en", "est", "un", "une", "des", "du", "au", "en"},
+    "de": {
+        "der",
+        "die",
+        "das",
+        "und",
+        "mit",
+        "für",
+        "ihr",
+        "ihre",
+        "aus",
+        "ist",
+        "ein",
+        "eine",
+        "zu",
+        "den",
+        "im",
+        "sie",
+        "von",
+    },
+    "es": {
+        "el",
+        "la",
+        "los",
+        "las",
+        "y",
+        "con",
+        "para",
+        "tu",
+        "de",
+        "en",
+        "es",
+        "un",
+        "una",
+        "del",
+        "su",
+        "que",
+        "por",
+    },
+    "fr": {"le", "la", "les", "et", "avec", "pour", "votre", "vous", "de", "en", "est", "un", "une", "des", "du", "au"},
 }
 _NUMBER = re.compile(r"\d+(?:[.,]\d+)?")
 _TAG = re.compile(r"<\s*([a-zA-Z0-9]+)")
@@ -62,37 +98,90 @@ def check_translation(source: Listing, target: TranslatedListing, lang: str, sto
         if not text.strip():
             issues.append(Issue(code="translation_empty", severity="error", field=f"{prefix}.{name}", message="Empty"))
     if len(target.bullets) != len(source.bullets):
-        issues.append(Issue(code="translation_bullets", severity="error", field=f"{prefix}.bullets",
-                            message=f"{len(target.bullets)} bullets, the source has {len(source.bullets)}"))
+        issues.append(
+            Issue(
+                code="translation_bullets",
+                severity="error",
+                field=f"{prefix}.bullets",
+                message=f"{len(target.bullets)} bullets, the source has {len(source.bullets)}",
+            )
+        )
     src_text = " ".join(plain(t) for _, t in _fields(source))
     tgt_text = " ".join(plain(t) for _, t in _fields(target))
     detected, scores = detect_language(tgt_text)
     if detected != lang:
-        issues.append(Issue(code="translation_language", severity="error", field=prefix,
-                            message=f"Reads as {detected.upper()} (stopword counts {scores}), expected {lang.upper()}"))
+        issues.append(
+            Issue(
+                code="translation_language",
+                severity="error",
+                field=prefix,
+                message=f"Reads as {detected.upper()} (stopword counts {scores}), expected {lang.upper()}",
+            )
+        )
     missing_numbers = numbers(src_text) - numbers(tgt_text)
     if missing_numbers:
-        issues.append(Issue(code="translation_numbers", severity="error", field=prefix,
-                            span=", ".join(sorted(missing_numbers)),
-                            message=f"Numbers missing in the translation: {', '.join(sorted(missing_numbers))}"))
+        issues.append(
+            Issue(
+                code="translation_numbers",
+                severity="error",
+                field=prefix,
+                span=", ".join(sorted(missing_numbers)),
+                message=f"Numbers missing in the translation: {', '.join(sorted(missing_numbers))}",
+            )
+        )
     for term in store.glossary_keep:
         if term.lower() in src_text.lower() and term.lower() not in tgt_text.lower():
-            issues.append(Issue(code="translation_keep_term", severity="error", field=prefix, span=term,
-                                message=f"“{term}” must stay as it is"))
+            issues.append(
+                Issue(
+                    code="translation_keep_term",
+                    severity="error",
+                    field=prefix,
+                    span=term,
+                    message=f"“{term}” must stay as it is",
+                )
+            )
     _, _, missing = glossary_hits(src_text, tgt_text, lang, store.glossary_terms)
     for m in missing:
-        issues.append(Issue(code="translation_glossary", severity="warning", field=prefix, span=m,
-                            message=f"Glossary term not used: {m}"))
+        issues.append(
+            Issue(
+                code="translation_glossary",
+                severity="warning",
+                field=prefix,
+                span=m,
+                message=f"Glossary term not used: {m}",
+            )
+        )
     if sorted(_TAG.findall(source.body_html)) != sorted(_TAG.findall(target.body_html)):
-        issues.append(Issue(code="translation_html", severity="warning", field=f"{prefix}.body_html",
-                            message="HTML structure differs from the English description"))
+        issues.append(
+            Issue(
+                code="translation_html",
+                severity="warning",
+                field=f"{prefix}.body_html",
+                message="HTML structure differs from the English description",
+            )
+        )
     slack = store.translation_slack
-    for name, text, limit in (("title", target.title, store.title.max), ("meta_title", target.meta_title, store.meta_title.max),
-                              ("meta_description", target.meta_description, store.meta_description.max)):
+    for name, text, limit in (
+        ("title", target.title, store.title.max),
+        ("meta_title", target.meta_title, store.meta_title.max),
+        ("meta_description", target.meta_description, store.meta_description.max),
+    ):
         if len(text) > limit * slack:
-            issues.append(Issue(code="too_long", severity="error", field=f"{prefix}.{name}",
-                                message=f"{len(text)} characters, the limit is {int(limit * slack)} for translations"))
+            issues.append(
+                Issue(
+                    code="too_long",
+                    severity="error",
+                    field=f"{prefix}.{name}",
+                    message=f"{len(text)} characters, the limit is {int(limit * slack)} for translations",
+                )
+            )
         elif len(text) > limit:
-            issues.append(Issue(code="too_long", severity="warning", field=f"{prefix}.{name}",
-                                message=f"{len(text)} characters, over the English limit of {limit}"))
+            issues.append(
+                Issue(
+                    code="too_long",
+                    severity="warning",
+                    field=f"{prefix}.{name}",
+                    message=f"{len(text)} characters, over the English limit of {limit}",
+                )
+            )
     return issues

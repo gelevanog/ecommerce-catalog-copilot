@@ -36,8 +36,19 @@ from shelfwise.catalog.normalize import (
 from shelfwise.config import StoreConfig
 from shelfwise.vocab import canonical, canonical_all, parse_count
 
-COLOR_ABBREVIATIONS = {"WHT": "white", "BLK": "black", "NVY": "navy", "GRY": "gray", "GRN": "green", "OLV": "olive",
-                       "BLU": "blue", "BRN": "brown", "BGE": "beige", "PNK": "pink", "RD": "red"}
+COLOR_ABBREVIATIONS = {
+    "WHT": "white",
+    "BLK": "black",
+    "NVY": "navy",
+    "GRY": "gray",
+    "GRN": "green",
+    "OLV": "olive",
+    "BLU": "blue",
+    "BRN": "brown",
+    "BGE": "beige",
+    "PNK": "pink",
+    "RD": "red",
+}
 _PACK_PHRASES = re.compile(
     r",?\s*\b(?:(?:pack|set|box) of \w+|\d{1,2}\s*-?\s*(?:pack|pk|pcs|pieces|pairs?)|x\d{1,2})\b", re.IGNORECASE
 )
@@ -147,7 +158,17 @@ def base_title(title: str, *, size: str | None, vendors: list[str]) -> str:
             words = words[:-1]
         else:
             break
-    while words and words[0].lower().strip(",.") in {"striped", "stripe", "polka", "dot", "checked", "plaid", "floral", "geometric", "solid"}:
+    while words and words[0].lower().strip(",.") in {
+        "striped",
+        "stripe",
+        "polka",
+        "dot",
+        "checked",
+        "plaid",
+        "floral",
+        "geometric",
+        "solid",
+    }:
         words = words[1:]
     kept = words
     text = " ".join(kept)
@@ -175,21 +196,43 @@ def _feed_facts(row: _Row, store: StoreConfig, issues: list[Issue]) -> tuple[lis
     if color_raw and (color := canonical("color", color_raw)):
         facts.append(Fact(key="color", value=color, display=color, evidence=[_ev(row, "color")]))
     else:
-        found = [COLOR_ABBREVIATIONS[w.strip(",.").upper()] for w in title.split() if w.strip(",.").upper() in COLOR_ABBREVIATIONS]
+        found = [
+            COLOR_ABBREVIATIONS[w.strip(",.").upper()]
+            for w in title.split()
+            if w.strip(",.").upper() in COLOR_ABBREVIATIONS
+        ]
         found += [c for c in canonical_all("color", title) if c not in found]
         if found:
-            facts.append(Fact(key="color", value=found[0], display=found[0],
-                              evidence=[Evidence(source="feed", ref=_ref(row, "title"), quote=title)]))
+            facts.append(
+                Fact(
+                    key="color",
+                    value=found[0],
+                    display=found[0],
+                    evidence=[Evidence(source="feed", ref=_ref(row, "title"), quote=title)],
+                )
+            )
     patterns = canonical_all("pattern", re.sub(r"\bsolid\b", "", title, flags=re.IGNORECASE))
     if patterns:
-        facts.append(Fact(key="pattern", value=patterns[0], display=patterns[0],
-                          evidence=[Evidence(source="feed", ref=_ref(row, "title"), quote=title)]))
+        facts.append(
+            Fact(
+                key="pattern",
+                value=patterns[0],
+                display=patterns[0],
+                evidence=[Evidence(source="feed", ref=_ref(row, "title"), quote=title)],
+            )
+        )
     pack = row.cells.get("pack")
     count = parse_count(pack) if pack else parse_count(title)
     if count:
         target = "pack" if pack else "title"
-        facts.append(Fact(key="count", value=count, display=f"{count} units",
-                          evidence=[Evidence(source="feed", ref=_ref(row, target), quote=row.cells.get(target, ""))]))
+        facts.append(
+            Fact(
+                key="count",
+                value=count,
+                display=f"{count} units",
+                evidence=[Evidence(source="feed", ref=_ref(row, target), quote=row.cells.get(target, ""))],
+            )
+        )
     material_raw = row.cells.get("material", "")
     if material_raw:
         material = canonical("material", material_raw)
@@ -201,7 +244,11 @@ def _feed_facts(row: _Row, store: StoreConfig, issues: list[Issue]) -> tuple[lis
         dims = parse_dimensions(row.cells["dimensions"], row.hints.get("dimensions"))
         dims_ev = [_ev(row, "dimensions")]
     else:
-        parts = [(t, parse_dimensions(row.cells[t], row.hints.get(t))) for t in ("length", "width", "height") if t in row.cells]
+        parts = [
+            (t, parse_dimensions(row.cells[t], row.hints.get(t)))
+            for t in ("length", "width", "height")
+            if t in row.cells
+        ]
         dims = [v[0] for _, v in parts if v] or None
         dims_ev = [_ev(row, t) for t, _ in parts]
     if dims:
@@ -222,13 +269,22 @@ def _feed_facts(row: _Row, store: StoreConfig, issues: list[Issue]) -> tuple[lis
             ev = [Evidence(source="feed", ref=_ref(row, target), quote=statement)]
             banned = next((b for b in store.banned if b.pattern.search(statement)), None)
             if banned:
-                issues.append(Issue(code="supplier_claim_ignored", severity="info", field=target, span=statement,
-                                    message=f"Supplier text not used ({banned.reason}): “{statement}”"))
+                issues.append(
+                    Issue(
+                        code="supplier_claim_ignored",
+                        severity="info",
+                        field=target,
+                        span=statement,
+                        message=f"Supplier text not used ({banned.reason}): “{statement}”",
+                    )
+                )
                 continue
             if (ml := parse_capacity(statement)) and not any(f.key == "capacity" for f in facts):
                 facts.append(Fact(key="capacity", value=ml, display=fmt_ml(ml), evidence=ev))
             elif m := _ORIGIN.search(statement):
-                facts.append(Fact(key="origin", value=m.group(1).strip(), display=f"Made in {m.group(1).strip()}", evidence=ev))
+                facts.append(
+                    Fact(key="origin", value=m.group(1).strip(), display=f"Made in {m.group(1).strip()}", evidence=ev)
+                )
             elif _CARE.search(statement) and "care" not in row.cells:
                 facts.append(Fact(key="care", value=statement, display=statement, evidence=ev))
             elif not any(f.key == "care" and f.value == statement for f in facts):
@@ -262,8 +318,14 @@ def import_feeds(feeds: list[FeedInput], store: StoreConfig, *, known_vendors: l
         for row in rows:
             title = row.cells.get("title", "")
             if not title:
-                issues.append(Issue(code="row_without_title", severity="warning", field="title",
-                                    message=f"{row.file} row {row.number}: no title, row skipped"))
+                issues.append(
+                    Issue(
+                        code="row_without_title",
+                        severity="warning",
+                        field="title",
+                        message=f"{row.file} row {row.number}: no title, row skipped",
+                    )
+                )
                 continue
             size = row.cells.get("size") or None
             gtin = normalize_gtin(row.cells.get("gtin"))
@@ -280,11 +342,15 @@ def import_feeds(feeds: list[FeedInput], store: StoreConfig, *, known_vendors: l
                 if price is not None and kept.price is not None and abs(price - kept.price) > 0.01:
                     diff.append(f"price {price:.2f} vs {kept.price:.2f}")
                 where = "another supplier" if row.file != kept.source.file else f"row {kept.source.row}"
-                product.issues.append(Issue(
-                    code="duplicate_merged", severity="warning" if diff else "info", field="variants",
-                    message=f"{row.file} row {row.number} duplicates {where} (SKU {kept.sku}); merged"
-                    + (f", {', '.join(diff)}: kept the first" if diff else ""),
-                ))
+                product.issues.append(
+                    Issue(
+                        code="duplicate_merged",
+                        severity="warning" if diff else "info",
+                        field="variants",
+                        message=f"{row.file} row {row.number} duplicates {where} (SKU {kept.sku}); merged"
+                        + (f", {', '.join(diff)}: kept the first" if diff else ""),
+                    )
+                )
                 merged += 1
                 continue
             vendor = row.cells.get("vendor") or feed.vendor
@@ -295,13 +361,28 @@ def import_feeds(feeds: list[FeedInput], store: StoreConfig, *, known_vendors: l
             if pid not in products:
                 image = Path(row.cells.get("image", "")).name if row.cells.get("image") else ""
                 products[pid] = ImportedProduct(
-                    id=pid, handle=slugify(f"{vendor or ''} {base}"), supplier_file=row.file, title_raw=title,
-                    vendor=vendor, supplier_category=row.cells.get("category", ""), images=[image] if image else [],
+                    id=pid,
+                    handle=slugify(f"{vendor or ''} {base}"),
+                    supplier_file=row.file,
+                    title_raw=title,
+                    vendor=vendor,
+                    supplier_category=row.cells.get("category", ""),
+                    images=[image] if image else [],
                     notes_raw=notes,
                 )
                 if vendor:
-                    facts.append(Fact(key="brand", value=vendor, display=vendor,
-                                      evidence=[_ev(row, "vendor") if "vendor" in row.cells else Evidence(source="rule", ref=f"vendor set for {row.file}", quote=vendor)]))
+                    facts.append(
+                        Fact(
+                            key="brand",
+                            value=vendor,
+                            display=vendor,
+                            evidence=[
+                                _ev(row, "vendor")
+                                if "vendor" in row.cells
+                                else Evidence(source="rule", ref=f"vendor set for {row.file}", quote=vendor)
+                            ],
+                        )
+                    )
                 products[pid].facts = facts
                 products[pid].issues.extend(row_issues)
             product = products[pid]
@@ -309,9 +390,15 @@ def import_feeds(feeds: list[FeedInput], store: StoreConfig, *, known_vendors: l
             price, raw_price = _price(row, store)
             inventory = parse_number(row.cells.get("inventory", "")) if row.cells.get("inventory") else None
             variant = Variant(
-                sku=sku.strip().upper(), options={"Size": size} if size else {}, price=price, currency=store.currency,
-                source_price=raw_price, inventory=int(inventory) if inventory is not None else None,
-                weight_g=next((f.value for f in facts if f.key == "weight"), None), gtin=gtin, source=source,
+                sku=sku.strip().upper(),
+                options={"Size": size} if size else {},
+                price=price,
+                currency=store.currency,
+                source_price=raw_price,
+                inventory=int(inventory) if inventory is not None else None,
+                weight_g=next((f.value for f in facts if f.key == "weight"), None),
+                gtin=gtin,
+                source=source,
             )
             product.variants.append(variant)
             vindex = len(product.variants) - 1
@@ -332,26 +419,42 @@ def _variant_checks(product: ImportedProduct, entries: list[tuple[_Row, list[Fac
         for row, facts in entries[1:]:
             other = next((f for f in facts if f.key == key), None)
             if base and other and str(other.value).lower() != str(base.value).lower():
-                product.issues.append(Issue(
-                    code="variant_inconsistent", severity="error", field=key,
-                    message=f"{key} differs between variants: row {first_row.number} says “{base.display}”, "
-                    f"row {row.number} says “{other.display}”",
-                ))
+                product.issues.append(
+                    Issue(
+                        code="variant_inconsistent",
+                        severity="error",
+                        field=key,
+                        message=f"{key} differs between variants: row {first_row.number} says “{base.display}”, "
+                        f"row {row.number} says “{other.display}”",
+                    )
+                )
     prices = [v.price for v in product.variants if v.price]
     if len(prices) >= 2:
         mid = median(prices)
         for v in product.variants:
             if v.price and (v.price > 3 * mid or v.price < mid / 3):
-                product.issues.append(Issue(
-                    code="variant_price_outlier", severity="error", field="variants",
-                    message=f"SKU {v.sku} costs {v.price:.2f}, the other variants about {mid:.2f} (from “{v.source_price}”)",
-                ))
+                product.issues.append(
+                    Issue(
+                        code="variant_price_outlier",
+                        severity="error",
+                        field="variants",
+                        message=f"SKU {v.sku} costs {v.price:.2f}, the other variants about {mid:.2f} (from “{v.source_price}”)",
+                    )
+                )
     options = [tuple(sorted(v.options.items())) for v in product.variants]
     if len(options) != len(set(options)):
-        product.issues.append(Issue(code="variant_duplicate_option", severity="error", field="variants",
-                                    message="Two variants have the same option values"))
+        product.issues.append(
+            Issue(
+                code="variant_duplicate_option",
+                severity="error",
+                field="variants",
+                message="Two variants have the same option values",
+            )
+        )
     if not product.images:
-        product.issues.append(Issue(code="no_image", severity="warning", field="images", message="No product image in the feed"))
+        product.issues.append(
+            Issue(code="no_image", severity="warning", field="images", message="No product image in the feed")
+        )
     if not product.vendor:
         product.issues.append(Issue(code="no_vendor", severity="warning", field="vendor", message="No brand/vendor"))
 

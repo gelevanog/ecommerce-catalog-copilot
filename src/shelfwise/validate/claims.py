@@ -21,24 +21,74 @@ from shelfwise.enrich.crosscheck import usable
 from shelfwise.vocab import canonical, canonical_all, colors_match
 
 COLOR_CLAIM_WORDS = (
-    "black", "white", "gray", "grey", "charcoal", "navy", "blue", "light blue", "sky blue", "teal", "turquoise",
-    "green", "olive", "red", "burgundy", "maroon", "pink", "orange", "yellow", "mustard", "beige", "cream", "ivory",
-    "tan", "khaki", "brown", "purple", "lavender", "indigo", "off-white", "dark blue", "navy blue", "dark grey",
-    "dark gray", "light grey", "light gray",
+    "black",
+    "white",
+    "gray",
+    "grey",
+    "charcoal",
+    "navy",
+    "blue",
+    "light blue",
+    "sky blue",
+    "teal",
+    "turquoise",
+    "green",
+    "olive",
+    "red",
+    "burgundy",
+    "maroon",
+    "pink",
+    "orange",
+    "yellow",
+    "mustard",
+    "beige",
+    "cream",
+    "ivory",
+    "tan",
+    "khaki",
+    "brown",
+    "purple",
+    "lavender",
+    "indigo",
+    "off-white",
+    "dark blue",
+    "navy blue",
+    "dark grey",
+    "dark gray",
+    "light grey",
+    "light gray",
 )
-_COLOR_RE = re.compile(r"\b(" + "|".join(sorted((re.escape(w) for w in COLOR_CLAIM_WORDS), key=len, reverse=True)) + r")\b", re.IGNORECASE)
+_COLOR_RE = re.compile(
+    r"\b(" + "|".join(sorted((re.escape(w) for w in COLOR_CLAIM_WORDS), key=len, reverse=True)) + r")\b", re.IGNORECASE
+)
 PATTERN_CLAIM = re.compile(
     r"\b(striped|stripes?|pinstripes?|polka[- ]dots?|dotted|spotted|checked|checks|checkered|plaid|gingham|tartan|"
     r"floral|flowers?|botanical|geometric|chevron|zig-?zag)\b",
     re.IGNORECASE,
 )
 _UNITS: dict[str, tuple[str, float]] = {
-    "mm": ("length", 0.1), "cm": ("length", 1.0), "m": ("length", 100.0), "in": ("length", 2.54),
-    "inch": ("length", 2.54), "inches": ("length", 2.54), '"': ("length", 2.54),
-    "g": ("weight", 1.0), "kg": ("weight", 1000.0), "lb": ("weight", 453.592), "lbs": ("weight", 453.592),
-    "oz": ("weight", 28.3495), "ml": ("volume", 1.0), "cl": ("volume", 10.0), "l": ("volume", 1000.0),
-    "litre": ("volume", 1000.0), "liter": ("volume", 1000.0), "fl oz": ("volume", 29.5735),
-    "%": ("percent", 1.0), "hours": ("hours", 1.0), "hour": ("hours", 1.0), "h": ("hours", 1.0),
+    "mm": ("length", 0.1),
+    "cm": ("length", 1.0),
+    "m": ("length", 100.0),
+    "in": ("length", 2.54),
+    "inch": ("length", 2.54),
+    "inches": ("length", 2.54),
+    '"': ("length", 2.54),
+    "g": ("weight", 1.0),
+    "kg": ("weight", 1000.0),
+    "lb": ("weight", 453.592),
+    "lbs": ("weight", 453.592),
+    "oz": ("weight", 28.3495),
+    "ml": ("volume", 1.0),
+    "cl": ("volume", 10.0),
+    "l": ("volume", 1000.0),
+    "litre": ("volume", 1000.0),
+    "liter": ("volume", 1000.0),
+    "fl oz": ("volume", 29.5735),
+    "%": ("percent", 1.0),
+    "hours": ("hours", 1.0),
+    "hour": ("hours", 1.0),
+    "h": ("hours", 1.0),
 }
 _NUM = r"\d+(?:[.,]\d+)?"
 _UNIT_ALT = r"fl\.? ?oz|mm|cm|kg|lbs|lb|ml|cl|litres?|liters?|inches|inch|in|oz|hours?|g|m|l|h|%|\""
@@ -166,14 +216,28 @@ def check_text(field_name: str, text: str, ev: EvidenceSet, store: StoreConfig, 
 
     for banned in store.banned:
         for match in banned.pattern.finditer(body):
-            issues.append(Issue(code="banned_claim", severity="error", field=field_name, span=match.group(0),
-                                message=f"Banned {banned.reason}: “{match.group(0)}”"))
+            issues.append(
+                Issue(
+                    code="banned_claim",
+                    severity="error",
+                    field=field_name,
+                    span=match.group(0),
+                    message=f"Banned {banned.reason}: “{match.group(0)}”",
+                )
+            )
     if not english:
         return ClaimResult(issues, used)
     for word in store.avoid_words:
         if re.search(rf"\b{re.escape(word)}\b", lowered):
-            issues.append(Issue(code="style_word", severity="warning", field=field_name, span=word,
-                                message=f"Style guide: avoid “{word}”"))
+            issues.append(
+                Issue(
+                    code="style_word",
+                    severity="warning",
+                    field=field_name,
+                    span=word,
+                    message=f"Style guide: avoid “{word}”",
+                )
+            )
     # claim phrases that need a fact
     for claim, phrases in store.needs_evidence.items():
         hit = next((p for p in phrases if re.search(rf"(?<![\w-]){re.escape(p)}(?![\w-])", lowered)), None)
@@ -184,15 +248,29 @@ def check_text(field_name: str, text: str, ev: EvidenceSet, store: StoreConfig, 
             if ev.origin and country and ev.origin[0] in country.group(1):
                 use(ev.origin[1])
             else:
-                issues.append(Issue(code="unsupported_claim", severity="error", field=field_name, span=hit,
-                                    message=f"“{country.group(0).strip() if country else hit}” is not in the feed"))
+                issues.append(
+                    Issue(
+                        code="unsupported_claim",
+                        severity="error",
+                        field=field_name,
+                        span=hit,
+                        message=f"“{country.group(0).strip() if country else hit}” is not in the feed",
+                    )
+                )
             continue
         support = next((fid for p in phrases if (fid := ev.text_has(p))), None)
         if support:
             use(support)
         else:
-            issues.append(Issue(code="unsupported_claim", severity="error", field=field_name, span=hit,
-                                message=f"“{hit}” is not backed by the feed"))
+            issues.append(
+                Issue(
+                    code="unsupported_claim",
+                    severity="error",
+                    field=field_name,
+                    span=hit,
+                    message=f"“{hit}” is not backed by the feed",
+                )
+            )
     # quantities with units
     spans: list[tuple[int, int]] = []
     for match in _DIM_RE.finditer(body):
@@ -220,15 +298,29 @@ def check_text(field_name: str, text: str, ev: EvidenceSet, store: StoreConfig, 
         if n in ev.counts:
             use(ev.counts[n])
         else:
-            issues.append(Issue(code="unsupported_count", severity="error", field=field_name, span=match.group(0),
-                                message=f"“{match.group(0)}”, but the evidence says {sorted(ev.counts)[-1]} per pack"))
+            issues.append(
+                Issue(
+                    code="unsupported_count",
+                    severity="error",
+                    field=field_name,
+                    span=match.group(0),
+                    message=f"“{match.group(0)}”, but the evidence says {sorted(ev.counts)[-1]} per pack",
+                )
+            )
     # materials
     for material in canonical_all("material", _without_words(body, ev.name_words)):
         if material in ev.materials:
             use(ev.materials[material])
         else:
-            issues.append(Issue(code="unsupported_material", severity="error", field=field_name, span=material,
-                                message=f"Material “{material}” is not in the feed"))
+            issues.append(
+                Issue(
+                    code="unsupported_material",
+                    severity="error",
+                    field=field_name,
+                    span=material,
+                    message=f"Material “{material}” is not in the feed",
+                )
+            )
     # colors
     for match in _COLOR_RE.finditer(_without_words(body, ev.name_words)):
         color = canonical("color", match.group(1))
@@ -238,8 +330,15 @@ def check_text(field_name: str, text: str, ev: EvidenceSet, store: StoreConfig, 
         if support:
             use(support)
         else:
-            issues.append(Issue(code="unsupported_color", severity="error", field=field_name, span=match.group(1),
-                                message=f"Color “{match.group(1)}” matches neither the feed nor the photo"))
+            issues.append(
+                Issue(
+                    code="unsupported_color",
+                    severity="error",
+                    field=field_name,
+                    span=match.group(1),
+                    message=f"Color “{match.group(1)}” matches neither the feed nor the photo",
+                )
+            )
     # patterns
     for match in PATTERN_CLAIM.finditer(body):
         pattern = canonical("pattern", match.group(1))
@@ -248,8 +347,15 @@ def check_text(field_name: str, text: str, ev: EvidenceSet, store: StoreConfig, 
         if pattern in ev.patterns:
             use(ev.patterns[pattern])
         else:
-            issues.append(Issue(code="unsupported_pattern", severity="error", field=field_name, span=match.group(1),
-                                message=f"Pattern “{match.group(1)}” matches neither the feed nor the photo"))
+            issues.append(
+                Issue(
+                    code="unsupported_pattern",
+                    severity="error",
+                    field=field_name,
+                    span=match.group(1),
+                    message=f"Pattern “{match.group(1)}” matches neither the feed nor the photo",
+                )
+            )
     # provenance of plain features (no number, no claim phrase): word overlap with a feature or care fact
     words = set(re.findall(r"[a-z]{4,}", lowered))
     for fid, text in ev.texts:
@@ -265,7 +371,9 @@ def _without_words(text: str, words: set[str]) -> str:
     return re.sub(r"[A-Za-z]+", lambda m: " " if m.group(0).lower() in words else m.group(0), text)
 
 
-def _check_quantity(field_name: str, kind: str, value: float, span: str, ev: EvidenceSet, issues: list[Issue], use: object) -> None:
+def _check_quantity(
+    field_name: str, kind: str, value: float, span: str, ev: EvidenceSet, issues: list[Issue], use: object
+) -> None:
     assert callable(use)
     for k, v, fid in ev.quantities:
         if k != kind:
@@ -276,5 +384,12 @@ def _check_quantity(field_name: str, kind: str, value: float, span: str, ev: Evi
             return
     if kind == "percent" and value == 100:
         return  # "100%" next to a material is covered by the material check
-    issues.append(Issue(code="unsupported_spec", severity="error", field=field_name, span=span,
-                        message=f"“{span}” does not match any {kind} in the feed"))
+    issues.append(
+        Issue(
+            code="unsupported_spec",
+            severity="error",
+            field=field_name,
+            span=span,
+            message=f"“{span}” does not match any {kind} in the feed",
+        )
+    )

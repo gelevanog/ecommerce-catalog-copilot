@@ -37,8 +37,13 @@ class DiskCache:
     @staticmethod
     def key(label: str, messages: Sequence[Message], max_tokens: int, temperature: float, json_mode: bool) -> str:
         material = json.dumps(
-            {"model": label, "messages": list(messages), "max_tokens": max_tokens, "temperature": temperature,
-             "json": json_mode},
+            {
+                "model": label,
+                "messages": list(messages),
+                "max_tokens": max_tokens,
+                "temperature": temperature,
+                "json": json_mode,
+            },
             sort_keys=True,
             ensure_ascii=False,
         )
@@ -204,8 +209,12 @@ class BudgetedModel:
             else:
                 latency = round(time.monotonic() - started, 2)
                 completion = Completion(
-                    text=completion.text, model=completion.model, input_tokens=completion.input_tokens,
-                    output_tokens=completion.output_tokens, latency_s=latency, extra=completion.extra,
+                    text=completion.text,
+                    model=completion.model,
+                    input_tokens=completion.input_tokens,
+                    output_tokens=completion.output_tokens,
+                    latency_s=latency,
+                    extra=completion.extra,
                 )
                 self._record("ok", started, completion=completion)
                 if self.cache is not None:

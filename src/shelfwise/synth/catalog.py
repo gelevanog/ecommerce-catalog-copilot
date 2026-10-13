@@ -55,91 +55,349 @@ class Kind:
     supplier_category: str = ""
 
 
-APPAREL_COLORS = ("navy", "white", "black", "gray", "red", "olive", "burgundy", "mustard", "light blue", "green", "pink", "beige")
+APPAREL_COLORS = (
+    "navy",
+    "white",
+    "black",
+    "gray",
+    "red",
+    "olive",
+    "burgundy",
+    "mustard",
+    "light blue",
+    "green",
+    "pink",
+    "beige",
+)
 HOME_COLORS = ("white", "blue", "green", "teal", "gray", "black", "beige", "pink", "yellow", "orange", "navy", "purple")
 
 KINDS: dict[str, Kind] = {
     k.key: k
     for k in (
-        Kind("tshirt", ("Tee", "Crew Tee", "T-Shirt"), 212, "T-Shirts", ("cotton", "linen", "polyester"),
-             ("solid", "striped", "polka dot", "geometric"), APPAREL_COLORS, sizes=("S", "M", "L", "XL"),
-             weight_g=(150, 230), price_usd=(18, 39), features=("Crew neck", "Relaxed fit", "Pre-shrunk", "Tagless neck label"),
-             supplier_category="Apparel/Tops"),
-        Kind("sweater", ("Knit Sweater", "Crewneck Jumper", "Pullover"), 212, "Sweaters", ("wool", "cotton"),
-             ("solid", "striped", "checked"), APPAREL_COLORS, sizes=("S", "M", "L", "XL"), weight_g=(380, 620),
-             price_usd=(49, 119), features=("Ribbed cuffs and hem", "Crew neck", "Regular fit"), supplier_category="Apparel/Knitwear"),
-        Kind("socks", ("Socks", "Crew Socks", "Everyday Socks"), 209, "Socks", ("cotton", "wool"),
-             ("solid", "striped", "polka dot"), APPAREL_COLORS, counts=(2, 3, 4, 5), sizes=("S/M", "L/XL"),
-             weight_g=(90, 220), price_usd=(12, 32), features=("Reinforced heel and toe", "Seamless toe", "Cushioned sole"),
-             supplier_category="Apparel/Socks"),
-        Kind("cap", ("Cap", "Baseball Cap", "Six-Panel Cap"), 173, "Hats", ("cotton", "canvas", "polyester", "denim"),
-             ("solid",), APPAREL_COLORS, weight_g=(70, 120), price_usd=(19, 35),
-             features=("Adjustable strap", "Curved brim", "Six-panel construction"), supplier_category="Accessories/Headwear"),
-        Kind("scarf", ("Scarf", "Wrap Scarf", "Fringed Scarf"), 177, "Scarves", ("wool", "linen", "cotton"),
-             ("checked", "solid", "striped"), APPAREL_COLORS, dims=((180, 30), (200, 35)), weight_g=(120, 260),
-             price_usd=(29, 79), features=("Fringed ends", "Lightweight weave"), supplier_category="Accessories/Scarves"),
-        Kind("tote", ("Tote Bag", "Market Tote", "Shopper Tote"), 5608, "Tote Bags", ("canvas", "cotton", "denim"),
-             ("solid", "striped"), ("beige", "black", "navy", "white", "olive", "red"), dims=((40, 38), (45, 40)),
-             weight_g=(180, 420), price_usd=(19, 49), features=("Inner pocket", "Reinforced handles", "Magnetic snap closure"),
-             supplier_category="Bags"),
-        Kind("backpack", ("Backpack", "Daypack", "Rucksack"), 100, "Backpacks", ("canvas", "polyester"),
-             ("solid",), ("black", "navy", "teal", "olive", "gray", "red", "mustard"), dims=((44, 30), (48, 32)),
-             weight_g=(550, 980), price_usd=(59, 129), features=("Padded laptop sleeve", "Front zip pocket", "Padded shoulder straps"),
-             supplier_category="Bags"),
-        Kind("sneaker", ("Sneakers", "Low-Top Sneakers", "Court Sneakers"), 187, "Sneakers", ("canvas", "leather"),
-             ("solid",), ("white", "black", "navy", "red", "gray", "green"), sizes=("US 7", "US 8", "US 9", "US 10"),
-             weight_g=(620, 900), price_usd=(59, 139), features=("Rubber outsole", "Cushioned insole", "Lace-up closure"),
-             supplier_category="Footwear"),
-        Kind("mug", ("Mug", "Coffee Mug", "Stoneware Mug"), 2169, "Mugs", ("ceramic",),
-             ("solid", "polka dot", "striped"), HOME_COLORS, counts=(1, 2), dims=((9, 10), (8, 11)), weight_g=(320, 420),
-             price_usd=(14, 36), capacity_ml=(300, 350, 400), features=("Dishwasher safe", "Microwave safe"),
-             supplier_category="Kitchen/Drinkware"),
-        Kind("plates", ("Plate Set", "Dinner Plates", "Side Plates"), 3553, "Plates", ("ceramic",),
-             ("floral", "solid", "geometric"), ("white", "blue", "green", "beige", "gray", "pink"), counts=(2, 4, 6),
-             dims=((27, 2), (21, 2)), weight_g=(1600, 3600), price_usd=(34, 89), features=("Dishwasher safe", "Microwave safe"),
-             supplier_category="Kitchen/Tableware"),
-        Kind("vase", ("Vase", "Bud Vase", "Bottle Vase"), 602, "Vases", ("ceramic", "glass", "terracotta"),
-             ("solid",), ("green", "blue", "white", "teal", "pink", "mustard", "orange"), dims=((14, 30), (12, 24)),
-             weight_g=(600, 1400), price_usd=(24, 69), features=("Watertight", "Hand-finished glaze"), supplier_category="Home/Decor"),
-        Kind("cushion", ("Cushion Cover", "Throw Pillow", "Square Cushion"), 4454, "Throw Pillows", ("cotton", "linen", "wool"),
-             ("geometric", "solid", "striped", "checked", "floral"), HOME_COLORS, dims=((45, 45), (50, 50)), weight_g=(250, 520),
-             price_usd=(24, 59), features=("Concealed zip", "Feather-filled insert included", "Removable cover"),
-             supplier_category="Home/Textiles"),
-        Kind("candles", ("Pillar Candles", "Candle Set", "Pillar Candle Trio"), 588, "Candles", ("wax",),
-             ("solid",), ("beige", "white", "gray", "pink", "green", "burgundy"), counts=(2, 3, 4), dims=((7, 15), (6, 10)),
-             weight_g=(600, 1400), price_usd=(18, 42), features=("Burn time about 40 hours", "Unscented", "Cotton wick"),
-             supplier_category="Home/Fragrance"),
-        Kind("lamp", ("Table Lamp", "Bedside Lamp", "Desk Lamp"), 4636, "Lamps", ("linen", "cotton"),
-             ("solid",), ("white", "beige", "gray", "green", "mustard", "navy"), dims=((30, 45), (25, 38)), weight_g=(1200, 2400),
-             price_usd=(59, 149), features=("E27 bulb socket", "Inline switch", "1.8 m fabric cable"), supplier_category="Lighting"),
-        Kind("bottle", ("Water Bottle", "Insulated Bottle", "Sport Bottle"), 3809, "Water Bottles", ("stainless steel",),
-             ("solid",), ("black", "white", "teal", "navy", "pink", "green", "orange"), dims=((7, 26), (8, 28)),
-             weight_g=(300, 420), price_usd=(22, 44), capacity_ml=(500, 750, 1000),
-             features=("Double-walled insulation", "Leak-proof lid", "BPA-free lid"), supplier_category="Kitchen/Drinkware"),
-        Kind("towels", ("Bath Towels", "Towel Set", "Hand Towels"), 576, "Towels", ("cotton",),
-             ("solid", "striped"), ("white", "gray", "light blue", "beige", "green", "navy"), counts=(2, 3, 4),
-             dims=((70, 140), (50, 90)), weight_g=(900, 2200), price_usd=(29, 79), features=("Absorbent terry loop", "Hanging loop"),
-             supplier_category="Home/Bath"),
-        Kind("planter", ("Planter", "Plant Pot", "Flower Pot"), 721, "Planters", ("terracotta", "ceramic"),
-             ("solid",), ("orange", "white", "beige", "gray", "green", "pink"), dims=((18, 16), (24, 21)), weight_g=(900, 2400),
-             price_usd=(16, 54), features=("Drainage hole", "Saucer included"), supplier_category="Garden"),
-        Kind("board", ("Cutting Board", "Serving Board", "Chopping Board"), 666, "Cutting Boards", ("wood", "bamboo"),
-             ("solid",), ("brown", "beige"), dims=((40, 25), (35, 22)), weight_g=(700, 1500), price_usd=(24, 69),
-             features=("Hanging hole", "Juice groove", "Oiled finish"), supplier_category="Kitchen/Prep"),
-        Kind("blanket", ("Throw Blanket", "Blanket", "Knit Throw"), 1985, "Blankets", ("wool", "cotton"),
-             ("checked", "solid", "striped"), ("gray", "beige", "navy", "red", "green", "mustard"), dims=((130, 170), (150, 200)),
-             weight_g=(900, 1800), price_usd=(59, 149), features=("Fringed edges", "Woven throw"), supplier_category="Home/Textiles"),
-        Kind("glasses", ("Drinking Glasses", "Tumbler Set", "Water Glasses"), 2951, "Drinking Glasses", ("glass",),
-             ("solid",), ("teal", "green", "blue", "light blue", "pink", "gray"), counts=(2, 4, 6), dims=((8, 12), (7, 10)),
-             weight_g=(700, 1800), price_usd=(19, 49), capacity_ml=(250, 300, 350), features=("Dishwasher safe", "Tinted glass"),
-             supplier_category="Kitchen/Drinkware"),
+        Kind(
+            "tshirt",
+            ("Tee", "Crew Tee", "T-Shirt"),
+            212,
+            "T-Shirts",
+            ("cotton", "linen", "polyester"),
+            ("solid", "striped", "polka dot", "geometric"),
+            APPAREL_COLORS,
+            sizes=("S", "M", "L", "XL"),
+            weight_g=(150, 230),
+            price_usd=(18, 39),
+            features=("Crew neck", "Relaxed fit", "Pre-shrunk", "Tagless neck label"),
+            supplier_category="Apparel/Tops",
+        ),
+        Kind(
+            "sweater",
+            ("Knit Sweater", "Crewneck Jumper", "Pullover"),
+            212,
+            "Sweaters",
+            ("wool", "cotton"),
+            ("solid", "striped", "checked"),
+            APPAREL_COLORS,
+            sizes=("S", "M", "L", "XL"),
+            weight_g=(380, 620),
+            price_usd=(49, 119),
+            features=("Ribbed cuffs and hem", "Crew neck", "Regular fit"),
+            supplier_category="Apparel/Knitwear",
+        ),
+        Kind(
+            "socks",
+            ("Socks", "Crew Socks", "Everyday Socks"),
+            209,
+            "Socks",
+            ("cotton", "wool"),
+            ("solid", "striped", "polka dot"),
+            APPAREL_COLORS,
+            counts=(2, 3, 4, 5),
+            sizes=("S/M", "L/XL"),
+            weight_g=(90, 220),
+            price_usd=(12, 32),
+            features=("Reinforced heel and toe", "Seamless toe", "Cushioned sole"),
+            supplier_category="Apparel/Socks",
+        ),
+        Kind(
+            "cap",
+            ("Cap", "Baseball Cap", "Six-Panel Cap"),
+            173,
+            "Hats",
+            ("cotton", "canvas", "polyester", "denim"),
+            ("solid",),
+            APPAREL_COLORS,
+            weight_g=(70, 120),
+            price_usd=(19, 35),
+            features=("Adjustable strap", "Curved brim", "Six-panel construction"),
+            supplier_category="Accessories/Headwear",
+        ),
+        Kind(
+            "scarf",
+            ("Scarf", "Wrap Scarf", "Fringed Scarf"),
+            177,
+            "Scarves",
+            ("wool", "linen", "cotton"),
+            ("checked", "solid", "striped"),
+            APPAREL_COLORS,
+            dims=((180, 30), (200, 35)),
+            weight_g=(120, 260),
+            price_usd=(29, 79),
+            features=("Fringed ends", "Lightweight weave"),
+            supplier_category="Accessories/Scarves",
+        ),
+        Kind(
+            "tote",
+            ("Tote Bag", "Market Tote", "Shopper Tote"),
+            5608,
+            "Tote Bags",
+            ("canvas", "cotton", "denim"),
+            ("solid", "striped"),
+            ("beige", "black", "navy", "white", "olive", "red"),
+            dims=((40, 38), (45, 40)),
+            weight_g=(180, 420),
+            price_usd=(19, 49),
+            features=("Inner pocket", "Reinforced handles", "Magnetic snap closure"),
+            supplier_category="Bags",
+        ),
+        Kind(
+            "backpack",
+            ("Backpack", "Daypack", "Rucksack"),
+            100,
+            "Backpacks",
+            ("canvas", "polyester"),
+            ("solid",),
+            ("black", "navy", "teal", "olive", "gray", "red", "mustard"),
+            dims=((44, 30), (48, 32)),
+            weight_g=(550, 980),
+            price_usd=(59, 129),
+            features=("Padded laptop sleeve", "Front zip pocket", "Padded shoulder straps"),
+            supplier_category="Bags",
+        ),
+        Kind(
+            "sneaker",
+            ("Sneakers", "Low-Top Sneakers", "Court Sneakers"),
+            187,
+            "Sneakers",
+            ("canvas", "leather"),
+            ("solid",),
+            ("white", "black", "navy", "red", "gray", "green"),
+            sizes=("US 7", "US 8", "US 9", "US 10"),
+            weight_g=(620, 900),
+            price_usd=(59, 139),
+            features=("Rubber outsole", "Cushioned insole", "Lace-up closure"),
+            supplier_category="Footwear",
+        ),
+        Kind(
+            "mug",
+            ("Mug", "Coffee Mug", "Stoneware Mug"),
+            2169,
+            "Mugs",
+            ("ceramic",),
+            ("solid", "polka dot", "striped"),
+            HOME_COLORS,
+            counts=(1, 2),
+            dims=((9, 10), (8, 11)),
+            weight_g=(320, 420),
+            price_usd=(14, 36),
+            capacity_ml=(300, 350, 400),
+            features=("Dishwasher safe", "Microwave safe"),
+            supplier_category="Kitchen/Drinkware",
+        ),
+        Kind(
+            "plates",
+            ("Plate Set", "Dinner Plates", "Side Plates"),
+            3553,
+            "Plates",
+            ("ceramic",),
+            ("floral", "solid", "geometric"),
+            ("white", "blue", "green", "beige", "gray", "pink"),
+            counts=(2, 4, 6),
+            dims=((27, 2), (21, 2)),
+            weight_g=(1600, 3600),
+            price_usd=(34, 89),
+            features=("Dishwasher safe", "Microwave safe"),
+            supplier_category="Kitchen/Tableware",
+        ),
+        Kind(
+            "vase",
+            ("Vase", "Bud Vase", "Bottle Vase"),
+            602,
+            "Vases",
+            ("ceramic", "glass", "terracotta"),
+            ("solid",),
+            ("green", "blue", "white", "teal", "pink", "mustard", "orange"),
+            dims=((14, 30), (12, 24)),
+            weight_g=(600, 1400),
+            price_usd=(24, 69),
+            features=("Watertight", "Hand-finished glaze"),
+            supplier_category="Home/Decor",
+        ),
+        Kind(
+            "cushion",
+            ("Cushion Cover", "Throw Pillow", "Square Cushion"),
+            4454,
+            "Throw Pillows",
+            ("cotton", "linen", "wool"),
+            ("geometric", "solid", "striped", "checked", "floral"),
+            HOME_COLORS,
+            dims=((45, 45), (50, 50)),
+            weight_g=(250, 520),
+            price_usd=(24, 59),
+            features=("Concealed zip", "Feather-filled insert included", "Removable cover"),
+            supplier_category="Home/Textiles",
+        ),
+        Kind(
+            "candles",
+            ("Pillar Candles", "Candle Set", "Pillar Candle Trio"),
+            588,
+            "Candles",
+            ("wax",),
+            ("solid",),
+            ("beige", "white", "gray", "pink", "green", "burgundy"),
+            counts=(2, 3, 4),
+            dims=((7, 15), (6, 10)),
+            weight_g=(600, 1400),
+            price_usd=(18, 42),
+            features=("Burn time about 40 hours", "Unscented", "Cotton wick"),
+            supplier_category="Home/Fragrance",
+        ),
+        Kind(
+            "lamp",
+            ("Table Lamp", "Bedside Lamp", "Desk Lamp"),
+            4636,
+            "Lamps",
+            ("linen", "cotton"),
+            ("solid",),
+            ("white", "beige", "gray", "green", "mustard", "navy"),
+            dims=((30, 45), (25, 38)),
+            weight_g=(1200, 2400),
+            price_usd=(59, 149),
+            features=("E27 bulb socket", "Inline switch", "1.8 m fabric cable"),
+            supplier_category="Lighting",
+        ),
+        Kind(
+            "bottle",
+            ("Water Bottle", "Insulated Bottle", "Sport Bottle"),
+            3809,
+            "Water Bottles",
+            ("stainless steel",),
+            ("solid",),
+            ("black", "white", "teal", "navy", "pink", "green", "orange"),
+            dims=((7, 26), (8, 28)),
+            weight_g=(300, 420),
+            price_usd=(22, 44),
+            capacity_ml=(500, 750, 1000),
+            features=("Double-walled insulation", "Leak-proof lid", "BPA-free lid"),
+            supplier_category="Kitchen/Drinkware",
+        ),
+        Kind(
+            "towels",
+            ("Bath Towels", "Towel Set", "Hand Towels"),
+            576,
+            "Towels",
+            ("cotton",),
+            ("solid", "striped"),
+            ("white", "gray", "light blue", "beige", "green", "navy"),
+            counts=(2, 3, 4),
+            dims=((70, 140), (50, 90)),
+            weight_g=(900, 2200),
+            price_usd=(29, 79),
+            features=("Absorbent terry loop", "Hanging loop"),
+            supplier_category="Home/Bath",
+        ),
+        Kind(
+            "planter",
+            ("Planter", "Plant Pot", "Flower Pot"),
+            721,
+            "Planters",
+            ("terracotta", "ceramic"),
+            ("solid",),
+            ("orange", "white", "beige", "gray", "green", "pink"),
+            dims=((18, 16), (24, 21)),
+            weight_g=(900, 2400),
+            price_usd=(16, 54),
+            features=("Drainage hole", "Saucer included"),
+            supplier_category="Garden",
+        ),
+        Kind(
+            "board",
+            ("Cutting Board", "Serving Board", "Chopping Board"),
+            666,
+            "Cutting Boards",
+            ("wood", "bamboo"),
+            ("solid",),
+            ("brown", "beige"),
+            dims=((40, 25), (35, 22)),
+            weight_g=(700, 1500),
+            price_usd=(24, 69),
+            features=("Hanging hole", "Juice groove", "Oiled finish"),
+            supplier_category="Kitchen/Prep",
+        ),
+        Kind(
+            "blanket",
+            ("Throw Blanket", "Blanket", "Knit Throw"),
+            1985,
+            "Blankets",
+            ("wool", "cotton"),
+            ("checked", "solid", "striped"),
+            ("gray", "beige", "navy", "red", "green", "mustard"),
+            dims=((130, 170), (150, 200)),
+            weight_g=(900, 1800),
+            price_usd=(59, 149),
+            features=("Fringed edges", "Woven throw"),
+            supplier_category="Home/Textiles",
+        ),
+        Kind(
+            "glasses",
+            ("Drinking Glasses", "Tumbler Set", "Water Glasses"),
+            2951,
+            "Drinking Glasses",
+            ("glass",),
+            ("solid",),
+            ("teal", "green", "blue", "light blue", "pink", "gray"),
+            counts=(2, 4, 6),
+            dims=((8, 12), (7, 10)),
+            weight_g=(700, 1800),
+            price_usd=(19, 49),
+            capacity_ml=(250, 300, 350),
+            features=("Dishwasher safe", "Tinted glass"),
+            supplier_category="Kitchen/Drinkware",
+        ),
     )
 }
 
 NAMES = (
-    "Harbor", "Alpine", "Meadow", "Coastline", "Juniper", "Willow", "Ember", "Fjord", "Sierra", "Linden", "Aster",
-    "Cedar", "Marlow", "Quarry", "Saltmarsh", "Orchard", "Bramble", "Tidal", "Hearth", "Sorrel", "Larch", "Dune",
-    "Heather", "Pebble", "Rowan", "Thistle", "Brook", "Clover", "Moss", "Driftwood", "Kestrel", "Wren",
+    "Harbor",
+    "Alpine",
+    "Meadow",
+    "Coastline",
+    "Juniper",
+    "Willow",
+    "Ember",
+    "Fjord",
+    "Sierra",
+    "Linden",
+    "Aster",
+    "Cedar",
+    "Marlow",
+    "Quarry",
+    "Saltmarsh",
+    "Orchard",
+    "Bramble",
+    "Tidal",
+    "Hearth",
+    "Sorrel",
+    "Larch",
+    "Dune",
+    "Heather",
+    "Pebble",
+    "Rowan",
+    "Thistle",
+    "Brook",
+    "Clover",
+    "Moss",
+    "Driftwood",
+    "Kestrel",
+    "Wren",
 )
 ORIGINS = ("Portugal", "India", "Turkey", "Vietnam", "Poland", "Italy")
 COMPOSITIONS: dict[str, tuple[str, ...]] = {
@@ -234,11 +492,17 @@ def ean13(rng: random.Random) -> str:
 
 def style_for(kind: str, color: str, pattern: str, material: str | None) -> str:
     """My labelling rule for the subjective `style` attribute (stated in the README)."""
-    if pattern == "floral" or (pattern == "geometric" and color in {"pink", "orange", "yellow", "mustard", "teal", "purple"}):
+    if pattern == "floral" or (
+        pattern == "geometric" and color in {"pink", "orange", "yellow", "mustard", "teal", "purple"}
+    ):
         return "bohemian"
-    if kind in {"sneaker", "cap", "backpack", "bottle"} and (material in {"polyester", "stainless steel"} or pattern == "striped"):
+    if kind in {"sneaker", "cap", "backpack", "bottle"} and (
+        material in {"polyester", "stainless steel"} or pattern == "striped"
+    ):
         return "sporty"
-    if material in {"wood", "terracotta", "bamboo"} or (pattern in {"solid", "checked"} and color in {"brown", "beige", "olive"}):
+    if material in {"wood", "terracotta", "bamboo"} or (
+        pattern in {"solid", "checked"} and color in {"brown", "beige", "olive"}
+    ):
         return "rustic"
     if pattern == "solid" and color in {"white", "black", "gray"}:
         return "minimalist"
@@ -287,7 +551,7 @@ def _plan(seed: int, n: int) -> list[GoldProduct]:
         dims: list[float] | None = None
         if kind.dims:
             a, b = rng.choice(kind.dims)
-            dims = [float(a), float(b)] if key not in {"mug", "bottle", "candles", "glasses", "vase", "planter"} else [float(a), float(b)]
+            dims = [float(a), float(b)]
         capacity = rng.choice(kind.capacity_ml) if kind.capacity_ml else None
         price = round(rng.uniform(*kind.price_usd)) - 0.01 + (5 if count > 2 else 0)
         features = rng.sample(list(kind.features), k=min(len(kind.features), rng.choice((1, 2, 2, 3))))
@@ -320,19 +584,47 @@ def _plan(seed: int, n: int) -> list[GoldProduct]:
         fluff = [rng.choice(FLUFF).format(noun=noun.lower())] if rng.random() < 0.35 else []
         products.append(
             GoldProduct(
-                id=pid, supplier=supplier, kind=key, title=title, brand=brand, color=color, secondary_color=secondary,
-                pattern=pattern, material=material, style=style_for(key, color, pattern, material), count=count,
-                category_id=kind.category_id, product_type=kind.product_type,
-                image=(f"IMG_{4100 + i * 7}.jpg" if supplier == "A" else f"nb-{2200 + i}.jpg"), sizes=sizes, skus=skus,
-                gtins=gtins, composition=composition, dims_cm=dims, weight_g=rng.randint(*kind.weight_g),
-                capacity_ml=capacity, price_usd=price, features=features, care="Dust with a dry cloth" if key == "lamp" else CARE.get(material or "", ""),
-                origin=origin, feed_color=feed_color, feed_color_error=color_error, feed_count=feed_count,
-                feed_count_error=count_error, feed_pattern=feed_pattern, feed_material=feed_material, fluff=fluff,
+                id=pid,
+                supplier=supplier,
+                kind=key,
+                title=title,
+                brand=brand,
+                color=color,
+                secondary_color=secondary,
+                pattern=pattern,
+                material=material,
+                style=style_for(key, color, pattern, material),
+                count=count,
+                category_id=kind.category_id,
+                product_type=kind.product_type,
+                image=(f"IMG_{4100 + i * 7}.jpg" if supplier == "A" else f"nb-{2200 + i}.jpg"),
+                sizes=sizes,
+                skus=skus,
+                gtins=gtins,
+                composition=composition,
+                dims_cm=dims,
+                weight_g=rng.randint(*kind.weight_g),
+                capacity_ml=capacity,
+                price_usd=price,
+                features=features,
+                care="Dust with a dry cloth" if key == "lamp" else CARE.get(material or "", ""),
+                origin=origin,
+                feed_color=feed_color,
+                feed_color_error=color_error,
+                feed_count=feed_count,
+                feed_count_error=count_error,
+                feed_pattern=feed_pattern,
+                feed_material=feed_material,
+                fluff=fluff,
             )
         )
     # planted variant problems (sized products only)
     sized = [p for p in products if len(p.sizes) > 1]
-    for p, problem in zip(rng.sample(sized, k=4), ("material_mismatch", "price_outlier", "material_mismatch", "price_outlier"), strict=True):
+    for p, problem in zip(
+        rng.sample(sized, k=4),
+        ("material_mismatch", "price_outlier", "material_mismatch", "price_outlier"),
+        strict=True,
+    ):
         p.variant_problems.append(problem)
     return products
 
@@ -400,7 +692,21 @@ def write_supplier_a(products: list[GoldProduct], path: Path, rng: random.Random
     ws.append(["Larkspur Wholesale GmbH - autumn price list (net, EUR)"])
     ws.append(["Prices valid until 31.12.2026. All dimensions approx."])
     ws.append([])
-    header = ["Item Name", "SKU#", "EAN", "Colour", "Mat.", "Size", "Dims", "Wt", "Price (EUR)", "Qty", "Image", "Category", "Notes"]
+    header = [
+        "Item Name",
+        "SKU#",
+        "EAN",
+        "Colour",
+        "Mat.",
+        "Size",
+        "Dims",
+        "Wt",
+        "Price (EUR)",
+        "Qty",
+        "Image",
+        "Category",
+        "Notes",
+    ]
     ws.append(header)
     rows: list[dict[str, Any]] = []
     for p in products:
@@ -416,7 +722,9 @@ def write_supplier_a(products: list[GoldProduct], path: Path, rng: random.Random
                 "Item Name": _title_a(p, size or None, rng),
                 "SKU#": p.skus[j] if rng.random() < 0.8 else p.skus[j].lower().replace("-", ""),
                 "EAN": p.gtins[j],
-                "Colour": (p.feed_color.title() if p.feed_color else "") if rng.random() < 0.85 or not p.feed_color else "",
+                "Colour": (p.feed_color.title() if p.feed_color else "")
+                if rng.random() < 0.85 or not p.feed_color
+                else "",
                 "Mat.": material_cell,
                 "Size": size,
                 "Dims": _dims_a(p.dims_cm, rng) if p.dims_cm else "",
@@ -427,7 +735,12 @@ def write_supplier_a(products: list[GoldProduct], path: Path, rng: random.Random
                 "Category": KINDS[p.kind].supplier_category,
                 "Notes": ". ".join(
                     x.rstrip(".")
-                    for x in [_spec_notes(p), *p.fluff, (f"Capacity {p.capacity_ml} ml" if p.capacity_ml else ""), p.care]
+                    for x in [
+                        _spec_notes(p),
+                        *p.fluff,
+                        (f"Capacity {p.capacity_ml} ml" if p.capacity_ml else ""),
+                        p.care,
+                    ]
                     if x
                 ),
             }
@@ -442,8 +755,24 @@ def write_supplier_a(products: list[GoldProduct], path: Path, rng: random.Random
 
 
 def write_supplier_b(products: list[GoldProduct], path: Path, rng: random.Random) -> list[dict[str, Any]]:
-    header = ["product_title", "variant_size", "colour_name", "material_composition", "length_cm", "width_cm",
-              "height_cm", "weight_kg", "capacity", "rrp_usd", "stock", "picture", "features", "care", "gtin", "item_code"]
+    header = [
+        "product_title",
+        "variant_size",
+        "colour_name",
+        "material_composition",
+        "length_cm",
+        "width_cm",
+        "height_cm",
+        "weight_kg",
+        "capacity",
+        "rrp_usd",
+        "stock",
+        "picture",
+        "features",
+        "care",
+        "gtin",
+        "item_code",
+    ]
     rows: list[dict[str, Any]] = []
     for p in products:
         sizes = p.sizes or [""]
@@ -458,24 +787,26 @@ def write_supplier_b(products: list[GoldProduct], path: Path, rng: random.Random
                 material_cell = "100% polyester" if p.material != "polyester" else "100% cotton"
             price = p.price_usd * (10 if "price_outlier" in p.variant_problems and j == 1 else 1)
             dims = p.dims_cm or []
-            rows.append({
-                "product_title": title.lower() if rng.random() < 0.3 else title,
-                "variant_size": size,
-                "colour_name": p.feed_color or "",
-                "material_composition": material_cell,
-                "length_cm": f"{dims[0]:g}" if len(dims) > 0 else "",
-                "width_cm": "",
-                "height_cm": f"{dims[1]:g}" if len(dims) > 1 else "",
-                "weight_kg": f"{p.weight_g / 1000:.3f}",
-                "capacity": f"{p.capacity_ml} ml" if p.capacity_ml else "",
-                "rrp_usd": f"{price:.2f}",
-                "stock": str(rng.choice((0, 5, 18, 30, 75))),
-                "picture": f"photos/{p.image}",
-                "features": " | ".join([*p.features, *([f"Made in {p.origin}"] if p.origin else []), *p.fluff]),
-                "care": p.care,
-                "gtin": p.gtins[j],
-                "item_code": p.skus[j],
-            })
+            rows.append(
+                {
+                    "product_title": title.lower() if rng.random() < 0.3 else title,
+                    "variant_size": size,
+                    "colour_name": p.feed_color or "",
+                    "material_composition": material_cell,
+                    "length_cm": f"{dims[0]:g}" if len(dims) > 0 else "",
+                    "width_cm": "",
+                    "height_cm": f"{dims[1]:g}" if len(dims) > 1 else "",
+                    "weight_kg": f"{p.weight_g / 1000:.3f}",
+                    "capacity": f"{p.capacity_ml} ml" if p.capacity_ml else "",
+                    "rrp_usd": f"{price:.2f}",
+                    "stock": str(rng.choice((0, 5, 18, 30, 75))),
+                    "picture": f"photos/{p.image}",
+                    "features": " | ".join([*p.features, *([f"Made in {p.origin}"] if p.origin else []), *p.fluff]),
+                    "care": p.care,
+                    "gtin": p.gtins[j],
+                    "item_code": p.skus[j],
+                }
+            )
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=header, delimiter=";")
@@ -500,7 +831,9 @@ def seed_catalog(out_dir: Path, *, seed: int = 11, n: int = 64, images: bool = T
     if images:
         for p in products:
             save(
-                RenderSpec(p.kind, p.color, p.secondary_color, p.pattern, p.material, p.count, seed=seed * 1000 + int(p.id[1:])),
+                RenderSpec(
+                    p.kind, p.color, p.secondary_color, p.pattern, p.material, p.count, seed=seed * 1000 + int(p.id[1:])
+                ),
                 out_dir / "images" / p.image,
             )
     gold = {
@@ -517,8 +850,14 @@ def seed_catalog(out_dir: Path, *, seed: int = 11, n: int = 64, images: bool = T
     return gold
 
 
-def _append_duplicates(out_dir: Path, rows_a: list[dict[str, Any]], rows_b: list[dict[str, Any]],
-                       within: list[GoldProduct], cross: list[GoldProduct], rng: random.Random) -> None:
+def _append_duplicates(
+    out_dir: Path,
+    rows_a: list[dict[str, Any]],
+    rows_b: list[dict[str, Any]],
+    within: list[GoldProduct],
+    cross: list[GoldProduct],
+    rng: random.Random,
+) -> None:
     from openpyxl import load_workbook
 
     path_a = out_dir / "feeds" / SUPPLIER_A
@@ -539,9 +878,23 @@ def _append_duplicates(out_dir: Path, rows_a: list[dict[str, Any]], rows_b: list
         writer = csv.writer(handle, delimiter=";")
         for p in cross:
             dims = p.dims_cm or []
-            writer.writerow([
-                f"{p.brand} {p.title}", "", p.feed_color or p.color, p.composition or "",
-                f"{dims[0]:g}" if dims else "", "", f"{dims[1]:g}" if len(dims) > 1 else "", f"{p.weight_g / 1000:.3f}",
-                f"{p.capacity_ml} ml" if p.capacity_ml else "", f"{p.price_usd + 2:.2f}", "10", f"photos/{p.image}",
-                " | ".join(p.features), p.care, p.gtins[0], f"NB-X{p.id[1:]}",
-            ])
+            writer.writerow(
+                [
+                    f"{p.brand} {p.title}",
+                    "",
+                    p.feed_color or p.color,
+                    p.composition or "",
+                    f"{dims[0]:g}" if dims else "",
+                    "",
+                    f"{dims[1]:g}" if len(dims) > 1 else "",
+                    f"{p.weight_g / 1000:.3f}",
+                    f"{p.capacity_ml} ml" if p.capacity_ml else "",
+                    f"{p.price_usd + 2:.2f}",
+                    "10",
+                    f"photos/{p.image}",
+                    " | ".join(p.features),
+                    p.care,
+                    p.gtins[0],
+                    f"NB-X{p.id[1:]}",
+                ]
+            )

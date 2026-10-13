@@ -24,7 +24,9 @@ def _image_evidence(attrs: ImageAttributes, attribute: str, value: Any) -> Evide
     raw = attrs.raw.get(attribute)
     conf = attrs.confidence.get(attribute)
     quote = f"{raw}" + (f" (confidence {conf:.2f})" if conf is not None else "")
-    return Evidence(source="image", ref=f"images/{attrs.image} · {attrs.model}", quote=quote if raw is not None else str(value))
+    return Evidence(
+        source="image", ref=f"images/{attrs.image} · {attrs.model}", quote=quote if raw is not None else str(value)
+    )
 
 
 def decide(product: ImportedProduct, attrs: ImageAttributes | None) -> list[AttributeDecision]:
@@ -61,27 +63,51 @@ def _decide_one(
     if feed is None and image is None:
         return AttributeDecision(attribute=attribute, value=None, status="missing", evidence=evidence)
     if feed is not None and image is None:
-        return AttributeDecision(attribute=attribute, value=feed, status="feed_only", feed_value=feed, evidence=evidence)
+        return AttributeDecision(
+            attribute=attribute, value=feed, status="feed_only", feed_value=feed, evidence=evidence
+        )
     if feed is None:
         review = attribute == "material" or confidence < 0.5
         note = "seen in the photo only: a suggestion, not stated in the listing" if attribute == "material" else ""
-        return AttributeDecision(attribute=attribute, value=image, status="image_only", image_value=image,
-                                 evidence=evidence, needs_review=review, note=note)
+        return AttributeDecision(
+            attribute=attribute,
+            value=image,
+            status="image_only",
+            image_value=image,
+            evidence=evidence,
+            needs_review=review,
+            note=note,
+        )
     same, note = _same(attribute, feed, image, attrs)
     if same:
         value = feed
         if attribute == "color" and note.startswith("the feed names"):
             value = image
-        return AttributeDecision(attribute=attribute, value=value, status="agree", feed_value=feed, image_value=image,
-                                 evidence=evidence, note=note)
+        return AttributeDecision(
+            attribute=attribute,
+            value=value,
+            status="agree",
+            feed_value=feed,
+            image_value=image,
+            evidence=evidence,
+            note=note,
+        )
     if attribute == "material":
         value, note = feed, f"photo suggests {image}; the feed's material is kept (a spec), please check"
     elif confidence >= CONFIDENT:
         value, note = image, f"feed says {feed}, photo shows {image}: photo value suggested"
     else:
         value, note = feed, f"feed says {feed}, photo maybe {image} (low confidence): feed value kept"
-    return AttributeDecision(attribute=attribute, value=value, status="conflict", feed_value=feed, image_value=image,
-                             evidence=evidence, needs_review=True, note=note)
+    return AttributeDecision(
+        attribute=attribute,
+        value=value,
+        status="conflict",
+        feed_value=feed,
+        image_value=image,
+        evidence=evidence,
+        needs_review=True,
+        note=note,
+    )
 
 
 def usable(decision: AttributeDecision) -> bool:

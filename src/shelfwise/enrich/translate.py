@@ -12,7 +12,14 @@ from shelfwise.llm.jsonparse import parse_json_object
 
 TASK = "translate_listing"
 BACK_TASK = "back_translate"
-LANGUAGE_NAMES = {"de": "German", "es": "Spanish (Spain)", "fr": "French (France)", "it": "Italian", "nl": "Dutch", "en": "English"}
+LANGUAGE_NAMES = {
+    "de": "German",
+    "es": "Spanish (Spain)",
+    "fr": "French (France)",
+    "it": "Italian",
+    "nl": "Dutch",
+    "en": "English",
+}
 
 
 def source_fields(listing: Listing) -> dict[str, Any]:
@@ -41,7 +48,10 @@ Answer with one JSON object and nothing else, one key per language code:
 {{"<code>": {{"title": "...", "description_html": "...", "bullets": ["..."], "meta_title": "...", "meta_description": "..."}}}}"""
     return [
         {"role": "system", "content": system},
-        {"role": "user", "content": "<input>\n" + json.dumps(source_fields(listing), ensure_ascii=False, indent=1) + "\n</input>"},
+        {
+            "role": "user",
+            "content": "<input>\n" + json.dumps(source_fields(listing), ensure_ascii=False, indent=1) + "\n</input>",
+        },
     ]
 
 
@@ -63,14 +73,22 @@ def parse_translations(text: str, languages: list[str]) -> dict[str, TranslatedL
     return out
 
 
-def translate(model: ChatModel, store: StoreConfig, listing: Listing, languages: list[str], *, max_tokens: int) -> tuple[dict[str, TranslatedListing], Completion]:
-    completion = model.complete(messages(store, listing, languages), max_tokens=max_tokens, temperature=0.0, json_mode=True)
+def translate(
+    model: ChatModel, store: StoreConfig, listing: Listing, languages: list[str], *, max_tokens: int
+) -> tuple[dict[str, TranslatedListing], Completion]:
+    completion = model.complete(
+        messages(store, listing, languages), max_tokens=max_tokens, temperature=0.0, json_mode=True
+    )
     return parse_translations(completion.text, languages), completion
 
 
 def length_problems(store: StoreConfig, translations: dict[str, TranslatedListing]) -> dict[str, list[str]]:
     """Fields over the hard limit (with the translation slack), per language."""
-    limits = {"title": store.title.max, "meta_title": store.meta_title.max, "meta_description": store.meta_description.max}
+    limits = {
+        "title": store.title.max,
+        "meta_title": store.meta_title.max,
+        "meta_description": store.meta_description.max,
+    }
     out: dict[str, list[str]] = {}
     for lang, t in translations.items():
         for name, limit in limits.items():
@@ -80,17 +98,37 @@ def length_problems(store: StoreConfig, translations: dict[str, TranslatedListin
 
 
 def shorten(
-    model: ChatModel, store: StoreConfig, listing: Listing, translations: dict[str, TranslatedListing],
-    problems: dict[str, list[str]], *, max_tokens: int,
+    model: ChatModel,
+    store: StoreConfig,
+    listing: Listing,
+    translations: dict[str, TranslatedListing],
+    problems: dict[str, list[str]],
+    *,
+    max_tokens: int,
 ) -> tuple[dict[str, TranslatedListing], Completion]:
     langs = sorted(problems)
-    previous = json.dumps({lang: {"title": translations[lang].title, "description_html": translations[lang].body_html,
-                                  "bullets": translations[lang].bullets, "meta_title": translations[lang].meta_title,
-                                  "meta_description": translations[lang].meta_description} for lang in langs},
-                          ensure_ascii=False)
+    previous = json.dumps(
+        {
+            lang: {
+                "title": translations[lang].title,
+                "description_html": translations[lang].body_html,
+                "bullets": translations[lang].bullets,
+                "meta_title": translations[lang].meta_title,
+                "meta_description": translations[lang].meta_description,
+            }
+            for lang in langs
+        },
+        ensure_ascii=False,
+    )
     note = "\n".join(f"- {lang}: {p}" for lang in langs for p in problems[lang])
-    msgs = [*messages(store, listing, langs), {"role": "assistant", "content": previous},
-            {"role": "user", "content": "Some fields are too long:\n" + note + "\nReturn the same JSON with those fields shortened."}]
+    msgs: list[Message] = [
+        *messages(store, listing, langs),
+        {"role": "assistant", "content": previous},
+        {
+            "role": "user",
+            "content": "Some fields are too long:\n" + note + "\nReturn the same JSON with those fields shortened.",
+        },
+    ]
     completion = model.complete(msgs, max_tokens=max_tokens, temperature=0.0, json_mode=True)
     return parse_translations(completion.text, langs), completion
 
@@ -99,9 +137,14 @@ def back_messages(translated: TranslatedListing, lang: str) -> list[Message]:
     system = f"""Shelfwise task: {BACK_TASK}
 Translate this {LANGUAGE_NAMES.get(lang, lang)} product listing into English, literally, keeping numbers and HTML.
 Answer with one JSON object: {{"title": "...", "description_html": "...", "bullets": ["..."], "meta_title": "...", "meta_description": "..."}}"""
-    payload = {"language": lang, "title": translated.title, "description_html": translated.body_html,
-               "bullets": translated.bullets, "meta_title": translated.meta_title,
-               "meta_description": translated.meta_description}
+    payload = {
+        "language": lang,
+        "title": translated.title,
+        "description_html": translated.body_html,
+        "bullets": translated.bullets,
+        "meta_title": translated.meta_title,
+        "meta_description": translated.meta_description,
+    }
     return [
         {"role": "system", "content": system},
         {"role": "user", "content": "<input>\n" + json.dumps(payload, ensure_ascii=False, indent=1) + "\n</input>"},

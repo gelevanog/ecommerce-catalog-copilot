@@ -34,15 +34,22 @@ def judge_messages(record: ProductRecord) -> list[Message]:
     from shelfwise.catalog.ingest import display_title
 
     listing = record.listing
-    payload = {
+    payload: dict[str, Any] = {
         "product_name": display_title(record.product),
         "facts": facts_for_prompt(record.product.facts, record.decisions),
-        "listing": {"title": listing.title, "body_html": listing.body_html, "bullets": listing.bullets,
-                    "meta_title": listing.meta_title, "meta_description": listing.meta_description,
-                    "alt_texts": listing.alt_texts},
+        "listing": {
+            "title": listing.title,
+            "body_html": listing.body_html,
+            "bullets": listing.bullets,
+            "meta_title": listing.meta_title,
+            "meta_description": listing.meta_description,
+            "alt_texts": listing.alt_texts,
+        },
     }
-    return [{"role": "system", "content": JUDGE_SYSTEM},
-            {"role": "user", "content": "<input>\n" + json.dumps(payload, ensure_ascii=False, indent=1) + "\n</input>"}]
+    return [
+        {"role": "system", "content": JUDGE_SYSTEM},
+        {"role": "user", "content": "<input>\n" + json.dumps(payload, ensure_ascii=False, indent=1) + "\n</input>"},
+    ]
 
 
 def _field_key(field: str) -> str:
@@ -56,14 +63,20 @@ def _field_key(field: str) -> str:
 def run_judge(settings: Settings, *, name: str, k: int, model: str | None = None) -> dict[str, Any]:
     records = sample(load_records(settings, name), k)
     judge = model_for(settings, "text", tag="eval:judge", **({"model": model, "fallback_models": []} if model else {}))
-    rows = []
+    rows: list[dict[str, Any]] = []
     agree_products = judge_only_products = checker_only_products = 0
     for r in records:
         assert r.listing is not None
-        checker = {i.field for i in r.issues if (i.code.startswith("unsupported_") or i.code == "banned_claim")
-                   and not i.field.startswith("translations")}
+        checker = {
+            i.field
+            for i in r.issues
+            if (i.code.startswith("unsupported_") or i.code == "banned_claim")
+            and not i.field.startswith("translations")
+        }
         try:
-            completion = judge.complete(judge_messages(r), max_tokens=settings.llm_max_tokens, temperature=0.0, json_mode=True)
+            completion = judge.complete(
+                judge_messages(r), max_tokens=settings.llm_max_tokens, temperature=0.0, json_mode=True
+            )
             found = parse_json_object(completion.text).get("unsupported") or []
         except (LLMError, JSONReplyError) as exc:
             rows.append({"id": r.id, "error": str(exc)[:200]})
@@ -76,8 +89,15 @@ def run_judge(settings: Settings, *, name: str, k: int, model: str | None = None
             judge_only_products += 1
         else:
             checker_only_products += 1
-        rows.append({"id": r.id, "title": r.listing.title, "checker_fields": sorted(checker_keys),
-                     "judge": found, "judge_fields": sorted(judged)})
+        rows.append(
+            {
+                "id": r.id,
+                "title": r.listing.title,
+                "checker_fields": sorted(checker_keys),
+                "judge": found,
+                "judge_fields": sorted(judged),
+            }
+        )
     answered = [x for x in rows if "error" not in x]
     claims = [c for x in answered for c in x["judge"] if isinstance(c, dict)]
     report = {
@@ -92,7 +112,9 @@ def run_judge(settings: Settings, *, name: str, k: int, model: str | None = None
         "judge_claims_by_field": dict(Counter(_field_key(str(c.get("field", ""))) for c in claims)),
         "rows": rows,
     }
-    (settings.results_dir / f"{name}_judge.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
+    (settings.results_dir / f"{name}_judge.json").write_text(
+        json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8"
+    )
     return report
 
 
@@ -122,32 +144,61 @@ def run_backtranslation(settings: Settings, *, name: str, k: int) -> dict[str, A
     store = get_store(settings)
     records = sample(load_records(settings, name), k, seed=11)
     model = model_for(settings, "text", tag="eval:backtranslate")
-    rows = []
+    rows: list[dict[str, Any]] = []
     for r in records:
         assert r.listing is not None
-        source = " ".join(plain(x) for x in [r.listing.title, r.listing.body_html, *r.listing.bullets, r.listing.meta_description])
+        source = " ".join(
+            plain(x) for x in [r.listing.title, r.listing.body_html, *r.listing.bullets, r.listing.meta_description]
+        )
         for lang in store.languages:
             t = r.listing.translations.get(lang)
             if t is None:
                 continue
             try:
-                completion = model.complete(back_messages(t, lang), max_tokens=settings.llm_max_tokens, temperature=0.0, json_mode=True)
+                completion = model.complete(
+                    back_messages(t, lang), max_tokens=settings.llm_max_tokens, temperature=0.0, json_mode=True
+                )
                 data = parse_json_object(completion.text)
             except (LLMError, JSONReplyError) as exc:
                 rows.append({"id": r.id, "lang": lang, "error": str(exc)[:200]})
                 continue
             bullets = data.get("bullets") or []
-            back = " ".join(plain(str(x)) for x in [data.get("title", ""), data.get("description_html", ""),
-                                                     *(bullets if isinstance(bullets, list) else []), data.get("meta_description", "")])
-            rows.append({"id": r.id, "lang": lang, "chrf": chrf(back, source), "numbers_kept": not (numbers(source) - numbers(back)),
-                         "back": back[:400]})
+            back = " ".join(
+                plain(str(x))
+                for x in [
+                    data.get("title", ""),
+                    data.get("description_html", ""),
+                    *(bullets if isinstance(bullets, list) else []),
+                    data.get("meta_description", ""),
+                ]
+            )
+            rows.append(
+                {
+                    "id": r.id,
+                    "lang": lang,
+                    "chrf": chrf(back, source),
+                    "numbers_kept": not (numbers(source) - numbers(back)),
+                    "back": back[:400],
+                }
+            )
     by_lang: dict[str, Any] = {}
     for lang in store.languages:
         ok = [x for x in rows if x["lang"] == lang and "chrf" in x]
         if ok:
-            by_lang[lang] = {"n": len(ok), "chrf_mean": round(sum(x["chrf"] for x in ok) / len(ok), 1),
-                             "chrf_min": min(x["chrf"] for x in ok),
-                             "numbers_kept_pct": round(100 * sum(x["numbers_kept"] for x in ok) / len(ok), 1)}
-    report = {"name": f"{name}_backtranslation", "model": model.label, "products": len(records), "by_language": by_lang, "rows": rows}
-    (settings.results_dir / f"{name}_backtranslation.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
+            by_lang[lang] = {
+                "n": len(ok),
+                "chrf_mean": round(sum(x["chrf"] for x in ok) / len(ok), 1),
+                "chrf_min": min(x["chrf"] for x in ok),
+                "numbers_kept_pct": round(100 * sum(x["numbers_kept"] for x in ok) / len(ok), 1),
+            }
+    report = {
+        "name": f"{name}_backtranslation",
+        "model": model.label,
+        "products": len(records),
+        "by_language": by_lang,
+        "rows": rows,
+    }
+    (settings.results_dir / f"{name}_backtranslation.json").write_text(
+        json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8"
+    )
     return report

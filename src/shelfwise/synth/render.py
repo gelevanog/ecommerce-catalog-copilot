@@ -85,7 +85,9 @@ def pattern_layer(pattern: str, c1: RGB, c2: RGB, rng: random.Random, scale: int
                     d.ellipse((px - petal * 0.75, py - petal * 0.75, px + petal * 0.75, py + petal * 0.75), fill=c2)
                 d.ellipse((cx - petal * 0.55, cy - petal * 0.55, cx + petal * 0.55, cy + petal * 0.55), fill=center)
                 lx, ly = cx + scale * 0.45, cy + scale * 0.35
-                d.ellipse((lx - petal * 0.9, ly - petal * 0.35, lx + petal * 0.9, ly + petal * 0.35), fill=_shade(c2, 0.7))
+                d.ellipse(
+                    (lx - petal * 0.9, ly - petal * 0.35, lx + petal * 0.9, ly + petal * 0.35), fill=_shade(c2, 0.7)
+                )
     elif pattern == "geometric":
         h = scale
         for row, y in enumerate(range(-h, S + h, h)):
@@ -255,7 +257,7 @@ def _shading(box: tuple[int, int, int, int], kind: str) -> Image.Image:
     return out
 
 
-def _mask(draw_fn: Callable[[ImageDraw.ImageDraw], None]) -> Image.Image:
+def _mask(draw_fn: Callable[[ImageDraw.ImageDraw], object]) -> Image.Image:
     m = Image.new("L", (S, S), 0)
     draw_fn(ImageDraw.Draw(m))
     return m
@@ -280,11 +282,37 @@ def _tshirt(cv: Canvas, spec: RenderSpec, long_sleeves: bool = False) -> None:
     layer, tex = _body(spec, cv.rng)
     cv.shadow((330, 930, 870, 1010))
     if long_sleeves:
-        pts = [(470, 250), (330, 290), (215, 520), (175, 860), (285, 880), (360, 560), (380, 960), (820, 960),
-               (840, 560), (915, 880), (1025, 860), (985, 520), (870, 290), (730, 250)]
+        pts = [
+            (470, 250),
+            (330, 290),
+            (215, 520),
+            (175, 860),
+            (285, 880),
+            (360, 560),
+            (380, 960),
+            (820, 960),
+            (840, 560),
+            (915, 880),
+            (1025, 860),
+            (985, 520),
+            (870, 290),
+            (730, 250),
+        ]
     else:
-        pts = [(470, 250), (330, 290), (180, 440), (265, 540), (370, 470), (380, 960), (820, 960), (830, 470),
-               (935, 540), (1020, 440), (870, 290), (730, 250)]
+        pts = [
+            (470, 250),
+            (330, 290),
+            (180, 440),
+            (265, 540),
+            (370, 470),
+            (380, 960),
+            (820, 960),
+            (830, 470),
+            (935, 540),
+            (1020, 440),
+            (870, 290),
+            (730, 250),
+        ]
     body = _mask(lambda d: d.polygon(pts, fill=255))
     ImageDraw.Draw(body).ellipse((480, 190, 720, 320), fill=0)
     cv.fill(body, layer, texture=tex)
@@ -293,8 +321,12 @@ def _tshirt(cv: Canvas, spec: RenderSpec, long_sleeves: bool = False) -> None:
     if long_sleeves:
         rib = _shade(_rgb(spec.color), 0.82)
         hem = _mask(lambda d: d.rectangle((382, 905, 818, 960), fill=255))
-        cuffs = _mask(lambda d: (d.polygon([(178, 830), (288, 850), (285, 880), (175, 860)], fill=255),
-                                 d.polygon([(912, 850), (1022, 830), (1025, 860), (915, 880)], fill=255)))
+        cuffs = _mask(
+            lambda d: (
+                d.polygon([(178, 830), (288, 850), (285, 880), (175, 860)], fill=255),
+                d.polygon([(912, 850), (1022, 830), (1025, 860), (915, 880)], fill=255),
+            )
+        )
         cv.fill(hem, rib, texture=tex, shade="none")
         cv.fill(cuffs, rib, texture=tex, shade="none")
 
@@ -342,16 +374,24 @@ def _scarf(cv: Canvas, spec: RenderSpec) -> None:
     b = _mask(lambda d: d.polygon([(560, 260), (760, 230), (780, 980), (600, 990)], fill=255))
     cv.fill(a, layer, texture=tex)
     cv.fill(b, layer, texture=tex, shade="horizontal")
-    fringe = _mask(lambda d: [d.line((x, 960 + (x % 3), x + 4, 1010), fill=255, width=6) for x in range(474, 640, 16)]
-                   + [d.line((x, 985, x + 3, 1040), fill=255, width=6) for x in range(604, 780, 16)])
+    fringe = _mask(
+        lambda d: (
+            [d.line((x, 960 + (x % 3), x + 4, 1010), fill=255, width=6) for x in range(474, 640, 16)]
+            + [d.line((x, 985, x + 3, 1040), fill=255, width=6) for x in range(604, 780, 16)]
+        )
+    )
     cv.fill(fringe, _rgb(spec.color), shade="none", outline=False)
 
 
 def _tote(cv: Canvas, spec: RenderSpec) -> None:
     layer, tex = _body(spec, cv.rng)
     cv.shadow((300, 950, 900, 1030))
-    handles = _mask(lambda d: (d.arc((410, 230, 590, 660), 180, 360, fill=255, width=34),
-                               d.arc((610, 230, 790, 660), 180, 360, fill=255, width=34)))
+    handles = _mask(
+        lambda d: (
+            d.arc((410, 230, 590, 660), 180, 360, fill=255, width=34),
+            d.arc((610, 230, 790, 660), 180, 360, fill=255, width=34),
+        )
+    )
     cv.fill(handles, _rgb(spec.secondary), texture=tex, shade="none")
     body = _mask(lambda d: d.polygon([(340, 440), (860, 440), (895, 990), (305, 990)], fill=255))
     cv.fill(body, layer, texture=tex)
@@ -366,15 +406,34 @@ def _backpack(cv: Canvas, spec: RenderSpec) -> None:
     cv.fill(body, layer, texture=tex)
     pocket = _mask(lambda d: d.rounded_rectangle((450, 640, 750, 930), radius=60, fill=255))
     cv.fill(pocket, _rgb(spec.secondary), texture=tex)
-    zips = _mask(lambda d: (d.arc((410, 310, 790, 700), 200, 340, fill=255, width=8), d.line((470, 700, 730, 700), fill=255, width=8)))
+    zips = _mask(
+        lambda d: (
+            d.arc((410, 310, 790, 700), 200, 340, fill=255, width=8),
+            d.line((470, 700, 730, 700), fill=255, width=8),
+        )
+    )
     cv.fill(zips, (70, 70, 74), shade="none", outline=False)
 
 
 def _sneaker(cv: Canvas, spec: RenderSpec) -> None:
     layer, tex = _body(spec, cv.rng, 60)
     cv.shadow((200, 800, 1040, 890))
-    outline = [(235, 790), (228, 640), (262, 560), (330, 530), (420, 560), (500, 520), (560, 450), (640, 440),
-               (700, 470), (740, 545), (850, 590), (950, 640), (1010, 700), (1020, 790)]
+    outline = [
+        (235, 790),
+        (228, 640),
+        (262, 560),
+        (330, 530),
+        (420, 560),
+        (500, 520),
+        (560, 450),
+        (640, 440),
+        (700, 470),
+        (740, 545),
+        (850, 590),
+        (950, 640),
+        (1010, 700),
+        (1020, 790),
+    ]
     upper = _mask(lambda d: d.polygon(outline, fill=255))
     cv.fill(upper, layer, texture=tex)
     collar = _mask(lambda d: d.chord((250, 500, 520, 640), 180, 360, fill=255))
@@ -385,7 +444,11 @@ def _sneaker(cv: Canvas, spec: RenderSpec) -> None:
     cv.fill(sole, (238, 236, 230), shade="horizontal")
     stripe = _mask(lambda d: d.line((240, 815, 1005, 815), fill=255, width=8))
     cv.fill(stripe, (200, 198, 192), shade="none", outline=False)
-    laces = _mask(lambda d: [d.line((585 + i * 42, 470 + i * 26, 640 + i * 42, 455 + i * 26), fill=255, width=13) for i in range(4)])
+    laces = _mask(
+        lambda d: [
+            d.line((585 + i * 42, 470 + i * 26, 640 + i * 42, 455 + i * 26), fill=255, width=13) for i in range(4)
+        ]
+    )
     cv.fill(laces, (248, 248, 246), shade="none")
 
 
@@ -397,7 +460,9 @@ def _mug(cv: Canvas, spec: RenderSpec) -> None:
     for cx in positions:
         x0, x1 = cx - w / 2, cx + w / 2
         cv.shadow((x0 - 20, 870, x1 + 90, 940), 60)
-        handle = _mask(lambda d, x1=x1: d.arc((x1 - w * 0.3, 500, x1 + w * 0.32, 790), -90, 90, fill=255, width=int(w * 0.11)))
+        handle = _mask(
+            lambda d, x1=x1: d.arc((x1 - w * 0.3, 500, x1 + w * 0.32, 790), -90, 90, fill=255, width=int(w * 0.11))
+        )
         cv.fill(handle, _rgb(spec.color), texture=tex, shade="none")
         body = _mask(lambda d, x0=x0, x1=x1: d.rounded_rectangle((x0, 420, x1, 905), radius=40, fill=255))
         cv.fill(body, layer, texture=tex, shade="horizontal", gloss=spec.material == "ceramic")
@@ -418,7 +483,11 @@ def _plates(cv: Canvas, spec: RenderSpec) -> None:
         cv.shadow((cx - r, cy - r * 0.8 + 30, cx + r, cy + r * 0.95 + 30), 50)
         plate = _mask(lambda d, cx=cx, cy=cy: d.ellipse((cx - r, cy - r * 0.9, cx + r, cy + r * 0.9), fill=255))
         cv.fill(plate, layer, texture=tex, gloss=True)
-        well = _mask(lambda d, cx=cx, cy=cy: d.ellipse((cx - r * 0.62, cy - r * 0.56, cx + r * 0.62, cy + r * 0.56), outline=255, width=6))
+        well = _mask(
+            lambda d, cx=cx, cy=cy: d.ellipse(
+                (cx - r * 0.62, cy - r * 0.56, cx + r * 0.62, cy + r * 0.56), outline=255, width=6
+            )
+        )
         cv.fill(well, _shade(_rgb(spec.color), 0.75), shade="none", outline=False)
 
 
@@ -426,7 +495,7 @@ def _vase(cv: Canvas, spec: RenderSpec) -> None:
     layer, tex = _body(spec, cv.rng, 60)
     cv.shadow((400, 930, 800, 1000))
     left, right = [], []
-    for k in range(0, 71):
+    for k in range(71):
         y = 260 + k * 10
         t = k / 70
         # neck (narrow), shoulder, round belly, slightly narrower foot
@@ -435,7 +504,14 @@ def _vase(cv: Canvas, spec: RenderSpec) -> None:
         right.append((600 + half, y))
     body = _mask(lambda d: d.polygon(left + right[::-1], fill=255))
     glass = spec.material == "glass"
-    cv.fill(body, layer, texture=tex, shade="horizontal", gloss=spec.material in {"ceramic", "glass"}, alpha=0.78 if glass else 1)
+    cv.fill(
+        body,
+        layer,
+        texture=tex,
+        shade="horizontal",
+        gloss=spec.material in {"ceramic", "glass"},
+        alpha=0.78 if glass else 1,
+    )
     mouth = _mask(lambda d: d.ellipse((525, 240, 675, 285), fill=255))
     cv.fill(mouth, _shade(_rgb(spec.color), 0.5), shade="none")
 
@@ -472,7 +548,9 @@ def _candles(cv: Canvas, spec: RenderSpec) -> None:
         cv.fill(wick, (40, 40, 40), shade="none", outline=False)
         flame = _mask(lambda d, cx=cx, top=top: d.ellipse((cx - 22, top - 120, cx + 22, top - 40), fill=255))
         cv.fill(flame, (255, 196, 70), shade="radial", outline=False)
-        body = _mask(lambda d, cx=cx, top=top: d.rounded_rectangle((cx - w / 2, top, cx + w / 2, 930), radius=18, fill=255))
+        body = _mask(
+            lambda d, cx=cx, top=top: d.rounded_rectangle((cx - w / 2, top, cx + w / 2, 930), radius=18, fill=255)
+        )
         cv.fill(body, layer, texture=tex, shade="horizontal")
         rim = _mask(lambda d, cx=cx, top=top: d.ellipse((cx - w / 2, top - 18, cx + w / 2, top + 22), fill=255))
         cv.fill(rim, _shade(_rgb(spec.color), 1.12), shade="none")
@@ -508,7 +586,11 @@ def _towels(cv: Canvas, spec: RenderSpec) -> None:
         y1 = bottom - i * (h + 8)
         y0 = y1 - h
         dx = (i % 2) * 18
-        m = _mask(lambda d, y0=y0, y1=y1, dx=dx: d.rounded_rectangle((320 + dx, y0, 880 + dx, y1), radius=int(h * 0.35), fill=255))
+        m = _mask(
+            lambda d, y0=y0, y1=y1, dx=dx: d.rounded_rectangle(
+                (320 + dx, y0, 880 + dx, y1), radius=int(h * 0.35), fill=255
+            )
+        )
         cv.fill(m, layer, texture=tex, shade="horizontal")
         band = _mask(lambda d, y0=y0, y1=y1, dx=dx: d.rectangle((700 + dx, y0 + 6, 735 + dx, y1 - 6), fill=255))
         cv.fill(ImageChops.multiply(band, m), _rgb(spec.secondary), shade="none", outline=False)
@@ -528,7 +610,12 @@ def _planter(cv: Canvas, spec: RenderSpec) -> None:
 def _board(cv: Canvas, spec: RenderSpec) -> None:
     layer, tex = _body(spec, cv.rng, 60)
     cv.shadow((330, 900, 900, 980))
-    body = _mask(lambda d: (d.rounded_rectangle((340, 340, 860, 930), radius=60, fill=255), d.rounded_rectangle((530, 190, 670, 380), radius=40, fill=255)))
+    body = _mask(
+        lambda d: (
+            d.rounded_rectangle((340, 340, 860, 930), radius=60, fill=255),
+            d.rounded_rectangle((530, 190, 670, 380), radius=40, fill=255),
+        )
+    )
     ImageDraw.Draw(body).ellipse((575, 225, 625, 275), fill=0)
     cv.fill(body, layer, texture=tex)
 
@@ -552,7 +639,11 @@ def _glasses(cv: Canvas, spec: RenderSpec) -> None:
     for i in range(n):
         cx = 160 + gap * i + gap / 2
         cv.shadow((cx - w * 0.6, 900, cx + w * 0.6, 950), 40)
-        body = _mask(lambda d, cx=cx: d.polygon([(cx - w / 2, 430), (cx + w / 2, 430), (cx + w * 0.42, 930), (cx - w * 0.42, 930)], fill=255))
+        body = _mask(
+            lambda d, cx=cx: d.polygon(
+                [(cx - w / 2, 430), (cx + w / 2, 430), (cx + w * 0.42, 930), (cx - w * 0.42, 930)], fill=255
+            )
+        )
         cv.fill(body, tint, texture=texture_layer("glass", cv.rng), shade="horizontal", gloss=True, alpha=0.62)
         rim = _mask(lambda d, cx=cx: d.ellipse((cx - w / 2, 410, cx + w / 2, 450), outline=255, width=8))
         cv.fill(rim, _shade(tint, 0.7), shade="none", outline=False)

@@ -56,3 +56,8 @@ strict = true
 plugins = ["pydantic.mypy"]
 mypy_path = "src"
 packages = ["shelfwise"]
+
+[[tool.mypy.overrides]]
+# The renderer draws with lambdas that return Pillow's None results inside tuples; that is all these codes flag.
+module = "shelfwise.synth.render"
+disable_error_code = ["func-returns-value", "misc"]

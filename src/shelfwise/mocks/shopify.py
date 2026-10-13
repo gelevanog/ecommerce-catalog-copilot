@@ -91,7 +91,12 @@ type TranslatableResource { resourceId: ID!, translatableContent: [TranslatableC
 type TranslationsRegisterPayload { translations: [Translation!], userErrors: [UserError!]! }
 """
 
-TRANSLATABLE_KEYS = {"title": "title", "body_html": "descriptionHtml", "meta_title": "seo.title", "meta_description": "seo.description"}
+TRANSLATABLE_KEYS = {
+    "title": "title",
+    "body_html": "descriptionHtml",
+    "meta_title": "seo.title",
+    "meta_description": "seo.description",
+}
 
 
 def _digest(value: str | None) -> str:
@@ -119,7 +124,13 @@ class ShopifyMock:
         if not title:
             errors.append({"field": ["input", "title"], "message": "Title can't be blank", "code": "BLANK"})
         if len(title) > 255:
-            errors.append({"field": ["input", "title"], "message": "Title is too long (maximum is 255 characters)", "code": "TOO_LONG"})
+            errors.append(
+                {
+                    "field": ["input", "title"],
+                    "message": "Title is too long (maximum is 255 characters)",
+                    "code": "TOO_LONG",
+                }
+            )
         options = data.get("productOptions") or []
         variants = data.get("variants") or []
         option_names = [o["name"] for o in options]
@@ -127,16 +138,26 @@ class ShopifyMock:
         for i, v in enumerate(variants):
             names = [ov["optionName"] for ov in v.get("optionValues", [])]
             if options and sorted(names) != sorted(option_names):
-                errors.append({"field": ["input", "variants", str(i)], "message": "Variant option values do not match the product options", "code": "INVALID"})
+                errors.append(
+                    {
+                        "field": ["input", "variants", str(i)],
+                        "message": "Variant option values do not match the product options",
+                        "code": "INVALID",
+                    }
+                )
             key = tuple(sorted(f"{ov['optionName']}={ov['name']}" for ov in v.get("optionValues", [])))
             if key in seen:
-                errors.append({"field": ["input", "variants", str(i)], "message": "The variant already exists", "code": "TAKEN"})
+                errors.append(
+                    {"field": ["input", "variants", str(i)], "message": "The variant already exists", "code": "TAKEN"}
+                )
             seen.add(key)
             try:
                 if v.get("price") is not None and float(v["price"]) < 0:
                     raise ValueError
             except ValueError:
-                errors.append({"field": ["input", "variants", str(i), "price"], "message": "Price is invalid", "code": "INVALID"})
+                errors.append(
+                    {"field": ["input", "variants", str(i), "price"], "message": "Price is invalid", "code": "INVALID"}
+                )
         if len(variants) > 2048:
             errors.append({"field": ["input", "variants"], "message": "Too many variants", "code": "TOO_MANY"})
         if errors:
@@ -147,7 +168,12 @@ class ShopifyMock:
             if data.get("id"):
                 existing = self.products.get(data["id"])
                 if existing is None:
-                    return {"product": None, "userErrors": [{"field": ["input", "id"], "message": "Product does not exist", "code": "NOT_FOUND"}]}
+                    return {
+                        "product": None,
+                        "userErrors": [
+                            {"field": ["input", "id"], "message": "Product does not exist", "code": "NOT_FOUND"}
+                        ],
+                    }
             pid = existing["id"] if existing else self._gid("Product")
             seo = data.get("seo") or {}
             product = {
@@ -173,7 +199,9 @@ class ShopifyMock:
                     }
                     for v in variants
                 ],
-                "media": [{"image": {"url": f["originalSource"], "altText": f.get("alt")}} for f in data.get("files") or []],
+                "media": [
+                    {"image": {"url": f["originalSource"], "altText": f.get("alt")}} for f in data.get("files") or []
+                ],
                 "updatedAt": "2026-10-13T00:00:00Z",
             }
             self.products[pid] = product
@@ -189,22 +217,43 @@ class ShopifyMock:
             {"key": "meta_title", "value": p["seo"]["title"]},
             {"key": "meta_description", "value": p["seo"]["description"]},
         ]
-        return {"resourceId": resource_id,
-                "translatableContent": [{**c, "digest": _digest(c["value"]), "locale": "en"} for c in content]}
+        return {
+            "resourceId": resource_id,
+            "translatableContent": [{**c, "digest": _digest(c["value"]), "locale": "en"} for c in content],
+        }
 
     def register(self, resource_id: str, translations: list[dict[str, Any]]) -> dict[str, Any]:
         resource = self.translatable(resource_id)
         if resource is None:
-            return {"translations": None, "userErrors": [{"field": ["resourceId"], "message": "Resource does not exist", "code": "RESOURCE_NOT_FOUND"}]}
+            return {
+                "translations": None,
+                "userErrors": [
+                    {"field": ["resourceId"], "message": "Resource does not exist", "code": "RESOURCE_NOT_FOUND"}
+                ],
+            }
         digests = {c["key"]: c["digest"] for c in resource["translatableContent"]}
         errors, saved = [], []
         for i, t in enumerate(translations):
             if t["key"] not in digests:
-                errors.append({"field": ["translations", str(i), "key"], "message": f"Key {t['key']} is not translatable", "code": "INVALID_KEY_FOR_MODEL"})
+                errors.append(
+                    {
+                        "field": ["translations", str(i), "key"],
+                        "message": f"Key {t['key']} is not translatable",
+                        "code": "INVALID_KEY_FOR_MODEL",
+                    }
+                )
             elif t["translatableContentDigest"] != digests[t["key"]]:
-                errors.append({"field": ["translations", str(i), "translatableContentDigest"], "message": "Translatable content hash is invalid", "code": "INVALID_TRANSLATABLE_CONTENT"})
+                errors.append(
+                    {
+                        "field": ["translations", str(i), "translatableContentDigest"],
+                        "message": "Translatable content hash is invalid",
+                        "code": "INVALID_TRANSLATABLE_CONTENT",
+                    }
+                )
             elif not t["value"].strip():
-                errors.append({"field": ["translations", str(i), "value"], "message": "Value can't be blank", "code": "BLANK"})
+                errors.append(
+                    {"field": ["translations", str(i), "value"], "message": "Value can't be blank", "code": "BLANK"}
+                )
             else:
                 self.translations.setdefault(resource_id, {})[(t["locale"], t["key"])] = t["value"]
                 saved.append({"locale": t["locale"], "key": t["key"], "value": t["value"]})
@@ -224,7 +273,7 @@ class ShopifyMock:
                 return {"nodes": [mock._shape(p) for p in nodes[:first]]}
 
             @staticmethod
-            def product(info: Any, id: str) -> dict[str, Any] | None:  # noqa: A002
+            def product(info: Any, id: str) -> dict[str, Any] | None:
                 p = mock.products.get(id)
                 return mock._shape(p) if p else None
 
@@ -233,7 +282,7 @@ class ShopifyMock:
                 return mock.translatable(resourceId)
 
             @staticmethod
-            def productSet(info: Any, input: dict[str, Any], synchronous: bool = True) -> dict[str, Any]:  # noqa: A002, N802
+            def productSet(info: Any, input: dict[str, Any], synchronous: bool = True) -> dict[str, Any]:  # noqa: N802
                 result = mock.product_set(input)
                 if result["product"]:
                     result["product"] = mock._shape(result["product"])
@@ -252,15 +301,26 @@ class ShopifyMock:
                 return value(**args) if callable(value) else value
             return getattr(source, name, None)
 
-        result = graphql_sync(self.schema, query, root_value=Root, variable_values=variables or {}, field_resolver=field_resolver)
+        result = graphql_sync(
+            self.schema, query, root_value=Root, variable_values=variables or {}, field_resolver=field_resolver
+        )
         body: dict[str, Any] = {}
         if result.errors:
             body["errors"] = [{"message": e.message} for e in result.errors]
         if result.data is not None:
             body["data"] = result.data
         cost = 10 + 10 * query.count("productSet") + query.count("{")
-        body["extensions"] = {"cost": {"requestedQueryCost": cost, "actualQueryCost": cost,
-                                       "throttleStatus": {"maximumAvailable": 2000.0, "currentlyAvailable": 2000.0 - cost, "restoreRate": 100.0}}}
+        body["extensions"] = {
+            "cost": {
+                "requestedQueryCost": cost,
+                "actualQueryCost": cost,
+                "throttleStatus": {
+                    "maximumAvailable": 2000.0,
+                    "currentlyAvailable": 2000.0 - cost,
+                    "restoreRate": 100.0,
+                },
+            }
+        }
         return body
 
     def _shape(self, p: dict[str, Any]) -> dict[str, Any]:
@@ -269,6 +329,9 @@ class ShopifyMock:
             **p,
             "variants": lambda first=100: {"nodes": p["variants"][:first]},
             "media": lambda first=20: {"nodes": p["media"][:first]},
-            "translations": lambda locale: [{"locale": loc, "key": key, "value": value}
-                                            for (loc, key), value in translations.items() if loc == locale],
+            "translations": lambda locale: [
+                {"locale": loc, "key": key, "value": value}
+                for (loc, key), value in translations.items()
+                if loc == locale
+            ],
         }

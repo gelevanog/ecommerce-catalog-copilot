@@ -28,8 +28,13 @@ def list_free_models(settings: Settings) -> list[dict[str, Any]]:
     for m in response.json().get("data", []):
         if str(m.get("id", "")).endswith(":free"):
             arch = m.get("architecture") or {}
-            out.append({"id": m["id"], "input_modalities": arch.get("input_modalities"),
-                        "context_length": m.get("context_length")})
+            out.append(
+                {
+                    "id": m["id"],
+                    "input_modalities": arch.get("input_modalities"),
+                    "context_length": m.get("context_length"),
+                }
+            )
     return out
 
 
@@ -61,17 +66,19 @@ def vision_smoke(settings: Settings, models: list[str], demo_dir: Path) -> dict[
         for p in products:
             started = time.monotonic()
             attrs, completion = extract_image_attributes(model, demo_dir / "images" / p["image"])
-            rows.append({
-                "product": p["id"],
-                "seconds": round(time.monotonic() - started, 1),
-                "error": attrs.error,
-                "color_ok": colors_match(attrs.color, p["color"], lenient=True),
-                "pattern_ok": attrs.pattern == p["pattern"],
-                "count_ok": attrs.count == p["count"],
-                "material_ok": attrs.material == p["material"],
-                "answer": attrs.raw,
-                "output_tokens": completion.output_tokens if completion else 0,
-            })
+            rows.append(
+                {
+                    "product": p["id"],
+                    "seconds": round(time.monotonic() - started, 1),
+                    "error": attrs.error,
+                    "color_ok": colors_match(attrs.color, p["color"], lenient=True),
+                    "pattern_ok": attrs.pattern == p["pattern"],
+                    "count_ok": attrs.count == p["count"],
+                    "material_ok": attrs.material == p["material"],
+                    "answer": attrs.raw,
+                    "output_tokens": completion.output_tokens if completion else 0,
+                }
+            )
         ok = [r for r in rows if not r["error"]]
         report["models"][name] = {
             "answered": len(ok),

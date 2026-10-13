@@ -18,7 +18,10 @@ API_VERSIONS = {"2025-10", "2026-01", "2026-04", "2026-07"}
 def create_mock_app(shopify: ShopifyMock | None = None, woo: WooMock | None = None) -> FastAPI:
     shop = shopify or ShopifyMock()
     wc = woo or WooMock()
-    app = FastAPI(title="Shelfwise mock stores", description="Local mocks of the Shopify Admin GraphQL API and the WooCommerce REST API.")
+    app = FastAPI(
+        title="Shelfwise mock stores",
+        description="Local mocks of the Shopify Admin GraphQL API and the WooCommerce REST API.",
+    )
     app.state.shopify = shop
     app.state.woo = wc
 
@@ -29,14 +32,25 @@ def create_mock_app(shopify: ShopifyMock | None = None, woo: WooMock | None = No
     @app.get("/credentials")
     def credentials(request: Request) -> dict[str, str]:
         host = request.client.host if request.client else ""
-        if host not in {"127.0.0.1", "::1", "localhost", "testclient"} and not host.startswith(("172.", "10.", "192.168.")):
+        if host not in {"127.0.0.1", "::1", "localhost", "testclient"} and not host.startswith(
+            ("172.", "10.", "192.168.")
+        ):
             raise HTTPException(403, "credentials are only served to local clients")
-        return {"shopify_token": shop.token, "woocommerce_key": wc.consumer_key, "woocommerce_secret": wc.consumer_secret}
+        return {
+            "shopify_token": shop.token,
+            "woocommerce_key": wc.consumer_key,
+            "woocommerce_secret": wc.consumer_secret,
+        }
 
     @app.post("/shopify/admin/api/{version}/graphql.json")
-    async def graphql(version: str, request: Request, x_shopify_access_token: str | None = Header(default=None)) -> JSONResponse:
+    async def graphql(
+        version: str, request: Request, x_shopify_access_token: str | None = Header(default=None)
+    ) -> JSONResponse:
         if x_shopify_access_token != shop.token:
-            return JSONResponse({"errors": "[API] Invalid API key or access token (unrecognized login or wrong password)"}, status_code=401)
+            return JSONResponse(
+                {"errors": "[API] Invalid API key or access token (unrecognized login or wrong password)"},
+                status_code=401,
+            )
         if version not in API_VERSIONS:
             return JSONResponse({"errors": f"API version {version} is not supported by this mock"}, status_code=404)
         body = await request.json()

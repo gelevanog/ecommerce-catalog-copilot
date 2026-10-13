@@ -27,7 +27,17 @@ from shelfwise.validate.listing import catalog_issues
 
 log = logging.getLogger(__name__)
 
-EDITABLE = {"title", "body_html", "meta_title", "meta_description", "product_type", "category_id", "tags", "bullets", "alt_texts"}
+EDITABLE = {
+    "title",
+    "body_html",
+    "meta_title",
+    "meta_description",
+    "product_type",
+    "category_id",
+    "tags",
+    "bullets",
+    "alt_texts",
+}
 DEMO_FEEDS = (("larkspur_pricelist.xlsx", "Larkspur"), ("northbay_feed.csv", "Northbay"))
 
 
@@ -45,7 +55,9 @@ class ImportSummary:
 
 
 class Copilot:
-    def __init__(self, settings: Settings | None = None, store: Store | None = None, models: Models | None = None) -> None:
+    def __init__(
+        self, settings: Settings | None = None, store: Store | None = None, models: Models | None = None
+    ) -> None:
         self.settings = settings or get_settings()
         self.db = store or Store(self.settings.database)
         self.store_config: StoreConfig = get_store(self.settings)
@@ -64,14 +76,24 @@ class Copilot:
         return self._models
 
     def provider_label(self) -> dict[str, str]:
-        return {"provider": self.settings.llm_provider, "vision": self.models.vision.label, "text": self.models.text.label,
-                "free_only": str(self.settings.free_only).lower()}
+        return {
+            "provider": self.settings.llm_provider,
+            "vision": self.models.vision.label,
+            "text": self.models.text.label,
+            "free_only": str(self.settings.free_only).lower(),
+        }
 
     # ---------------------------------------------------------------- import
     def preview(self, name: str, data: bytes) -> dict[str, Any]:
         header_row, header, body, mapping = preview_feed(Path(name), data)
-        return {"file": name, "header_row": header_row + 1, "columns": header, "rows": len(body),
-                "sample": body[:5], "mapping": [m.model_dump() for m in mapping]}
+        return {
+            "file": name,
+            "header_row": header_row + 1,
+            "columns": header,
+            "rows": len(body),
+            "sample": body[:5],
+            "mapping": [m.model_dump() for m in mapping],
+        }
 
     def import_files(
         self,
@@ -98,22 +120,51 @@ class Copilot:
         img_dir = images_dir or (batch_dir / "images")
         batch_id = self.db.create_batch(
             name or ", ".join(f[0] for f in feeds),
-            {"images_dir": str(img_dir), "feeds": [{"file": r.file, "header_row": r.header_row, "rows": r.rows,
-                                                    "mapping": [m.model_dump() for m in r.mapping]} for r in result.feeds],
-             "duplicates_merged": result.duplicates_merged},
+            {
+                "images_dir": str(img_dir),
+                "feeds": [
+                    {
+                        "file": r.file,
+                        "header_row": r.header_row,
+                        "rows": r.rows,
+                        "mapping": [m.model_dump() for m in r.mapping],
+                    }
+                    for r in result.feeds
+                ],
+                "duplicates_merged": result.duplicates_merged,
+            },
         )
         for position, product in enumerate(result.products):
             record = ProductRecord(id=product.id, batch_id=batch_id, product=product)
             missing = [i for i in product.images if not (img_dir / i).exists()]
             if missing:
-                product.issues.append(Issue(code="image_missing", severity="warning", field="images",
-                                            message=f"Image file not uploaded: {', '.join(missing)}"))
+                product.issues.append(
+                    Issue(
+                        code="image_missing",
+                        severity="warning",
+                        field="images",
+                        message=f"Image file not uploaded: {', '.join(missing)}",
+                    )
+                )
             revalidate(record, self.store_config)
             self.db.save(record, position=position)
-        self.db.log("import", {"batch_id": batch_id, "products": len(result.products), "duplicates_merged": result.duplicates_merged,
-                               "files": [f[0] for f in feeds]}, actor=actor)
-        return ImportSummary(batch_id, len(result.products), result.duplicates_merged,
-                             [{"file": r.file, "header_row": r.header_row, "rows": r.rows} for r in result.feeds], result.issues)
+        self.db.log(
+            "import",
+            {
+                "batch_id": batch_id,
+                "products": len(result.products),
+                "duplicates_merged": result.duplicates_merged,
+                "files": [f[0] for f in feeds],
+            },
+            actor=actor,
+        )
+        return ImportSummary(
+            batch_id,
+            len(result.products),
+            result.duplicates_merged,
+            [{"file": r.file, "header_row": r.header_row, "rows": r.rows} for r in result.feeds],
+            result.issues,
+        )
 
     def import_demo(self) -> ImportSummary:
         demo = self.settings.demo_dir
@@ -121,7 +172,9 @@ class Copilot:
             from shelfwise.synth.catalog import seed_catalog
 
             seed_catalog(demo)
-        feeds = [(name, (demo / "feeds" / name).read_bytes(), vendor, {}) for name, vendor in DEMO_FEEDS]
+        feeds: list[tuple[str, bytes, str | None, dict[str, str | None]]] = [
+            (name, (demo / "feeds" / name).read_bytes(), vendor, {}) for name, vendor in DEMO_FEEDS
+        ]
         return self.import_files(feeds, name="Demo: Larkspur + Northbay supplier feeds", images_dir=demo / "images")
 
     def images_dir(self, batch_id: str) -> Path:
@@ -133,12 +186,21 @@ class Copilot:
     # ---------------------------------------------------------------- enrichment
     def enrich_one(self, product_id: str, *, translate: bool = True) -> ProductRecord:
         record = self._get(product_id)
-        record = enrich(record, store=self.store_config, settings=self.settings, models=self.models,
-                        images_dir=self.images_dir(record.batch_id), translate=translate)
+        record = enrich(
+            record,
+            store=self.store_config,
+            settings=self.settings,
+            models=self.models,
+            images_dir=self.images_dir(record.batch_id),
+            translate=translate,
+        )
         record.review = {}
         self.db.save(record)
-        self.db.log("enrich", {"status": record.status, "calls": record.stats.calls, "errors": len(record.errors())},
-                    product_id=product_id)
+        self.db.log(
+            "enrich",
+            {"status": record.status, "calls": record.stats.calls, "errors": len(record.errors())},
+            product_id=product_id,
+        )
         return record
 
     def enrich_many(
@@ -171,7 +233,12 @@ class Copilot:
 
     def start_enrich_job(self, product_ids: list[str], *, translate: bool = True) -> str:
         job_id = "job_" + uuid.uuid4().hex[:8]
-        state: dict[str, Any] = {"total": len(product_ids), "done": 0, "started_at": now(), "product_ids": product_ids[:500]}
+        state: dict[str, Any] = {
+            "total": len(product_ids),
+            "done": 0,
+            "started_at": now(),
+            "product_ids": product_ids[:500],
+        }
         self.db.put_job(job_id, "enrich", "running", state)
 
         def progress(done: int, total: int) -> None:
@@ -196,13 +263,20 @@ class Copilot:
     def catalog_checks(self, batch_id: str) -> None:
         records = self.db.products(batch_id)
         for r in records:
-            r.issues = [i for i in r.issues if i.code not in {"duplicate_title", "duplicate_handle", "near_duplicate_description"}]
+            r.issues = [
+                i
+                for i in r.issues
+                if i.code not in {"duplicate_title", "duplicate_handle", "near_duplicate_description"}
+            ]
         extra = catalog_issues(records)
         for r in records:
             if r.listing is None:
                 continue
             r.issues += extra.get(r.id, [])
-            if any(i.severity == "error" and not i.waived for i in extra.get(r.id, [])) and r.status in {"ready", "approved"}:
+            if any(i.severity == "error" and not i.waived for i in extra.get(r.id, [])) and r.status in {
+                "ready",
+                "approved",
+            }:
                 r.status = "needs_review"
             self.db.save(r)
 
@@ -228,7 +302,9 @@ class Copilot:
             raise ReviewError(f"no {lang} translation")
         old = getattr(target, name)
         if name in {"tags", "bullets", "alt_texts"}:
-            value = [str(v).strip() for v in (value if isinstance(value, list) else str(value).split("\n")) if str(v).strip()]
+            value = [
+                str(v).strip() for v in (value if isinstance(value, list) else str(value).split("\n")) if str(v).strip()
+            ]
         elif name == "category_id":
             value = int(value)
             from shelfwise.taxonomy import get
@@ -245,10 +321,14 @@ class Copilot:
             record.status = "needs_review"
         revalidate(record, self.store_config, languages=list(record.listing.translations))
         self.db.save(record)
-        self.db.log("edit", {"field": field, "old": _short(old), "new": _short(value)}, actor=actor, product_id=product_id)
+        self.db.log(
+            "edit", {"field": field, "old": _short(old), "new": _short(value)}, actor=actor, product_id=product_id
+        )
         return record
 
-    def resolve_attribute(self, product_id: str, attribute: str, value: Any, *, actor: str = "reviewer") -> ProductRecord:
+    def resolve_attribute(
+        self, product_id: str, attribute: str, value: Any, *, actor: str = "reviewer"
+    ) -> ProductRecord:
         record = self._get(product_id)
         decision = record.decision(attribute)
         if decision is None:
@@ -284,7 +364,9 @@ class Copilot:
             raise ReviewError("nothing to approve: the product has no listing yet")
         errors = record.errors()
         if errors:
-            raise ReviewError(f"{len(errors)} open error(s): " + "; ".join(f"{e.field}: {e.message}" for e in errors[:3]))
+            raise ReviewError(
+                f"{len(errors)} open error(s): " + "; ".join(f"{e.field}: {e.message}" for e in errors[:3])
+            )
         conflicts = [d.attribute for d in record.decisions if d.status == "conflict"]
         if conflicts:
             raise ReviewError(f"resolve the feed/photo conflicts first: {', '.join(conflicts)}")
@@ -296,7 +378,9 @@ class Copilot:
         self.db.log("approve", {"title": record.listing.title}, actor=actor, product_id=product_id)
         return record
 
-    def bulk_approve(self, product_ids: list[str] | None = None, *, batch_id: str | None = None, actor: str = "reviewer") -> dict[str, Any]:
+    def bulk_approve(
+        self, product_ids: list[str] | None = None, *, batch_id: str | None = None, actor: str = "reviewer"
+    ) -> dict[str, Any]:
         """Approves only products in `ready` state (no open errors, no conflicts); everything else is skipped."""
         records = [self._get(pid) for pid in product_ids] if product_ids else self.db.products(batch_id)
         approved, skipped = [], []
@@ -316,7 +400,7 @@ class Copilot:
         record = self._get(product_id)
         if record.generated is None or record.listing is None:
             raise ReviewError("nothing to revert")
-        lang, name = (field.split(".", 2)[1:] if field.startswith("translations.") else (None, field))
+        lang, name = field.split(".", 2)[1:] if field.startswith("translations.") else (None, field)
         source: Any = record.generated.translations.get(lang) if lang else record.generated
         target: Any = record.listing.translations.get(lang) if lang else record.listing
         setattr(target, name, getattr(source, name))
@@ -347,17 +431,30 @@ class Copilot:
         data: dict[str, str] = response.json()
         return data
 
-    def push(self, target: str, batch_id: str | None = None, *, client: httpx.Client | None = None,
-             credentials: dict[str, str] | None = None, actor: str = "reviewer") -> list[PushResult]:
+    def push(
+        self,
+        target: str,
+        batch_id: str | None = None,
+        *,
+        client: httpx.Client | None = None,
+        credentials: dict[str, str] | None = None,
+        actor: str = "reviewer",
+    ) -> list[PushResult]:
         records = self.approved(batch_id)
         creds = credentials or self._mock_credentials(client)
         results: list[PushResult] = []
         if target == "shopify":
-            shop = ShopifyClient(self.settings.shopify_url, self.settings.shopify_token or creds["shopify_token"],
-                                 self.settings.shopify_api_version, client=client)
+            shop = ShopifyClient(
+                self.settings.shopify_url,
+                self.settings.shopify_token or creds["shopify_token"],
+                self.settings.shopify_api_version,
+                client=client,
+            )
             results = [shop.push(r, image_base_url=self.image_base_url()) for r in records]
         elif target == "woocommerce":
-            woo = WooClient(self.settings.woocommerce_url, creds["woocommerce_key"], creds["woocommerce_secret"], client=client)
+            woo = WooClient(
+                self.settings.woocommerce_url, creds["woocommerce_key"], creds["woocommerce_secret"], client=client
+            )
             results = [woo.push(r, image_base_url=self.image_base_url()) for r in records]
         else:
             raise ValueError(f"unknown target {target!r}")
@@ -365,7 +462,11 @@ class Copilot:
             if res.ok:
                 r.status = "exported"
                 self.db.save(r)
-        self.db.log("push", {"target": target, "ok": sum(r.ok for r in results), "failed": sum(not r.ok for r in results)}, actor=actor)
+        self.db.log(
+            "push",
+            {"target": target, "ok": sum(r.ok for r in results), "failed": sum(not r.ok for r in results)},
+            actor=actor,
+        )
         return results
 
     # ---------------------------------------------------------------- views
@@ -379,9 +480,13 @@ class Copilot:
             for i in r.issues:
                 if i.severity == "error" and not i.waived:
                     issues[i.code] = issues.get(i.code, 0) + 1
-        return {"products": len(records), "status": counts, "open_errors": issues,
-                "conflicts": sum(1 for r in records for d in r.decisions if d.status == "conflict"),
-                "calls": sum(r.stats.calls for r in records)}
+        return {
+            "products": len(records),
+            "status": counts,
+            "open_errors": issues,
+            "conflicts": sum(1 for r in records for d in r.decisions if d.status == "conflict"),
+            "calls": sum(r.stats.calls for r in records),
+        }
 
     def card(self, r: ProductRecord) -> dict[str, Any]:
         listing = r.listing

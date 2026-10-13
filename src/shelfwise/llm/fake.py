@@ -105,18 +105,28 @@ def see(image: bytes) -> dict[str, Any]:
             # shadows are soft, low-saturation darkenings of the background: skip them
             if d > 70 or (d > 40 and sat > 40):
                 mask[y][x] = True
-                name = nearest_color(p[:3])
+                name = nearest_color((p[0], p[1], p[2]))
                 labels[y][x] = name
                 counts[name] += 1
     total = sum(counts.values())
     if total < w * h * 0.02:
-        return {"product": "product", "color": "white", "secondary_color": None, "pattern": "solid", "material": None,
-                "style": None, "count": 1, "visible_text": "", "confidence": {"color": 0.3, "pattern": 0.3, "count": 0.3}}
+        return {
+            "product": "product",
+            "color": "white",
+            "secondary_color": None,
+            "pattern": "solid",
+            "material": None,
+            "style": None,
+            "count": 1,
+            "visible_text": "",
+            "confidence": {"color": 0.3, "pattern": 0.3, "count": 0.3},
+        }
     ranked = [c for c, _ in counts.most_common()]
     primary = ranked[0]
     secondary = next((c for c in ranked[1:] if counts[c] >= 0.15 * total), None)
     pattern = "solid"
     if secondary:
+
         def transitions(rows: bool) -> int:
             n = 0
             outer, inner = (h, w) if rows else (w, h)
@@ -131,9 +141,7 @@ def see(image: bytes) -> dict[str, Any]:
             return n
 
         along_rows, along_cols = transitions(True), transitions(False)
-        if along_cols > 2.5 * max(1, along_rows):
-            pattern = "striped"
-        elif along_rows > 2.5 * max(1, along_cols):
+        if along_cols > 2.5 * max(1, along_rows) or along_rows > 2.5 * max(1, along_cols):
             pattern = "striped"
         elif along_rows > 120 and along_cols > 120:
             pattern = "checked" if abs(along_rows - along_cols) < 0.25 * max(along_rows, along_cols) else "polka dot"

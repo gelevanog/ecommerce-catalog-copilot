@@ -56,10 +56,21 @@ def import_cmd(
         summary = copilot.import_demo()
     else:
         vendors = list(vendor or [])
-        data = [(f.name, f.read_bytes(), vendors[i] if i < len(vendors) else None, {}) for i, f in enumerate(feeds)]
+        data: list[tuple[str, bytes, str | None, dict[str, str | None]]] = [
+            (f.name, f.read_bytes(), vendors[i] if i < len(vendors) else None, {}) for i, f in enumerate(feeds)
+        ]
         summary = copilot.import_files(data, images_dir=images.resolve() if images else None)
-    typer.echo(json.dumps({"batch_id": summary.batch_id, "products": summary.products,
-                           "duplicates_merged": summary.duplicates_merged, "feeds": summary.feeds}, indent=1))
+    typer.echo(
+        json.dumps(
+            {
+                "batch_id": summary.batch_id,
+                "products": summary.products,
+                "duplicates_merged": summary.duplicates_merged,
+                "feeds": summary.feeds,
+            },
+            indent=1,
+        )
+    )
 
 
 @app.command()
@@ -136,7 +147,9 @@ def push(
     copilot = Copilot(get_settings())
     results = copilot.push(target, batch or copilot.db.latest_batch_id(), actor="cli")
     for r in results:
-        typer.echo(f"{'ok ' if r.ok else 'ERR'} {r.handle} {r.remote_id} variants={r.variants} translations={r.translations} {'; '.join(r.errors)}")
+        typer.echo(
+            f"{'ok ' if r.ok else 'ERR'} {r.handle} {r.remote_id} variants={r.variants} translations={r.translations} {'; '.join(r.errors)}"
+        )
 
 
 @app.command()
@@ -229,7 +242,9 @@ def eval_smoke(models: Annotated[list[str], typer.Argument(help="Free vision mod
     report["free_models"] = list_free_models(settings)
     write(report, settings.results_dir / "smoke_vision.json")
     for model, row in report["models"].items():
-        typer.echo(f"{model}: {json.dumps({k: row[k] for k in ('answered', 'color', 'pattern', 'count', 'material', 'median_seconds')})}")
+        typer.echo(
+            f"{model}: {json.dumps({k: row[k] for k in ('answered', 'color', 'pattern', 'count', 'material', 'median_seconds')})}"
+        )
 
 
 @eval_app.command("summary")

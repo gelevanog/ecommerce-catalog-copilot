@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, TypeVar
 
 from fastapi import Body, FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +23,7 @@ from shelfwise.services import Copilot, ReviewError
 from shelfwise.taxonomy import candidates, get, taxonomy_source
 
 log = logging.getLogger(__name__)
+T = TypeVar("T")
 
 
 class FieldEdit(BaseModel):
@@ -72,7 +74,14 @@ def seed(copilot: Copilot) -> None:
     records_file = copilot.settings.results_dir / "main_records.jsonl"
     loaded = 0
     if records_file.exists():
-        stored = {r.id: r for r in (ProductRecord.model_validate_json(line) for line in records_file.read_text(encoding="utf-8").splitlines() if line.strip())}
+        stored = {
+            r.id: r
+            for r in (
+                ProductRecord.model_validate_json(line)
+                for line in records_file.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            )
+        }
         for record in copilot.db.products(summary.batch_id):
             source = stored.get(record.id)
             if source is None or source.listing is None:
@@ -99,7 +108,7 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
     app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"])
     app.mount("/mock", create_mock_app())
 
-    def guard(fn: Any) -> Any:
+    def guard(fn: Callable[[], T]) -> T:
         try:
             return fn()
         except KeyError as exc:
@@ -117,19 +126,31 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
     def config() -> dict[str, Any]:
         s = cp.store_config
         return {
-            "store": s.name, "currency": s.currency, "languages": s.languages, "product_types": s.product_types,
-            "limits": {"title": [s.title.min, s.title.max], "meta_title": [s.meta_title.min, s.meta_title.max],
-                       "meta_description": [s.meta_description.min, s.meta_description.max],
-                       "bullets": [s.bullets_count.min, s.bullets_count.max, s.bullet_max_chars],
-                       "body_words": [s.body_words.min, s.body_words.max], "alt_text": s.alt_text_max},
-            "models": cp.provider_label(), "taxonomy": taxonomy_source(),
-            "voice": s.style.get("voice", ""), "banned": sorted({b.reason for b in s.banned}),
+            "store": s.name,
+            "currency": s.currency,
+            "languages": s.languages,
+            "product_types": s.product_types,
+            "limits": {
+                "title": [s.title.min, s.title.max],
+                "meta_title": [s.meta_title.min, s.meta_title.max],
+                "meta_description": [s.meta_description.min, s.meta_description.max],
+                "bullets": [s.bullets_count.min, s.bullets_count.max, s.bullet_max_chars],
+                "body_words": [s.body_words.min, s.body_words.max],
+                "alt_text": s.alt_text_max,
+            },
+            "models": cp.provider_label(),
+            "taxonomy": taxonomy_source(),
+            "voice": s.style.get("voice", ""),
+            "banned": sorted({b.reason for b in s.banned}),
         }
 
     @app.get("/api/batches")
     def batches() -> list[dict[str, Any]]:
-        return [{k: v for k, v in b.items() if k != "feeds"} | {"feeds": [{k: f[k] for k in ("file", "rows", "header_row")} for f in b.get("feeds", [])]}
-                for b in cp.db.batches()]
+        return [
+            {k: v for k, v in b.items() if k != "feeds"}
+            | {"feeds": [{k: f[k] for k in ("file", "rows", "header_row")} for f in b.get("feeds", [])]}
+            for b in cp.db.batches()
+        ]
 
     @app.get("/api/batches/{batch_id}")
     def batch(batch_id: str) -> dict[str, Any]:
@@ -153,17 +174,33 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
     ) -> dict[str, Any]:
         vendor_map: dict[str, str] = json.loads(vendors or "{}")
         override_map: dict[str, dict[str, str | None]] = json.loads(overrides or "{}")
-        files = [(f.filename or "feed.csv", await f.read(), vendor_map.get(f.filename or "") or None, override_map.get(f.filename or "", {}))
-                 for f in feeds]
+        files = [
+            (
+                f.filename or "feed.csv",
+                await f.read(),
+                vendor_map.get(f.filename or "") or None,
+                override_map.get(f.filename or "", {}),
+            )
+            for f in feeds
+        ]
         imgs = [(i.filename or "image.jpg", await i.read()) for i in images or []]
         summary = guard(lambda: cp.import_files(files, imgs, name=name, actor="reviewer"))
-        return {"batch_id": summary.batch_id, "products": summary.products, "duplicates_merged": summary.duplicates_merged,
-                "feeds": summary.feeds, "issues": [i.model_dump() for i in summary.issues]}
+        return {
+            "batch_id": summary.batch_id,
+            "products": summary.products,
+            "duplicates_merged": summary.duplicates_merged,
+            "feeds": summary.feeds,
+            "issues": [i.model_dump() for i in summary.issues],
+        }
 
     @app.post("/api/import/demo")
     def import_demo() -> dict[str, Any]:
         summary = cp.import_demo()
-        return {"batch_id": summary.batch_id, "products": summary.products, "duplicates_merged": summary.duplicates_merged}
+        return {
+            "batch_id": summary.batch_id,
+            "products": summary.products,
+            "duplicates_merged": summary.duplicates_merged,
+        }
 
     @app.get("/api/products")
     def products(batch_id: str | None = None, status: str | None = None, q: str | None = None) -> dict[str, Any]:
@@ -176,9 +213,19 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
             records = [r for r in records if r.status == status]
         if q:
             needle = q.lower()
-            records = [r for r in records if needle in (r.listing.title.lower() if r.listing else "") or needle in r.product.title_raw.lower()
-                       or needle in r.product.handle]
-        return {"batch_id": bid, "counts": counts, "total": sum(counts.values()), "products": [cp.card(r) for r in records]}
+            records = [
+                r
+                for r in records
+                if needle in (r.listing.title.lower() if r.listing else "")
+                or needle in r.product.title_raw.lower()
+                or needle in r.product.handle
+            ]
+        return {
+            "batch_id": bid,
+            "counts": counts,
+            "total": sum(counts.values()),
+            "products": [cp.card(r) for r in records],
+        }
 
     @app.get("/api/products/{product_id}")
     def product(product_id: str) -> dict[str, Any]:
@@ -187,9 +234,13 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
         noun = record.image_attributes[0].product_noun if record.image_attributes else ""
         cands = [{"id": c.id, "path": c.path} for c in candidates(f"{name} {record.product.supplier_category} {noun}")]
         category = get(record.listing.category_id) if record.listing else None
-        return {"record": record.model_dump(), "name": name, "category_candidates": cands,
-                "category": {"id": category.id, "path": category.path} if category else None,
-                "events": cp.db.events(product_id, limit=50)}
+        return {
+            "record": record.model_dump(),
+            "name": name,
+            "category_candidates": cands,
+            "category": {"id": category.id, "path": category.path} if category else None,
+            "events": cp.db.events(product_id, limit=50),
+        }
 
     @app.post("/api/products/{product_id}/enrich")
     def enrich_one(product_id: str, translate: bool = True) -> dict[str, Any]:
@@ -219,45 +270,66 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
 
     @app.post("/api/products/{product_id}/attributes")
     def attribute(product_id: str, choice: AttributeChoice) -> dict[str, Any]:
-        return guard(lambda: cp.resolve_attribute(product_id, choice.attribute, choice.value, actor=choice.actor)).model_dump()
+        return guard(
+            lambda: cp.resolve_attribute(product_id, choice.attribute, choice.value, actor=choice.actor)
+        ).model_dump()
 
     @app.post("/api/products/{product_id}/waive")
     def waive(product_id: str, waiver: Waiver) -> dict[str, Any]:
-        return guard(lambda: cp.waive(product_id, waiver.code, waiver.field, waiver.reason, actor=waiver.actor)).model_dump()
+        return guard(
+            lambda: cp.waive(product_id, waiver.code, waiver.field, waiver.reason, actor=waiver.actor)
+        ).model_dump()
 
     @app.post("/api/products/{product_id}/approve")
-    def approve(product_id: str, actor: Annotated[Actor, Body()] = Actor()) -> dict[str, Any]:
-        return guard(lambda: cp.approve(product_id, actor=actor.actor)).model_dump()
+    def approve(product_id: str, actor: Annotated[Actor | None, Body()] = None) -> dict[str, Any]:
+        who = actor.actor if actor else "reviewer"
+        return guard(lambda: cp.approve(product_id, actor=who)).model_dump()
 
     @app.post("/api/approve/bulk")
     def bulk(request: BulkApprove) -> dict[str, Any]:
-        return cp.bulk_approve(request.product_ids, batch_id=request.batch_id or cp.db.latest_batch_id(), actor=request.actor)
+        return cp.bulk_approve(
+            request.product_ids, batch_id=request.batch_id or cp.db.latest_batch_id(), actor=request.actor
+        )
 
     @app.get("/api/export/shopify.csv")
     def export_csv(batch_id: str | None = None) -> PlainTextResponse:
         products_csv, _, _ = cp.export_csv(batch_id or cp.db.latest_batch_id())
-        return PlainTextResponse(products_csv, media_type="text/csv",
-                                 headers={"Content-Disposition": "attachment; filename=shopify_products.csv"})
+        return PlainTextResponse(
+            products_csv,
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=shopify_products.csv"},
+        )
 
     @app.get("/api/export/translations.csv")
     def export_translations(batch_id: str | None = None) -> PlainTextResponse:
         _, translations, _ = cp.export_csv(batch_id or cp.db.latest_batch_id())
-        return PlainTextResponse(translations, media_type="text/csv",
-                                 headers={"Content-Disposition": "attachment; filename=shopify_translations.csv"})
+        return PlainTextResponse(
+            translations,
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=shopify_translations.csv"},
+        )
 
     @app.get("/api/export/preview")
     def export_preview(batch_id: str | None = None) -> dict[str, Any]:
         bid = batch_id or cp.db.latest_batch_id()
         records = cp.approved(bid)
         text, translations, n = cp.export_csv(bid) if records else ("", "", 0)
-        return {"approved": n, "rows": max(0, text.count("\n") - 1), "csv_head": "\n".join(text.splitlines()[:6]),
-                "translation_rows": max(0, translations.count("\n") - 1)}
+        return {
+            "approved": n,
+            "rows": max(0, text.count("\n") - 1),
+            "csv_head": "\n".join(text.splitlines()[:6]),
+            "translation_rows": max(0, translations.count("\n") - 1),
+        }
 
     @app.post("/api/push/{target}")
     def push(target: str, batch_id: str | None = None) -> dict[str, Any]:
         results = guard(lambda: cp.push(target, batch_id or cp.db.latest_batch_id()))
-        return {"target": target, "ok": sum(r.ok for r in results), "failed": sum(not r.ok for r in results),
-                "results": [r.__dict__ for r in results]}
+        return {
+            "target": target,
+            "ok": sum(r.ok for r in results),
+            "failed": sum(not r.ok for r in results),
+            "results": [r.__dict__ for r in results],
+        }
 
     @app.get("/api/events")
     def events(product_id: str | None = None, limit: int = Query(200, le=1000)) -> list[dict[str, Any]]:

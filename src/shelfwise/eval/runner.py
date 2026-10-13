@@ -15,7 +15,6 @@ import json
 import random
 import statistics
 import time
-from pathlib import Path
 from typing import Any
 
 from shelfwise.catalog.models import ProductRecord
@@ -27,12 +26,35 @@ from shelfwise.validate.claims import plain
 from shelfwise.vocab import colors_match
 
 EXPECTED_MAPPING = {
-    "Item Name": "title", "SKU#": "sku", "EAN": "gtin", "Colour": "color", "Mat.": "material", "Size": "size",
-    "Dims": "dimensions", "Wt": "weight", "Price (EUR)": "price", "Qty": "inventory", "Image": "image",
-    "Category": "category", "Notes": "notes", "product_title": "title", "variant_size": "size", "colour_name": "color",
-    "material_composition": "material", "length_cm": "length", "width_cm": "width", "height_cm": "height",
-    "weight_kg": "weight", "capacity": "capacity", "rrp_usd": "price", "stock": "inventory", "picture": "image",
-    "features": "features", "care": "care", "gtin": "gtin", "item_code": "sku",
+    "Item Name": "title",
+    "SKU#": "sku",
+    "EAN": "gtin",
+    "Colour": "color",
+    "Mat.": "material",
+    "Size": "size",
+    "Dims": "dimensions",
+    "Wt": "weight",
+    "Price (EUR)": "price",
+    "Qty": "inventory",
+    "Image": "image",
+    "Category": "category",
+    "Notes": "notes",
+    "product_title": "title",
+    "variant_size": "size",
+    "colour_name": "color",
+    "material_composition": "material",
+    "length_cm": "length",
+    "width_cm": "width",
+    "height_cm": "height",
+    "weight_kg": "weight",
+    "capacity": "capacity",
+    "rrp_usd": "price",
+    "stock": "inventory",
+    "picture": "image",
+    "features": "features",
+    "care": "care",
+    "gtin": "gtin",
+    "item_code": "sku",
 }
 EN_FIELDS = ("title", "body_html", "bullets", "meta_title", "meta_description", "alt_texts")
 
@@ -41,7 +63,9 @@ def _pct(n: float, d: float) -> float | None:
     return round(100.0 * n / d, 1) if d else None
 
 
-def match_products(records: list[ProductRecord], gold: dict[str, Any]) -> dict[str, tuple[dict[str, Any], ProductRecord]]:
+def match_products(
+    records: list[ProductRecord], gold: dict[str, Any]
+) -> dict[str, tuple[dict[str, Any], ProductRecord]]:
     """gold id -> (gold product, record), matched by GTIN of the first variant."""
     by_gtin: dict[str, ProductRecord] = {}
     for r in records:
@@ -50,9 +74,9 @@ def match_products(records: list[ProductRecord], gold: dict[str, Any]) -> dict[s
                 by_gtin[v.gtin.lstrip("0")] = r
     out = {}
     for g in gold["products"]:
-        r = by_gtin.get(g["gtins"][0].lstrip("0"))
-        if r is not None:
-            out[g["id"]] = (g, r)
+        hit = by_gtin.get(g["gtins"][0].lstrip("0"))
+        if hit is not None:
+            out[g["id"]] = (g, hit)
     return out
 
 
@@ -76,18 +100,28 @@ def import_metrics(copilot: Copilot, batch_id: str, gold: dict[str, Any]) -> dic
     grouped = sum(1 for g, r in matched.values() if len(r.product.variants) == max(1, len(g["sizes"])))
     expected_dups = len(gold["duplicates"]["within_supplier_a"]) + len(gold["duplicates"]["across_suppliers"])
     merged = sum(len(r.product.merged_duplicates) for r in records)
-    dup_hits = sum(1 for gid in gold["duplicates"]["within_supplier_a"] + gold["duplicates"]["across_suppliers"]
-                   if gid in matched and matched[gid][1].product.merged_duplicates)
+    dup_hits = sum(
+        1
+        for gid in gold["duplicates"]["within_supplier_a"] + gold["duplicates"]["across_suppliers"]
+        if gid in matched and matched[gid][1].product.merged_duplicates
+    )
     planted = {g["id"] for g in gold["products"] if g["variant_problems"]}
-    flagged = {gid for gid, (g, r) in matched.items()
-               if any(i.code in {"variant_inconsistent", "variant_price_outlier"} for i in r.product.issues)}
+    flagged = {
+        gid
+        for gid, (g, r) in matched.items()
+        if any(i.code in {"variant_inconsistent", "variant_price_outlier"} for i in r.product.issues)
+    }
     units = {"dimensions": [0, 0], "weight": [0, 0], "capacity": [0, 0], "price": [0, 0]}
     for g, r in matched.values():
         p = r.product
         dims = p.fact("dimensions")
         if g["dims_cm"]:
             units["dimensions"][1] += 1
-            if dims and len(dims.value) == len(g["dims_cm"]) and all(abs(a - b) <= 0.2 for a, b in zip(dims.value, g["dims_cm"], strict=True)):
+            if (
+                dims
+                and len(dims.value) == len(g["dims_cm"])
+                and all(abs(a - b) <= 0.2 for a, b in zip(dims.value, g["dims_cm"], strict=True))
+            ):
                 units["dimensions"][0] += 1
         weight = p.fact("weight")
         units["weight"][1] += 1
@@ -118,7 +152,11 @@ def import_metrics(copilot: Copilot, batch_id: str, gold: dict[str, Any]) -> dic
         "column_mapping": {"correct": mapping_ok, "total": mapping_total, "wrong": wrong_mappings},
         "variants_grouped": {"correct": grouped, "total": len(matched)},
         "duplicates": {"expected": expected_dups, "merged_rows": merged, "found": dup_hits},
-        "variant_problems": {"planted": len(planted), "flagged": len(planted & flagged), "false_flags": len(flagged - planted)},
+        "variant_problems": {
+            "planted": len(planted),
+            "flagged": len(planted & flagged),
+            "false_flags": len(flagged - planted),
+        },
         "units": {k: {"correct": v[0], "total": v[1]} for k, v in units.items()},
         "supplier_claims_kept_as_facts": {"leaked": leaked_fluff, "total": fluff_total},
     }
@@ -140,7 +178,7 @@ def attribute_metrics(matched: dict[str, tuple[dict[str, Any], ProductRecord]]) 
             fact = r.product.fact(attribute)
             d = r.decision(attribute)
 
-            def ok(value: Any, truth: Any = truth) -> bool:
+            def ok(value: Any, truth: Any = truth, attribute: str = attribute) -> bool:
                 if attribute == "color":
                     return colors_match(value, truth)
                 return bool(value == truth)
@@ -159,9 +197,13 @@ def attribute_metrics(matched: dict[str, tuple[dict[str, Any], ProductRecord]]) 
                 merged_n += 1
                 merged += ok(d.value)
         out[attribute] = {
-            "image_accuracy": _pct(image, image_n), "image_correct": image, "n": image_n,
-            "feed_coverage": _pct(feed_n, image_n), "feed_accuracy": _pct(feed, feed_n),
-            "merged_coverage": _pct(merged_n, image_n), "merged_accuracy": _pct(merged, merged_n),
+            "image_accuracy": _pct(image, image_n),
+            "image_correct": image,
+            "n": image_n,
+            "feed_coverage": _pct(feed_n, image_n),
+            "feed_accuracy": _pct(feed, feed_n),
+            "merged_coverage": _pct(merged_n, image_n),
+            "merged_accuracy": _pct(merged, merged_n),
         }
         if attribute == "color":
             out[attribute]["image_accuracy_lenient"] = _pct(lenient, image_n)
@@ -179,12 +221,19 @@ def attribute_metrics(matched: dict[str, tuple[dict[str, Any], ProductRecord]]) 
             else:
                 feed_right += 1
                 false_alarms += d.status == "conflict"
-    out["conflicts"] = {"planted_feed_errors": planted, "caught": caught, "recall": _pct(caught, planted),
-                        "feed_values_right": feed_right, "false_alarms": false_alarms}
+    out["conflicts"] = {
+        "planted_feed_errors": planted,
+        "caught": caught,
+        "recall": _pct(caught, planted),
+        "feed_values_right": feed_right,
+        "false_alarms": false_alarms,
+    }
     return out
 
 
-def listing_metrics(matched: dict[str, tuple[dict[str, Any], ProductRecord]], store_limits: dict[str, tuple[int, int]]) -> dict[str, Any]:
+def listing_metrics(
+    matched: dict[str, tuple[dict[str, Any], ProductRecord]], store_limits: dict[str, tuple[int, int]]
+) -> dict[str, Any]:
     from shelfwise.taxonomy import get
 
     records = [r for _, r in matched.values() if r.listing is not None]
@@ -206,7 +255,9 @@ def listing_metrics(matched: dict[str, tuple[dict[str, Any], ProductRecord]], st
         assert r.listing is not None
         names = [f for f, _ in r.listing.text_fields()]
         fields += len(names)
-        bad = {i.field for i in r.issues if i.code.startswith("unsupported_") and not i.field.startswith("translations")}
+        bad = {
+            i.field for i in r.issues if i.code.startswith("unsupported_") and not i.field.startswith("translations")
+        }
         flagged_fields += len(bad & set(names))
         for i in r.issues:
             if i.code.startswith("unsupported_") or i.code == "banned_claim":
@@ -215,8 +266,15 @@ def listing_metrics(matched: dict[str, tuple[dict[str, Any], ProductRecord]], st
     first_draft = [r.copy_attempts[0] for r in records if r.copy_attempts]
     first_unsupported = sum(1 for a in first_draft for c in a if c.startswith(("unsupported_", "banned_claim")))
     first_products = sum(1 for a in first_draft if any(c.startswith(("unsupported_", "banned_claim")) for c in a))
-    final_products = sum(1 for r in records if any(i.code.startswith("unsupported_") or i.code == "banned_claim" for i in r.issues
-                                                    if not i.field.startswith("translations")))
+    final_products = sum(
+        1
+        for r in records
+        if any(
+            i.code.startswith("unsupported_") or i.code == "banned_claim"
+            for i in r.issues
+            if not i.field.startswith("translations")
+        )
+    )
     corrected = sum(1 for r in records if len(r.copy_attempts) > 1)
     # SEO lengths
     seo: dict[str, list[int]] = {k: [0, 0] for k in store_limits}
@@ -226,20 +284,32 @@ def listing_metrics(matched: dict[str, tuple[dict[str, Any], ProductRecord]], st
             text = getattr(r.listing, key)
             seo[key][1] += 1
             seo[key][0] += lo <= len(text) <= hi
-    all_ok = sum(1 for r in records if r.listing and all(lo <= len(getattr(r.listing, k)) <= hi for k, (lo, hi) in store_limits.items()))
+    all_ok = sum(
+        1
+        for r in records
+        if r.listing and all(lo <= len(getattr(r.listing, k)) <= hi for k, (lo, hi) in store_limits.items())
+    )
     status: dict[str, int] = {}
     for _, r in matched.values():
         status[r.status] = status.get(r.status, 0) + 1
     return {
         "listings": n,
-        "category": {"exact": cat_exact, "exact_pct": _pct(cat_exact, n), "same_branch_pct": _pct(cat_branch, n),
-                     "product_type_pct": _pct(ptype, n)},
+        "category": {
+            "exact": cat_exact,
+            "exact_pct": _pct(cat_exact, n),
+            "same_branch_pct": _pct(cat_branch, n),
+            "product_type_pct": _pct(ptype, n),
+        },
         "claims": {
-            "english_fields": fields, "fields_with_unsupported_claim": flagged_fields,
+            "english_fields": fields,
+            "fields_with_unsupported_claim": flagged_fields,
             "hallucination_rate_pct": _pct(flagged_fields, fields),
-            "products_with_unsupported_claim_first_draft": first_products, "unsupported_claims_first_draft": first_unsupported,
-            "products_with_unsupported_claim_final": final_products, "products_corrected": corrected,
-            "banned_claims_final": banned, "by_code_final": by_code,
+            "products_with_unsupported_claim_first_draft": first_products,
+            "unsupported_claims_first_draft": first_unsupported,
+            "products_with_unsupported_claim_final": final_products,
+            "products_corrected": corrected,
+            "banned_claims_final": banned,
+            "by_code_final": by_code,
         },
         "seo_length": {k: {"ok": v[0], "total": v[1], "pct": _pct(v[0], v[1])} for k, v in seo.items()}
         | {"all_three": {"ok": all_ok, "total": n, "pct": _pct(all_ok, n)}},
@@ -262,7 +332,16 @@ def translation_metrics(records: list[ProductRecord], languages: list[str], stor
             if t is None:
                 continue
             present += 1
-            src = " ".join(plain(x) for x in [r.listing.title, r.listing.body_html, *r.listing.bullets, r.listing.meta_title, r.listing.meta_description])
+            src = " ".join(
+                plain(x)
+                for x in [
+                    r.listing.title,
+                    r.listing.body_html,
+                    *r.listing.bullets,
+                    r.listing.meta_title,
+                    r.listing.meta_description,
+                ]
+            )
             tgt = " ".join(plain(x) for x in [t.title, t.body_html, *t.bullets, t.meta_title, t.meta_description])
             lang_ok += detect_language(tgt)[0] == lang
             numbers_ok += not (numbers(src) - numbers(tgt))
@@ -273,10 +352,19 @@ def translation_metrics(records: list[ProductRecord], languages: list[str], stor
                 if term.lower() in src.lower():
                     keep_total += 1
                     keep_ok += term.lower() in tgt.lower()
-            length_ok += len(t.meta_description) <= store.meta_description.max * store.translation_slack and len(t.title) <= store.title.max * store.translation_slack
-        out[lang] = {"translated": present, "language_ok_pct": _pct(lang_ok, present), "numbers_kept_pct": _pct(numbers_ok, present),
-                     "glossary_pct": _pct(g_found, g_expected), "glossary_terms": g_expected,
-                     "brand_kept_pct": _pct(keep_ok, keep_total), "length_ok_pct": _pct(length_ok, present)}
+            length_ok += (
+                len(t.meta_description) <= store.meta_description.max * store.translation_slack
+                and len(t.title) <= store.title.max * store.translation_slack
+            )
+        out[lang] = {
+            "translated": present,
+            "language_ok_pct": _pct(lang_ok, present),
+            "numbers_kept_pct": _pct(numbers_ok, present),
+            "glossary_pct": _pct(g_found, g_expected),
+            "glossary_terms": g_expected,
+            "brand_kept_pct": _pct(keep_ok, keep_total),
+            "length_ok_pct": _pct(length_ok, present),
+        }
     return out
 
 
@@ -288,12 +376,17 @@ def throughput(records: list[ProductRecord], wall_seconds: float, workers: int) 
     per = [s.seconds for s in stats if s.seconds]
     n = max(1, len(records))
     return {
-        "products": len(records), "wall_seconds": round(wall_seconds, 1), "workers": workers,
+        "products": len(records),
+        "wall_seconds": round(wall_seconds, 1),
+        "workers": workers,
         "products_per_hour": round(3600 * len(records) / wall_seconds, 1) if wall_seconds else None,
         "seconds_per_product_p50": round(statistics.median(per), 1) if per else None,
         "seconds_per_product_p90": round(sorted(per)[int(0.9 * (len(per) - 1))], 1) if per else None,
-        "model_calls": calls, "calls_per_product": round(calls / n, 2), "cached_calls": sum(s.cached for s in stats),
-        "input_tokens_per_product": round(tokens_in / n), "output_tokens_per_product": round(tokens_out / n),
+        "model_calls": calls,
+        "calls_per_product": round(calls / n, 2),
+        "cached_calls": sum(s.cached for s in stats),
+        "input_tokens_per_product": round(tokens_in / n),
+        "output_tokens_per_product": round(tokens_out / n),
         "models": sorted({m for s in stats for m in s.models}),
     }
 
@@ -301,17 +394,28 @@ def throughput(records: list[ProductRecord], wall_seconds: float, workers: int) 
 def compact(g: dict[str, Any] | None, r: ProductRecord) -> dict[str, Any]:
     attrs = r.image_attributes[0] if r.image_attributes else None
     return {
-        "gold_id": g["id"] if g else None, "id": r.id, "status": r.status, "title": r.listing.title if r.listing else None,
-        "category_id": r.listing.category_id if r.listing else None, "gold_category_id": g["category_id"] if g else None,
-        "image": attrs.model_dump(include={"color", "secondary_color", "pattern", "material", "style", "count", "error", "model"}) if attrs else None,
+        "gold_id": g["id"] if g else None,
+        "id": r.id,
+        "status": r.status,
+        "title": r.listing.title if r.listing else None,
+        "category_id": r.listing.category_id if r.listing else None,
+        "gold_category_id": g["category_id"] if g else None,
+        "image": attrs.model_dump(
+            include={"color", "secondary_color", "pattern", "material", "style", "count", "error", "model"}
+        )
+        if attrs
+        else None,
         "gold": {k: g[k] for k in ("color", "pattern", "material", "style", "count")} if g else None,
         "decisions": {d.attribute: [d.value, d.status] for d in r.decisions},
         "errors": [f"{i.code}:{i.field}" for i in r.issues if i.severity == "error" and not i.waived],
-        "copy_attempts": r.copy_attempts, "stats": r.stats.model_dump(),
+        "copy_attempts": r.copy_attempts,
+        "stats": r.stats.model_dump(),
     }
 
 
-def run_main(settings: Settings, *, name: str, limit: int | None = None, translate: bool = True, workers: int | None = None) -> dict[str, Any]:
+def run_main(
+    settings: Settings, *, name: str, limit: int | None = None, translate: bool = True, workers: int | None = None
+) -> dict[str, Any]:
     gold = load_gold(settings.demo_dir)
     db_path = settings.results_dir / f".{name}.db"
     if db_path.exists():
@@ -327,10 +431,13 @@ def run_main(settings: Settings, *, name: str, limit: int | None = None, transla
     copilot.enrich_many(ids, translate=translate)
     wall = time.monotonic() - started
     records = [r for r in copilot.db.products(summary.batch_id) if r.id in set(ids)]
-    matched = {k: v for k, v in match_products(records, gold).items()}
+    matched = match_products(records, gold)
     store = copilot.store_config
-    limits = {"title": (store.title.min, store.title.max), "meta_title": (store.meta_title.min, store.meta_title.max),
-              "meta_description": (store.meta_description.min, store.meta_description.max)}
+    limits = {
+        "title": (store.title.min, store.title.max),
+        "meta_title": (store.meta_title.min, store.meta_title.max),
+        "meta_description": (store.meta_description.min, store.meta_description.max),
+    }
     by_record = {r.id: g for g, r in matched.values()}
     report = {
         "name": name,
@@ -348,13 +455,19 @@ def run_main(settings: Settings, *, name: str, limit: int | None = None, transla
     with (settings.results_dir / f"{name}_records.jsonl").open("w", encoding="utf-8") as handle:
         for r in records:
             handle.write(r.model_dump_json() + "\n")
-    (settings.results_dir / f"{name}.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
+    (settings.results_dir / f"{name}.json").write_text(
+        json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8"
+    )
     return report
 
 
 def load_records(settings: Settings, name: str) -> list[ProductRecord]:
     path = settings.results_dir / f"{name}_records.jsonl"
-    return [ProductRecord.model_validate_json(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    return [
+        ProductRecord.model_validate_json(line)
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
 
 
 def run_vision(settings: Settings, *, name: str, model: str, provider: str = "openrouter") -> dict[str, Any]:
@@ -368,14 +481,22 @@ def run_vision(settings: Settings, *, name: str, model: str, provider: str = "op
     gold = load_gold(settings.demo_dir)
     store = get_store(settings)
     demo = settings.demo_dir
-    result = import_feeds([FeedInput(demo / "feeds" / f, vendor=v) for f, v in (("larkspur_pricelist.xlsx", "Larkspur"), ("northbay_feed.csv", "Northbay"))], store)
-    vision = model_for(settings, "vision", tag=f"eval:{name}", provider=provider, model=model, fallback_models=[])  # type: ignore[arg-type]
+    result = import_feeds(
+        [
+            FeedInput(demo / "feeds" / f, vendor=v)
+            for f, v in (("larkspur_pricelist.xlsx", "Larkspur"), ("northbay_feed.csv", "Northbay"))
+        ],
+        store,
+    )
+    vision = model_for(settings, "vision", tag=f"eval:{name}", provider=provider, model=model, fallback_models=[])
     records: list[ProductRecord] = []
     seconds = []
     for p in result.products:
         r = ProductRecord(id=p.id, batch_id="eval", product=p)
         started = time.monotonic()
-        attrs, completion = extract_image_attributes(vision, demo / "images" / p.images[0], max_tokens=settings.llm_max_tokens)
+        attrs, completion = extract_image_attributes(
+            vision, demo / "images" / p.images[0], max_tokens=settings.llm_max_tokens
+        )
         seconds.append(time.monotonic() - started)
         r.image_attributes = [attrs]
         r.decisions = decide(p, attrs)
@@ -384,13 +505,19 @@ def run_vision(settings: Settings, *, name: str, model: str, provider: str = "op
             r.stats.input_tokens, r.stats.output_tokens = completion.input_tokens, completion.output_tokens
         records.append(r)
     matched = match_products(records, gold)
-    report = {"name": name, "model": model, "attributes": attribute_metrics(matched),
-              "errors": sum(1 for r in records if r.image_attributes[0].error),
-              "seconds_p50": round(statistics.median(seconds), 1)}
+    report = {
+        "name": name,
+        "model": model,
+        "attributes": attribute_metrics(matched),
+        "errors": sum(1 for r in records if r.image_attributes[0].error),
+        "seconds_p50": round(statistics.median(seconds), 1),
+    }
     with (settings.results_dir / f"{name}_products.jsonl").open("w", encoding="utf-8") as handle:
         for r in records:
             handle.write(json.dumps(compact(None, r) | {"gold": None}, ensure_ascii=False) + "\n")
-    (settings.results_dir / f"{name}.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
+    (settings.results_dir / f"{name}.json").write_text(
+        json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8"
+    )
     return report
 
 

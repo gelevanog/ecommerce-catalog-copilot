@@ -44,7 +44,18 @@ STORE_FIELDS: dict[str, str] = {
 
 SYNONYMS: dict[str, tuple[str, ...]] = {
     "title": ("item name", "product title", "title", "name", "product name", "item", "article name", "product"),
-    "sku": ("sku", "item code", "article", "art no", "article number", "item number", "product code", "variant sku", "code", "ref"),
+    "sku": (
+        "sku",
+        "item code",
+        "article",
+        "art no",
+        "article number",
+        "item number",
+        "product code",
+        "variant sku",
+        "code",
+        "ref",
+    ),
     "gtin": ("ean", "gtin", "upc", "barcode", "ean13", "ean code", "gtin13"),
     "vendor": ("brand", "vendor", "manufacturer", "make", "label"),
     "color": ("colour", "color", "colour name", "color name", "farbe", "couleur", "shade"),
@@ -57,7 +68,19 @@ SYNONYMS: dict[str, tuple[str, ...]] = {
     "height": ("height", "height cm", "h cm", "height mm", "height in", "diameter"),
     "weight": ("wt", "weight", "weight kg", "weight g", "gross weight", "net weight", "weight lb"),
     "capacity": ("capacity", "volume", "capacity ml"),
-    "price": ("price", "price eur", "price usd", "rrp", "rrp usd", "rrp eur", "msrp", "retail price", "unit price", "price gbp", "cost"),
+    "price": (
+        "price",
+        "price eur",
+        "price usd",
+        "rrp",
+        "rrp usd",
+        "rrp eur",
+        "msrp",
+        "retail price",
+        "unit price",
+        "price gbp",
+        "cost",
+    ),
     "inventory": ("qty", "stock", "inventory", "quantity", "on hand", "available", "stock qty"),
     "image": ("image", "picture", "photo", "image url", "img", "image file", "main image", "image filename"),
     "category": ("category", "supplier category", "product category", "group", "department"),
@@ -154,7 +177,10 @@ def sniff_target(values: list[str]) -> tuple[str | None, float]:
         ("gtin", lambda v: re.fullmatch(r"\d{12,14}", v) is not None),
         ("image", lambda v: re.search(r"\.(jpe?g|png|webp|gif)$", v, re.IGNORECASE) is not None),
         ("dimensions", lambda v: re.search(r"\d\s*[x×]\s*\d", v) is not None and parse_dimensions(v) is not None),
-        ("weight", lambda v: re.search(r"\d\s*(kg|g|lb|lbs)\b", v, re.IGNORECASE) is not None and parse_weight(v) is not None),
+        (
+            "weight",
+            lambda v: re.search(r"\d\s*(kg|g|lb|lbs)\b", v, re.IGNORECASE) is not None and parse_weight(v) is not None,
+        ),
         ("capacity", lambda v: parse_capacity(v) is not None),
         ("price", lambda v: re.search(r"[€$£]|\b(EUR|USD|GBP)\b", v) is not None and parse_price(v)[0] is not None),
         ("color", lambda v: canonical("color", v) is not None and len(v) < 25),
@@ -184,7 +210,7 @@ def propose_mapping(header: Sequence[str], rows: Sequence[Sequence[str]]) -> lis
         if target:
             taken.add(target)
         mappings.append(
-            ColumnMapping(column=name, target=target, method=method, confidence=confidence, samples=samples)  # type: ignore[arg-type]
+            ColumnMapping(column=name, target=target, method=method, confidence=confidence, samples=samples)
         )
     return mappings
 

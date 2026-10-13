@@ -91,14 +91,19 @@ def enrich(
     cands = category_candidates(f"{name} {p.supplier_category} {noun}")
     variants = [" / ".join(v.options.values()) for v in p.variants if v.options]
     payload = copy_step.user_payload(
-        name=name, vendor=p.vendor, facts=copy_step.facts_for_prompt(p.facts, record.decisions), variants=variants,
-        candidates=cands, product_types=store.product_types, image_count=max(1, len(p.images)),
+        name=name,
+        vendor=p.vendor,
+        facts=copy_step.facts_for_prompt(p.facts, record.decisions),
+        variants=variants,
+        candidates=cands,
+        product_types=store.product_types,
+        image_count=max(1, len(p.images)),
         supplier_category=p.supplier_category,
     )
     base = copy_step.messages(store, payload)
     msgs = base
     best: tuple[int, Listing] | None = None
-    for attempt in range(settings.copy_retries + 1):
+    for _attempt in range(settings.copy_retries + 1):
         started = time.monotonic()
         try:
             completion = copy_step.write_listing(models.text, msgs, max_tokens=settings.llm_max_tokens)
@@ -111,8 +116,11 @@ def enrich(
             listing = copy_step.parse_listing(completion.text, cands)
         except JSONReplyError as exc:
             record.error = f"copy: {exc}"[:300]
-            msgs = [*base, {"role": "assistant", "content": completion.text[:2000]},
-                    {"role": "user", "content": "That was not a JSON object. Return only the JSON listing."}]
+            msgs = [
+                *base,
+                {"role": "assistant", "content": completion.text[:2000]},
+                {"role": "user", "content": "That was not a JSON object. Return only the JSON listing."},
+            ]
             continue
         record.error = ""
         errors = _copy_errors(listing, record, store)
@@ -135,7 +143,9 @@ def enrich(
         translator = models.translate or models.text
         try:
             try:
-                translations, completion = translate_step.translate(translator, store, listing, langs, max_tokens=settings.llm_max_tokens)
+                translations, completion = translate_step.translate(
+                    translator, store, listing, langs, max_tokens=settings.llm_max_tokens
+                )
                 _track(stats, completion, started)
             except (LLMError, JSONReplyError) as exc:
                 # a reasoning model can spend the whole budget thinking about three languages: one at a time
@@ -146,7 +156,9 @@ def enrich(
             for lang in missing:
                 started = time.monotonic()
                 try:
-                    extra, completion = translate_step.translate(translator, store, listing, [lang], max_tokens=2 * settings.llm_max_tokens)
+                    extra, completion = translate_step.translate(
+                        translator, store, listing, [lang], max_tokens=2 * settings.llm_max_tokens
+                    )
                     _track(stats, completion, started)
                     translations.update(extra)
                 except (LLMError, JSONReplyError) as exc:
@@ -157,8 +169,14 @@ def enrich(
             if too_long:
                 started = time.monotonic()
                 try:
-                    fixed, completion = translate_step.shorten(models.translate or models.text, store, listing, translations, too_long,
-                                                               max_tokens=settings.llm_max_tokens)
+                    fixed, completion = translate_step.shorten(
+                        models.translate or models.text,
+                        store,
+                        listing,
+                        translations,
+                        too_long,
+                        max_tokens=settings.llm_max_tokens,
+                    )
                     _track(stats, completion, started)
                     translations.update({k: v for k, v in fixed.items() if v.title and v.body_html})
                 except (LLMError, JSONReplyError) as exc:
@@ -187,8 +205,14 @@ def revalidate(record: ProductRecord, store: StoreConfig, *, languages: list[str
         if languages is not None:
             check_store = _with_languages(store, languages)
         listing_issues, provenance = validate_listing(
-            record.listing, check_store, facts=p.facts, decisions=record.decisions, images=record.image_attributes,
-            vendor=p.vendor, name=display_title(p), image_count=max(1, len(p.images)),
+            record.listing,
+            check_store,
+            facts=p.facts,
+            decisions=record.decisions,
+            images=record.image_attributes,
+            vendor=p.vendor,
+            name=display_title(p),
+            image_count=max(1, len(p.images)),
         )
         issues += listing_issues
         record.provenance = provenance

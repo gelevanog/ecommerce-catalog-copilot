@@ -85,13 +85,22 @@ class WooMock:
         for item in data.get("create", []):
             names = {a["name"] for a in item.get("attributes", [])}
             if names - attribute_names:
-                created.append({"id": 0, "error": {"code": "woocommerce_rest_invalid_attribute",
-                                                   "message": f"Unknown attribute(s): {', '.join(sorted(names - attribute_names))}"}})
+                created.append(
+                    {
+                        "id": 0,
+                        "error": {
+                            "code": "woocommerce_rest_invalid_attribute",
+                            "message": f"Unknown attribute(s): {', '.join(sorted(names - attribute_names))}",
+                        },
+                    }
+                )
                 continue
             try:
                 float(item.get("regular_price", "0"))
             except ValueError:
-                created.append({"id": 0, "error": {"code": "rest_invalid_param", "message": "regular_price is not a number"}})
+                created.append(
+                    {"id": 0, "error": {"code": "rest_invalid_param", "message": "regular_price is not a number"}}
+                )
                 continue
             with self._lock:
                 variation = {"id": self._id(), **item}

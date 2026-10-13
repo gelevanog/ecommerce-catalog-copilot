@@ -79,7 +79,9 @@ class Store:
     def create_batch(self, name: str, data: dict[str, Any]) -> str:
         batch_id = "b_" + uuid.uuid4().hex[:10]
         with self._tx() as c:
-            c.execute("INSERT INTO batches VALUES (?, ?, ?, ?)", (batch_id, name, now(), json.dumps(data, ensure_ascii=False)))
+            c.execute(
+                "INSERT INTO batches VALUES (?, ?, ?, ?)", (batch_id, name, now(), json.dumps(data, ensure_ascii=False))
+            )
         return batch_id
 
     def batches(self) -> list[dict[str, Any]]:
@@ -88,8 +90,16 @@ class Store:
                 "SELECT b.id, b.name, b.created_at, b.data, COUNT(p.id) AS products FROM batches b "
                 "LEFT JOIN products p ON p.batch_id = b.id GROUP BY b.id ORDER BY b.created_at DESC"
             ).fetchall()
-        return [{"id": r["id"], "name": r["name"], "created_at": r["created_at"], "products": r["products"],
-                 **json.loads(r["data"])} for r in rows]
+        return [
+            {
+                "id": r["id"],
+                "name": r["name"],
+                "created_at": r["created_at"],
+                "products": r["products"],
+                **json.loads(r["data"]),
+            }
+            for r in rows
+        ]
 
     def batch(self, batch_id: str) -> dict[str, Any] | None:
         with self._lock:
@@ -161,8 +171,10 @@ class Store:
     # ---- audit log
     def log(self, action: str, detail: dict[str, Any], *, actor: str = "system", product_id: str | None = None) -> None:
         with self._tx() as c:
-            c.execute("INSERT INTO events (at, actor, action, product_id, detail) VALUES (?, ?, ?, ?, ?)",
-                      (now(), actor, action, product_id, json.dumps(detail, ensure_ascii=False)))
+            c.execute(
+                "INSERT INTO events (at, actor, action, product_id, detail) VALUES (?, ?, ?, ?, ?)",
+                (now(), actor, action, product_id, json.dumps(detail, ensure_ascii=False)),
+            )
 
     def events(self, product_id: str | None = None, limit: int = 200) -> list[dict[str, Any]]:
         query = "SELECT * FROM events"
@@ -174,8 +186,17 @@ class Store:
         args.append(limit)
         with self._lock:
             rows = self._conn.execute(query, args).fetchall()
-        return [{"id": r["id"], "at": r["at"], "actor": r["actor"], "action": r["action"], "product_id": r["product_id"],
-                 "detail": json.loads(r["detail"])} for r in rows]
+        return [
+            {
+                "id": r["id"],
+                "at": r["at"],
+                "actor": r["actor"],
+                "action": r["action"],
+                "product_id": r["product_id"],
+                "detail": json.loads(r["detail"]),
+            }
+            for r in rows
+        ]
 
     # ---- background jobs
     def put_job(self, job_id: str, kind: str, status: str, data: dict[str, Any]) -> None:
@@ -190,9 +211,24 @@ class Store:
             r = self._conn.execute("SELECT * FROM jobs WHERE id = ?", (job_id,)).fetchone()
         if r is None:
             return None
-        return {"id": r["id"], "kind": r["kind"], "status": r["status"], "created_at": r["created_at"], **json.loads(r["data"])}
+        return {
+            "id": r["id"],
+            "kind": r["kind"],
+            "status": r["status"],
+            "created_at": r["created_at"],
+            **json.loads(r["data"]),
+        }
 
     def jobs(self, limit: int = 20) -> list[dict[str, Any]]:
         with self._lock:
             rows = self._conn.execute("SELECT * FROM jobs ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
-        return [{"id": r["id"], "kind": r["kind"], "status": r["status"], "created_at": r["created_at"], **json.loads(r["data"])} for r in rows]
+        return [
+            {
+                "id": r["id"],
+                "kind": r["kind"],
+                "status": r["status"],
+                "created_at": r["created_at"],
+                **json.loads(r["data"]),
+            }
+            for r in rows
+        ]
