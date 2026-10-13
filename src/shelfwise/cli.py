@@ -43,7 +43,7 @@ def seed(
 
 @app.command("import")
 def import_cmd(
-    feeds: Annotated[list[Path], typer.Argument(help="CSV or XLSX supplier feeds")],
+    feeds: Annotated[list[Path] | None, typer.Argument(help="CSV or XLSX supplier feeds")] = None,
     images: Annotated[Path | None, typer.Option(help="Directory with the product images")] = None,
     vendor: Annotated[list[str] | None, typer.Option(help="Brand per feed, in the same order")] = None,
     demo: Annotated[bool, typer.Option(help="Import the bundled demo feeds instead")] = False,
@@ -57,7 +57,7 @@ def import_cmd(
     else:
         vendors = list(vendor or [])
         data: list[tuple[str, bytes, str | None, dict[str, str | None]]] = [
-            (f.name, f.read_bytes(), vendors[i] if i < len(vendors) else None, {}) for i, f in enumerate(feeds)
+            (f.name, f.read_bytes(), vendors[i] if i < len(vendors) else None, {}) for i, f in enumerate(feeds or [])
         ]
         summary = copilot.import_files(data, images_dir=images.resolve() if images else None)
     typer.echo(
