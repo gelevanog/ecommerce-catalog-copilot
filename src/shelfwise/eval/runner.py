@@ -313,7 +313,61 @@ def listing_metrics(
         },
         "seo_length": {k: {"ok": v[0], "total": v[1], "pct": _pct(v[0], v[1])} for k, v in seo.items()}
         | {"all_three": {"ok": all_ok, "total": n, "pct": _pct(all_ok, n)}},
+        "against_gold": against_gold(matched),
         "status": status,
+    }
+
+
+def against_gold(matched: dict[str, tuple[dict[str, Any], ProductRecord]]) -> dict[str, Any]:
+    """Statements in the final English listings checked against the truth (the gold labels), not the evidence:
+    a wrong color, pack size or material that reached the copy, e.g. a supplier error that was not caught."""
+    import re as _re
+
+    from shelfwise.validate.claims import _COLOR_RE, _COUNT_RE, _WORD_NUMBERS, _without_words
+    from shelfwise.vocab import canonical, canonical_all
+
+    wrong = {"color": 0, "count": 0, "material": 0}
+    products_wrong = 0
+    examples: list[str] = []
+    for g, r in matched.values():
+        if r.listing is None:
+            continue
+        text = " ".join(plain(t) for _, t in r.listing.text_fields())
+        name_words = {w.lower() for w in _re.findall(r"[A-Za-z]+", f"{g['brand']} {g['title']}")}
+        clean = _without_words(text, name_words)
+        bad = False
+        for m in _COLOR_RE.finditer(clean):
+            c = canonical("color", m.group(1))
+            if c and not (
+                colors_match(c, g["color"], lenient=True) or colors_match(c, g["secondary_color"], lenient=True)
+            ):
+                wrong["color"] += 1
+                bad = True
+                examples.append(f"{g['id']}: color '{m.group(1)}' (true {g['color']})")
+                break
+        for m in _COUNT_RE.finditer(text):
+            token = next(x for x in m.groups() if x)
+            n = int(token) if token.isdigit() else _WORD_NUMBERS.get(token.lower(), 0)
+            if n != g["count"]:
+                wrong["count"] += 1
+                bad = True
+                examples.append(f"{g['id']}: '{m.group(0)}' (true {g['count']})")
+                break
+        true_material = g["material"]
+        allowed = set(canonical_all("material", " ".join([g["composition"] or "", *g["features"], g["care"]])))
+        for mat in canonical_all("material", clean):
+            if mat != true_material and mat not in allowed:
+                wrong["material"] += 1
+                bad = True
+                examples.append(f"{g['id']}: material '{mat}' (true {true_material})")
+                break
+        products_wrong += bad
+    return {
+        "listings_with_wrong_color": wrong["color"],
+        "listings_with_wrong_count": wrong["count"],
+        "listings_with_wrong_material": wrong["material"],
+        "listings_with_any": products_wrong,
+        "examples": examples[:12],
     }
 
 

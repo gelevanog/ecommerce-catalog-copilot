@@ -143,7 +143,7 @@ def run_backtranslation(settings: Settings, *, name: str, k: int) -> dict[str, A
 
     store = get_store(settings)
     records = sample(load_records(settings, name), k, seed=11)
-    model = model_for(settings, "text", tag="eval:backtranslate")
+    model = model_for(settings, "text", tag="eval:backtranslate", reasoning=settings.translate_reasoning_effort)
     rows: list[dict[str, Any]] = []
     for r in records:
         assert r.listing is not None
