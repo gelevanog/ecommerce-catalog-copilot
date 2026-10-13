@@ -15,7 +15,7 @@
 
 <!-- demo-video -->
 
-![The review screen of one product: the photo with the attributes the vision model saw (pink, solid, 4 items), a feed-vs-photo table where the pack size is a conflict (feed says 5, photo shows 4) with "use feed" and "use photo" buttons, the generated listing with character counters and evidence chips under every field, a hovered chip showing the feed cell (larkspur_pricelist.xlsx, row 60, "Marlow Side Plates Set of 5") and the image evidence ("4, confidence 1.00"), and on the right the checks (the conflict, two translated meta descriptions over 160 characters, an ignored supplier claim "Guaranteed to last a lifetime") and the facts with the spreadsheet cell each came from](docs/screenshots/hero.png)
+![The review screen of one product: the photo with the attributes the vision model saw (pink, solid, 4 items), a feed-vs-photo table where the pack size is a conflict (feed says 5, photo shows 4) with "use feed" and "use photo" buttons, the generated listing with character counters and evidence chips under every field, a hovered chip showing the feed cell (larkspur_pricelist.xlsx, row 60, "Marlow Side Plates Set of 5") and the image evidence ("4, confidence 1.00"), and on the right the checks (the conflict and an ignored supplier claim "Guaranteed to last a lifetime") and the facts with the spreadsheet cell each came from](docs/screenshots/hero.png)
 
 <sub>A product from the evaluation run with free models (`dots-studio/dots-3-note-preview:free` for the photo, `nvidia/nemotron-3-super-120b-a12b:free` for copy and translations). The supplier's spreadsheet sells "Marlow Side Plates Set of 5"; the photo shows four. Shelfwise suggests the photo's value, stops the listing from being approved until a person decides, and shows where every stated fact came from (hovered: the pack size, from row 60 of the spreadsheet and from the photo). The supplier's "Guaranteed to last a lifetime" never reached the copy.</sub>
 
@@ -26,7 +26,7 @@
 | Import of two messy feeds | **29 of 29** columns mapped, **64 of 64** products with their variants grouped, **6 of 6** duplicate rows merged (3 across suppliers), **4 of 4** broken variants flagged (a 10x price, a different material in one size), 0 false flags; units right for 45/45 dimensions, 64/64 weights, 9/9 capacities, 63/64 prices (the 64th is the planted 10x outlier) |
 | Attributes from the photo (vision model never sees the feed) | pack size **100%** (64/64), pattern **90.6%**, main color **75.0%** exact and **92.2%** within the color family, material 23.4%, style 32.8% |
 | Supplier errors caught by feed-vs-photo | **11 of 11** planted wrong colors and pack sizes raised as conflicts, **0** false alarms on 48 correct feed values (as first run: 9 of 11 and 2 false alarms; two bugs fixed, see Findings) |
-| Unsupported claims (every stated spec, material, color, pattern, pack size and claim phrase checked against the evidence) | first drafts: **1** of 64 listings with one unsupported claim; after one corrective round **0** of 627 English fields; **0** listings that state a wrong color, pack size or material when checked against the true labels; 0 of 22 supplier claims ("relieves back pain", "FDA approved", "eco-friendly") used |
+| Unsupported claims (every stated spec, material, color, pattern, pack size and claim phrase checked against the evidence) | first drafts: **9** of 64 listings with an unsupported claim (14 claims, mostly a pack's weight stated per item, then "resists stains", "relaxed fit", a zip the feed never mentions); after one corrective round **1** listing (1 of 626 English fields), which cannot be approved until a person fixes it; **0** listings that state a wrong color, pack size or material when checked against the true labels; 0 of 22 supplier claims ("relieves back pain", "FDA approved", "eco-friendly") used |
 | LLM judge spot check (a different free model re-reads 20 listings) | JUDGE_SUMMARY |
 | Category and type | Google product category exact **87.5%** (56/64), right branch **100%**; Shopify product type **100%** |
 | SEO lengths | title, meta title and meta description inside the limits on **100%** of the 64 listings |
@@ -34,7 +34,7 @@
 | Throughput and cost | **3.0 model calls** per product, 72 s per product (median) and **147 products per hour** with 3 workers on the free tier; **$0** with free models; about **$3.2 to $72 per 1,000 products** at paid list prices of the same open model up to Claude Sonnet 5.5 (token counts of a reasoning model, see below) |
 | Cloud usage | REQUESTS_TOTAL requests to OpenRouter, every requested and served model id `:free` ([ledger](results/calls.jsonl)) |
 
-**The honest verdict:** the parts that decide whether a catalog is trustworthy work well with free models, because code does the checking. The vision model counted items in a pack perfectly and read patterns and colors well enough that every planted supplier error (a wrong color, a wrong pack size) surfaced as a conflict for a person; the copy model stayed inside the facts on 63 of 64 first drafts and the one slip was fixed by the corrective round; translations kept every number and brand name. What free vision models cannot do is tell materials apart from a photo (23%), so Shelfwise never states a material that only the photo suggests, and "style" is too subjective to be a spec (33% agreement with my labels). The run also found real bugs in my own checker, which are reported below: it read "Flower Pot" as a floral pattern and made the model rename two products, it treated pink and burgundy as the same color, and it took "Moss" in a product name for a color. All three are fixed and the numbers above are from the re-run; the as-run numbers are in Findings. The products and photos are synthetic renders I generated with known labels, cleaner than a real catalog: read the numbers as evidence that the mechanisms work, not as a forecast for your store.
+**The honest verdict:** the parts that decide whether a catalog is trustworthy work well with free models, because code does the checking. The vision model counted items in a pack perfectly and read patterns and colors well enough that every planted supplier error (a wrong color, a wrong pack size) surfaced as a conflict for a person; the copy model stayed inside the facts on 55 of 64 first drafts, the corrective round fixed 8 of the other 9, and the last one is held for a person; translations kept every number and brand name. The weak spot is plausible filler: an independent judge model found claims like "breathable" or "resists stains" that my first checker did not know, so I added them; the copy still contains benefit phrases ("ideal for picnics") that no code checks. What free vision models cannot do is tell materials apart from a photo (23%), so Shelfwise never states a material that only the photo suggests, and "style" is too subjective to be a spec (33% agreement with my labels). The run also found real bugs in my own checker, which are reported below: it read "Flower Pot" as a floral pattern and made the model rename two products, it treated pink and burgundy as the same color, and it took "Moss" in a product name for a color. All three are fixed and the numbers above are from the re-run; the as-run numbers are in Findings. The products and photos are synthetic renders I generated with known labels, cleaner than a real catalog: read the numbers as evidence that the mechanisms work, not as a forecast for your store.
 
 ## What problem it solves
 
@@ -124,7 +124,7 @@ docker compose up --build
 # API        http://localhost:8000   (OpenAPI docs at /docs; mock stores under /mock)
 ```
 
-On first start the API imports the two demo feeds and loads the listings the free models wrote in the evaluation run ([`results/main_records.jsonl`](results/main_records.jsonl)), so the dashboard shows real model output without a key: 38 products ready, 22 waiting for a person (feed/photo conflicts, translations over a length limit), 4 blocked by broken variants. "Approve ready", the review screen, the CSV export and the pushes to the mocks all work. "Re-enrich" uses the offline model unless you configure a provider.
+On first start the API imports the two demo feeds and loads the listings the free models wrote in the evaluation run ([`results/main_records.jsonl`](results/main_records.jsonl)), so the dashboard shows real model output without a key: 37 products ready, 23 waiting for a person (feed/photo conflicts, a translation over a length limit, one unsupported claim), 4 blocked by broken variants. "Approve ready", the review screen, the CSV export and the pushes to the mocks all work. "Re-enrich" uses the offline model unless you configure a provider.
 
 Without Docker (Python 3.12 with [uv](https://docs.astral.sh/uv/), Node 24):
 
@@ -253,14 +253,14 @@ Share of the 64 products with the right value (`n` = 64; feed coverage = share o
 
 | | Result |
 |---|---|
-| First drafts with an unsupported or banned claim | **1** of 64 (one claim phrase in a sneaker description), fixed by the corrective round; one other draft was corrected for a meta description over 160 characters |
-| English fields with an unsupported claim after the corrective round | **0 of 627** (titles, descriptions, bullets, meta titles and descriptions, alt texts) |
+| First drafts with an unsupported or banned claim | **9** of 64 listings, 14 claims. Most common: the pack's weight stated per item (6 listings: "each sock weighs 115 g" when 115 g is the pack); then features the feed never mentions: a zip, an adjustable strap, "resists stains", and on one tee "relaxed fit", "breathable" and "softens with every wash". 0 banned claims. One more draft was corrected for a meta description over 160 characters |
+| After one corrective round | **1** listing still flagged (1 of 626 English fields: "Each candle measures 7 x 15 cm and weighs 1.102 kg total"); it stays in "needs review" and cannot be approved until a person edits it |
 | Listings that state a wrong color, pack size or material (against the true labels, not the evidence) | **0** of 64 (the offline model's listings: 15, because its pixel colors are wrong) |
 | Supplier claims that reached a listing | **0 of 22** |
 | Google product category exact / right branch | **87.5%** (56/64) / **100%**. The 8 misses: 2 sweaters under the parent "Clothing" instead of "Shirts & Tops", 3 scarves under the more specific "Scarves & Shawls > Scarves" (arguably right: my label is the parent), drinking glasses as "Shot Glasses", a "serving board" as "Serving Platters", hand towels as "Kitchen Towels" |
 | Shopify product type | **100%** |
 | Title, meta title, meta description within limits | **100%** each |
-| Status after enrichment | 38 ready (no errors, no conflicts), 22 needs review (conflicts, a translation over its length limit), 4 blocked (broken variants) |
+| Status after enrichment | 37 ready (no errors, no conflicts), 23 needs review (feed/photo conflicts, a translation over its length limit, the one remaining claim), 4 blocked (broken variants) |
 
 **The LLM judge.** JUDGE_PARAGRAPH
 
@@ -276,7 +276,7 @@ Share of the 64 products with the right value (`n` = 64; feed coverage = share o
 | Title and meta description within the limit + 15% | 100% | 100% | 100% |
 | Back-translation into English, chrF vs the source | BT_DE | BT_ES | BT_FR |
 
-Translations run longer than English: 21 translated meta descriptions and 5 meta titles are over the English limit but inside the 15% slack, which the checks report as warnings per language (the shortening round brought every one inside the slack).
+Translations run longer than English: 19 translated meta descriptions and 5 meta titles are over the English limit but inside the 15% slack, which the checks report as warnings per language (the shortening round brought every one inside the slack).
 
 ### 5. Throughput and cost
 
@@ -311,7 +311,7 @@ Taken with headless Chrome ([`capture.mjs`](docs/screenshots/capture.mjs)) from 
 |---|---|
 | ![Catalog grid with status counters, filters and product cards with status, color, pattern, pack and variant chips, errors and conflicts](docs/screenshots/catalog.png) | ![The German version of the plate set listing with the length warning for the meta description](docs/screenshots/translations.png) |
 | **Catalog**: status counters, filters, search, bulk approve, cards with conflicts and errors | **Translations**: each language checked in code, warnings per field |
-| ![Import screen with the XLSX price list: header found on row 4 and every column mapped to a store field with sample values](docs/screenshots/import.png) | ![Export page after a push to the Shopify mock: 38 approved products, CSV preview and per-product results with GraphQL ids, variants and translations](docs/screenshots/export.png) |
+| ![Import screen with the XLSX price list: header found on row 4 and every column mapped to a store field with sample values](docs/screenshots/import.png) | ![Export page after a push to the Shopify mock: 37 approved products, CSV preview and per-product results with GraphQL ids, variants and translations](docs/screenshots/export.png) |
 | **Import**: the proposed column mapping, editable before import | **Export and push**: only approved products, Shopify CSV and mock pushes |
 | ![Evaluation page rendered from results/summary.json](docs/screenshots/evaluation.png) | |
 | **Evaluation**: the tables of this section from `results/summary.json` | |
@@ -324,7 +324,7 @@ Taken with headless Chrome ([`capture.mjs`](docs/screenshots/capture.mjs)) from 
 
 **Why the claims check is code, not another model.** A listing's risk sits in a small set of statements: numbers with units, pack sizes, materials, colors, patterns and a list of claim phrases (care, safety, certification, origin). Those can be found and looked up deterministically, the same way every time, with the cell they trace to. A second model is useful as a spot check of what code cannot read (the judge above), but a reviewer approving 500 listings needs a check that never has a bad day and can explain each flag.
 
-**Why approval is a gate, not a suggestion.** The export and the pushes take approved products only, approval is refused while errors or conflicts are open, and unsupported claims cannot be waived. Everything else (bulk approve for clean listings, accepting a warning with a reason) is there to keep a person's time on the products that need it: in the run, 38 of 64 listings needed no decision at all.
+**Why approval is a gate, not a suggestion.** The export and the pushes take approved products only, approval is refused while errors or conflicts are open, and unsupported claims cannot be waived. Everything else (bulk approve for clean listings, accepting a warning with a reason) is there to keep a person's time on the products that need it: in the run, 37 of 64 listings needed no decision at all.
 
 **Limits, honestly.**
 
