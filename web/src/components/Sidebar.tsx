@@ -22,7 +22,8 @@ export function Sidebar() {
     api<StoreConfigInfo>("/api/config").then(setConfig).catch(() => setConfig(null));
   }, []);
   return (
-    <aside className="sticky top-0 flex h-screen w-[218px] shrink-0 flex-col bg-night px-3 py-5 text-[13px] text-white/80">
+    <aside className="w-[218px] shrink-0 bg-night">
+      <div className="sticky top-0 flex h-screen flex-col px-3 py-5 text-[13px] text-white/80">
       <Link href="/" className="mb-6 flex items-center gap-2.5 px-2">
         <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[#3aa57d] to-[#1f6f54] text-[15px] font-bold text-white">S</span>
         <span>
@@ -53,6 +54,7 @@ export function Sidebar() {
           Copy: <span className="text-white/80">{config?.models.text?.replace("openrouter/", "") ?? "-"}</span>
         </div>
         <div>{config?.models.free_only === "true" ? "Free-only guard on" : "Paid models allowed"}</div>
+      </div>
       </div>
     </aside>
   );

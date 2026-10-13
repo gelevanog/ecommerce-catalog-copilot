@@ -1,0 +1,15 @@
+.git
+.venv
+.cache
+**/__pycache__
+**/*.pyc
+.mypy_cache
+.ruff_cache
+.pytest_cache
+web
+docs
+tests
+exports
+.env
+*.db
+results/*_records.jsonl.bak

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "shelfwise": {
+      "command": "uv",
+      "args": ["run", "--directory", "/absolute/path/to/ecommerce-catalog-copilot", "shelfwise", "mcp"]
+    }
+  }
+}

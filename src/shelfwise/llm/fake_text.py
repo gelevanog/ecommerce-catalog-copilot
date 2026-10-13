@@ -92,7 +92,7 @@ def write_listing(payload: dict[str, Any], system: str) -> dict[str, Any]:
         second.append(f"Care: {facts['care'][0].rstrip('.')}.")
     if facts.get("origin"):
         second.append(f"{facts['origin'][0].rstrip('.')}.")
-    sentences.append(f"It is part of the {brand} range at {store}.")
+    sentences.append(f"It is part of the {brand} range at {store.rstrip('.')}.")
     body = f"<p>{' '.join(sentences)}</p>" + (f"<p>{' '.join(second)}</p>" if second else "")
     bullets: list[str] = []
     if composition:

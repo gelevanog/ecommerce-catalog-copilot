@@ -1,0 +1,42 @@
+# Shelfwise: the API (with the mock Shopify and WooCommerce APIs mounted under /mock) and the review dashboard.
+#   docker compose up --build
+#     dashboard  http://localhost:3000
+#     API        http://localhost:8000   (OpenAPI docs at /docs; mock stores at /mock/shopify, /mock/woocommerce)
+# On first start the API imports the demo feeds and loads the listings the free models produced in the evaluation
+# (results/main_records.jsonl). With no key, "Re-enrich" uses the offline model. For free cloud models put
+# OPENROUTER_API_KEY and SHELFWISE_LLM_PROVIDER=openrouter in .env (see README > Run with free models).
+name: shelfwise
+
+services:
+  api:
+    build: .
+    image: shelfwise-api:latest
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SHELFWISE_LLM_PROVIDER: ${SHELFWISE_LLM_PROVIDER:-fake}
+      SHELFWISE_CORS_ORIGINS: http://localhost:${WEB_PORT:-3000}
+      SHELFWISE_SHOPIFY_URL: http://127.0.0.1:8000/mock/shopify
+      SHELFWISE_WOOCOMMERCE_URL: http://127.0.0.1:8000/mock/woocommerce
+    volumes:
+      - appdata:/home/app/data
+    ports:
+      - "${API_PORT:-8000}:8000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:${API_PORT:-8000}
+    image: shelfwise-web:latest
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    restart: unless-stopped
+
+volumes:
+  appdata:
