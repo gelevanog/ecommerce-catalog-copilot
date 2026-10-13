@@ -34,6 +34,8 @@ BLOCKING_CODES = {"variant_inconsistent", "variant_price_outlier", "variant_dupl
 class Models:
     vision: ChatModel
     text: ChatModel
+    translate: ChatModel | None = None
+    """Defaults to the text model (a separate instance only so the ledger tags translation calls)."""
 
 
 def _track(stats: CallStats, completion: Completion | None, started: float) -> None:
@@ -68,6 +70,7 @@ def enrich(
     p = record.product
     stats = CallStats()
     record.error = ""
+    record.copy_attempts = []
     # 1. the photo, seen blind
     attrs: list[ImageAttributes] = []
     for name in p.images[:1]:
@@ -113,6 +116,7 @@ def enrich(
             continue
         record.error = ""
         errors = _copy_errors(listing, record, store)
+        record.copy_attempts.append([f"{i.code}:{i.field}" for i in errors])
         if best is None or len(errors) < best[0]:
             best = (len(errors), listing)
         if not errors:
@@ -129,13 +133,25 @@ def enrich(
     if translate and langs:
         started = time.monotonic()
         try:
-            translations, completion = translate_step.translate(models.text, store, listing, langs, max_tokens=settings.llm_max_tokens)
+            translations, completion = translate_step.translate(models.translate or models.text, store, listing, langs, max_tokens=settings.llm_max_tokens)
             _track(stats, completion, started)
             for lang in [x for x in langs if x not in translations]:
                 started = time.monotonic()
-                extra, completion = translate_step.translate(models.text, store, listing, [lang], max_tokens=settings.llm_max_tokens)
+                extra, completion = translate_step.translate(models.translate or models.text, store, listing, [lang], max_tokens=settings.llm_max_tokens)
                 _track(stats, completion, started)
                 translations.update(extra)
+            record.translation_attempts = 1 + len([x for x in langs if x not in translations])
+            too_long = translate_step.length_problems(store, translations)
+            if too_long:
+                started = time.monotonic()
+                try:
+                    fixed, completion = translate_step.shorten(models.translate or models.text, store, listing, translations, too_long,
+                                                               max_tokens=settings.llm_max_tokens)
+                    _track(stats, completion, started)
+                    translations.update({k: v for k, v in fixed.items() if v.title and v.body_html})
+                except (LLMError, JSONReplyError) as exc:
+                    log.warning("shortening translations failed for %s: %s", p.id, exc)
+                record.translation_attempts += 1
             listing.translations = translations
         except (LLMError, JSONReplyError) as exc:
             _track(stats, None, started)

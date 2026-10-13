@@ -34,8 +34,9 @@ You are a professional e-commerce translator. Translate the product listing into
 - Never translate these names: {", ".join(store.glossary_keep)}.
 - Use these translations for product terms (German compounds may join them): {json.dumps(glossary, ensure_ascii=False)}
 - Keep the HTML tags of the description as they are.
-- Keep titles under {store.title.max} characters, meta titles under {store.meta_title.max} and meta descriptions under
-  {store.meta_description.max} where the language allows.
+- Length limits are hard: title at most {store.title.max} characters, meta_title at most {store.meta_title.max},
+  meta_description at most {store.meta_description.max}. Shorten the wording (never the facts) when a translation
+  runs longer.
 Answer with one JSON object and nothing else, one key per language code:
 {{"<code>": {{"title": "...", "description_html": "...", "bullets": ["..."], "meta_title": "...", "meta_description": "..."}}}}"""
     return [
@@ -65,6 +66,33 @@ def parse_translations(text: str, languages: list[str]) -> dict[str, TranslatedL
 def translate(model: ChatModel, store: StoreConfig, listing: Listing, languages: list[str], *, max_tokens: int) -> tuple[dict[str, TranslatedListing], Completion]:
     completion = model.complete(messages(store, listing, languages), max_tokens=max_tokens, temperature=0.0, json_mode=True)
     return parse_translations(completion.text, languages), completion
+
+
+def length_problems(store: StoreConfig, translations: dict[str, TranslatedListing]) -> dict[str, list[str]]:
+    """Fields over the hard limit (with the translation slack), per language."""
+    limits = {"title": store.title.max, "meta_title": store.meta_title.max, "meta_description": store.meta_description.max}
+    out: dict[str, list[str]] = {}
+    for lang, t in translations.items():
+        for name, limit in limits.items():
+            if len(getattr(t, name)) > limit * store.translation_slack:
+                out.setdefault(lang, []).append(f"{name} has {len(getattr(t, name))} characters, the limit is {limit}")
+    return out
+
+
+def shorten(
+    model: ChatModel, store: StoreConfig, listing: Listing, translations: dict[str, TranslatedListing],
+    problems: dict[str, list[str]], *, max_tokens: int,
+) -> tuple[dict[str, TranslatedListing], Completion]:
+    langs = sorted(problems)
+    previous = json.dumps({lang: {"title": translations[lang].title, "description_html": translations[lang].body_html,
+                                  "bullets": translations[lang].bullets, "meta_title": translations[lang].meta_title,
+                                  "meta_description": translations[lang].meta_description} for lang in langs},
+                          ensure_ascii=False)
+    note = "\n".join(f"- {lang}: {p}" for lang in langs for p in problems[lang])
+    msgs = [*messages(store, listing, langs), {"role": "assistant", "content": previous},
+            {"role": "user", "content": "Some fields are too long:\n" + note + "\nReturn the same JSON with those fields shortened."}]
+    completion = model.complete(msgs, max_tokens=max_tokens, temperature=0.0, json_mode=True)
+    return parse_translations(completion.text, langs), completion
 
 
 def back_messages(translated: TranslatedListing, lang: str) -> list[Message]:

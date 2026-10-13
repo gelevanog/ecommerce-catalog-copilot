@@ -1,0 +1,204 @@
+{
+ "name": "offline",
+ "provider": {
+  "provider": "fake",
+  "vision": "fake/fake-pixels",
+  "text": "fake/fake-rules",
+  "free_only": "true"
+ },
+ "import": {
+  "rows": 107,
+  "products_expected": 64,
+  "products_imported": 64,
+  "products_matched": 64,
+  "column_mapping": {
+   "correct": 29,
+   "total": 29,
+   "wrong": []
+  },
+  "variants_grouped": {
+   "correct": 64,
+   "total": 64
+  },
+  "duplicates": {
+   "expected": 6,
+   "merged_rows": 6,
+   "found": 6
+  },
+  "variant_problems": {
+   "planted": 4,
+   "flagged": 4,
+   "false_flags": 0
+  },
+  "units": {
+   "dimensions": {
+    "correct": 45,
+    "total": 45
+   },
+   "weight": {
+    "correct": 59,
+    "total": 64
+   },
+   "capacity": {
+    "correct": 9,
+    "total": 9
+   },
+   "price": {
+    "correct": 63,
+    "total": 64
+   }
+  },
+  "supplier_claims_kept_as_facts": {
+   "leaked": 0,
+   "total": 22
+  }
+ },
+ "attributes": {
+  "color": {
+   "image_accuracy": 62.5,
+   "image_correct": 40,
+   "n": 64,
+   "feed_coverage": 68.8,
+   "feed_accuracy": 81.8,
+   "merged_coverage": 100.0,
+   "merged_accuracy": 73.4,
+   "image_accuracy_lenient": 76.6
+  },
+  "pattern": {
+   "image_accuracy": 29.7,
+   "image_correct": 19,
+   "n": 64,
+   "feed_coverage": 10.9,
+   "feed_accuracy": 71.4,
+   "merged_coverage": 100.0,
+   "merged_accuracy": 32.8
+  },
+  "material": {
+   "image_accuracy": 0.0,
+   "image_correct": 0,
+   "n": 64,
+   "feed_coverage": 79.7,
+   "feed_accuracy": 98.0,
+   "merged_coverage": 79.7,
+   "merged_accuracy": 98.0
+  },
+  "count": {
+   "image_accuracy": 93.8,
+   "image_correct": 60,
+   "n": 64,
+   "feed_coverage": 25.0,
+   "feed_accuracy": 75.0,
+   "merged_coverage": 100.0,
+   "merged_accuracy": 93.8
+  },
+  "style": {
+   "image_accuracy": 0.0,
+   "image_correct": 0,
+   "n": 64,
+   "feed_coverage": 0.0,
+   "feed_accuracy": null,
+   "merged_coverage": 0.0,
+   "merged_accuracy": null
+  },
+  "conflicts": {
+   "planted_feed_errors": 11,
+   "caught": 9,
+   "recall": 81.8,
+   "feed_values_right": 49,
+   "false_alarms": 9
+  }
+ },
+ "listings": {
+  "listings": 64,
+  "category": {
+   "exact": 46,
+   "exact_pct": 71.9,
+   "same_branch_pct": 84.4,
+   "product_type_pct": 92.2
+  },
+  "claims": {
+   "english_fields": 604,
+   "fields_with_unsupported_claim": 0,
+   "hallucination_rate_pct": 0.0,
+   "products_with_unsupported_claim_first_draft": 0,
+   "unsupported_claims_first_draft": 0,
+   "products_with_unsupported_claim_final": 0,
+   "products_corrected": 0,
+   "banned_claims_final": 0,
+   "by_code_final": {}
+  },
+  "seo_length": {
+   "title": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   },
+   "meta_title": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   },
+   "meta_description": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   },
+   "all_three": {
+    "ok": 64,
+    "total": 64,
+    "pct": 100.0
+   }
+  },
+  "status": {
+   "ready": 43,
+   "blocked": 4,
+   "needs_review": 17
+  }
+ },
+ "translations": {
+  "de": {
+   "translated": 64,
+   "language_ok_pct": 100.0,
+   "numbers_kept_pct": 100.0,
+   "glossary_pct": 100.0,
+   "glossary_terms": 61,
+   "brand_kept_pct": 100.0,
+   "length_ok_pct": 100.0
+  },
+  "es": {
+   "translated": 64,
+   "language_ok_pct": 100.0,
+   "numbers_kept_pct": 100.0,
+   "glossary_pct": 100.0,
+   "glossary_terms": 61,
+   "brand_kept_pct": 100.0,
+   "length_ok_pct": 100.0
+  },
+  "fr": {
+   "translated": 64,
+   "language_ok_pct": 100.0,
+   "numbers_kept_pct": 100.0,
+   "glossary_pct": 100.0,
+   "glossary_terms": 61,
+   "brand_kept_pct": 100.0,
+   "length_ok_pct": 100.0
+  }
+ },
+ "throughput": {
+  "products": 64,
+  "wall_seconds": 4.8,
+  "workers": 2,
+  "products_per_hour": 47852.1,
+  "seconds_per_product_p50": 0.1,
+  "seconds_per_product_p90": 0.1,
+  "model_calls": 192,
+  "calls_per_product": 3.0,
+  "cached_calls": 0,
+  "input_tokens_per_product": 0,
+  "output_tokens_per_product": 0,
+  "models": [
+   "fake-pixels",
+   "fake-rules"
+  ]
+ }
+}

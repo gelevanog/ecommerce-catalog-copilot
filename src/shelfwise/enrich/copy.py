@@ -62,7 +62,9 @@ Rules:
   bullets of at most {store.bullet_max_chars} characters; description {store.body_words.min}-{store.body_words.max} words in
   <p> paragraphs (allowed tags: p, ul, li, strong, em); {store.tags_count.min}-{store.tags_count.max} lowercase tags;
   one alt text per image, under {store.alt_text_max} characters.
-- product_type must be one of the store's types; category_id must be one of the candidate ids.
+- Description: two <p> paragraphs, 50 to 120 words in total.
+- product_type must be one of the store's types. category_id must be one of the candidate ids: pick the most
+  specific category that fits (a leaf such as "Clothing > Shirts & Tops", not a parent such as "Clothing").
 Examples of the house style: {examples}
 
 Answer with one JSON object and nothing else:

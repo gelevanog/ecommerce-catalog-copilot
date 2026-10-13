@@ -196,6 +196,9 @@ class ProductRecord(BaseModel):
     issues: list[Issue] = Field(default_factory=list)
     review: dict[str, FieldReview] = Field(default_factory=dict)
     stats: CallStats = Field(default_factory=CallStats)
+    copy_attempts: list[list[str]] = Field(default_factory=list)
+    """Error codes of each copy attempt, before the corrective round: the evaluation's first-draft numbers."""
+    translation_attempts: int = 0
     error: str = ""
 
     def errors(self) -> list[Issue]:
