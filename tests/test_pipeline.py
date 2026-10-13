@@ -131,3 +131,39 @@ def test_missing_image_is_reported(
     )
     assert any(i.code == "vision_failed" for i in record.issues)
     assert record.listing is not None
+
+
+class Overthinker:
+    """Runs out of tokens while 'reasoning' on the first copy request; answers when given twice the budget."""
+
+    label = "test/overthinker"
+    is_local = True
+
+    def __init__(self) -> None:
+        self.fake = FakeModel("text")
+        self.budgets: list[int] = []
+
+    def complete(
+        self, messages: Sequence[Message], *, max_tokens: int, temperature: float = 0.0, json_mode: bool = False
+    ) -> Completion:
+        if "write_listing" in text_of(messages[0]):
+            self.budgets.append(max_tokens)
+            if len(self.budgets) == 1:
+                raise LLMError("empty answer: max_tokens reached before any output")
+        return self.fake.complete(messages, max_tokens=max_tokens)
+
+
+def test_truncated_copy_is_retried_with_a_bigger_budget(
+    copilot: Copilot, demo_batch: str, settings: Settings, store: StoreConfig
+) -> None:
+    model = Overthinker()
+    record = enrich(
+        _record(copilot, demo_batch),
+        store=store,
+        settings=settings,
+        models=Models(vision=FakeModel("vision"), text=model),
+        images_dir=DEMO / "images",
+        translate=False,
+    )
+    assert model.budgets == [settings.llm_max_tokens, 2 * settings.llm_max_tokens]
+    assert record.listing is not None and record.error == ""

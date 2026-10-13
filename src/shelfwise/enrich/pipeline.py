@@ -103,13 +103,22 @@ def enrich(
     base = copy_step.messages(store, payload)
     msgs = base
     best: tuple[int, Listing] | None = None
-    for _attempt in range(settings.copy_retries + 1):
+    budget = settings.llm_max_tokens
+    attempts = settings.copy_retries + 1
+    attempt = 0
+    while attempt < attempts:
+        attempt += 1
         started = time.monotonic()
         try:
-            completion = copy_step.write_listing(models.text, msgs, max_tokens=settings.llm_max_tokens)
+            completion = copy_step.write_listing(models.text, msgs, max_tokens=budget)
         except LLMError as exc:
             _track(stats, None, started)
             record.error = f"copy: {exc}"[:300]
+            if "max_tokens" in str(exc) and budget == settings.llm_max_tokens:
+                # a reasoning model thought through the whole budget: once more with twice the room
+                budget *= 2
+                attempts += 1
+                continue
             break
         _track(stats, completion, started)
         try:
