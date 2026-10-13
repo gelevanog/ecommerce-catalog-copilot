@@ -1,0 +1,532 @@
+{
+ "products": [
+  "P002",
+  "P017",
+  "P007",
+  "P055",
+  "P008",
+  "P014"
+ ],
+ "models": {
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+   "answered": 6,
+   "color": 6,
+   "pattern": 5,
+   "count": 6,
+   "material": 0,
+   "median_seconds": 21.9,
+   "rows": [
+    {
+     "product": "P002",
+     "seconds": 23.9,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "pillow",
+      "color": "green",
+      "secondary_color": "white",
+      "pattern": "striped",
+      "material": "linen",
+      "style": "modern",
+      "count": 1
+     },
+     "output_tokens": 641
+    },
+    {
+     "product": "P017",
+     "seconds": 14.6,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "socks",
+      "color": "green",
+      "secondary_color": "white",
+      "pattern": "polka dot",
+      "material": null,
+      "style": "minimalist",
+      "count": 2
+     },
+     "output_tokens": 570
+    },
+    {
+     "product": "P007",
+     "seconds": 21.9,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "sweater",
+      "color": "burgundy",
+      "secondary_color": "white",
+      "pattern": "checked",
+      "material": null,
+      "style": "modern",
+      "count": 1
+     },
+     "output_tokens": 945
+    },
+    {
+     "product": "P055",
+     "seconds": 8.7,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "t-shirt",
+      "color": "pink",
+      "secondary_color": "white",
+      "pattern": "geometric",
+      "material": null,
+      "style": "modern",
+      "count": 1
+     },
+     "output_tokens": 419
+    },
+    {
+     "product": "P008",
+     "seconds": 26.7,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "green candles",
+      "color": "green",
+      "secondary_color": "yellow",
+      "pattern": "solid",
+      "material": null,
+      "style": "minimalist",
+      "count": 4
+     },
+     "output_tokens": 537
+    },
+    {
+     "product": "P014",
+     "seconds": 6.2,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": false,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "socks",
+      "color": "beige",
+      "secondary_color": "brown",
+      "pattern": "geometric",
+      "material": null,
+      "style": "minimalist",
+      "count": 3
+     },
+     "output_tokens": 515
+    }
+   ]
+  },
+  "dots-studio/dots-3-note-preview:free": {
+   "answered": 6,
+   "color": 6,
+   "pattern": 5,
+   "count": 6,
+   "material": 2,
+   "median_seconds": 21.4,
+   "rows": [
+    {
+     "product": "P002",
+     "seconds": 21.4,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "green striped pillow",
+      "color": "green",
+      "secondary_color": "white",
+      "pattern": "striped",
+      "material": "canvas",
+      "style": "modern",
+      "count": 1
+     },
+     "output_tokens": 1152
+    },
+    {
+     "product": "P017",
+     "seconds": 20.8,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "socks",
+      "color": "green",
+      "secondary_color": "white",
+      "pattern": "polka dot",
+      "material": null,
+      "style": "minimalist",
+      "count": 2
+     },
+     "output_tokens": 1380
+    },
+    {
+     "product": "P007",
+     "seconds": 19.0,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": true,
+     "answer": {
+      "product": "sweater",
+      "color": "burgundy",
+      "secondary_color": "white",
+      "pattern": "checked",
+      "material": "wool",
+      "style": "vintage",
+      "count": 1
+     },
+     "output_tokens": 1582
+    },
+    {
+     "product": "P055",
+     "seconds": 22.7,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": false,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "t-shirt",
+      "color": "pink",
+      "secondary_color": "white",
+      "pattern": "striped",
+      "material": "cotton",
+      "style": "modern",
+      "count": 1
+     },
+     "output_tokens": 1272
+    },
+    {
+     "product": "P008",
+     "seconds": 18.4,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": true,
+     "answer": {
+      "product": "green candles",
+      "color": "green",
+      "secondary_color": "yellow",
+      "pattern": "solid",
+      "material": "wax",
+      "style": "minimalist",
+      "count": 4
+     },
+     "output_tokens": 1189
+    },
+    {
+     "product": "P014",
+     "seconds": 22.6,
+     "error": "",
+     "color_ok": true,
+     "pattern_ok": true,
+     "count_ok": true,
+     "material_ok": false,
+     "answer": {
+      "product": "socks",
+      "color": "beige",
+      "secondary_color": "brown",
+      "pattern": "solid",
+      "material": "cotton",
+      "style": "minimalist",
+      "count": 3
+     },
+     "output_tokens": 1539
+    }
+   ]
+  },
+  "google/gemma-4-31b-it:free": {
+   "answered": 0,
+   "color": 0,
+   "pattern": 0,
+   "count": 0,
+   "material": 0,
+   "median_seconds": null,
+   "rows": [
+    {
+     "product": "P002",
+     "seconds": 25.5,
+     "error": "rate limited: google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P017",
+     "seconds": 33.5,
+     "error": "rate limited: google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P007",
+     "seconds": 30.7,
+     "error": "rate limited: google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P055",
+     "seconds": 29.8,
+     "error": "rate limited: google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P008",
+     "seconds": 28.1,
+     "error": "rate limited: google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P014",
+     "seconds": 29.4,
+     "error": "rate limited: google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    }
+   ]
+  },
+  "google/gemma-4-26b-a4b-it:free": {
+   "answered": 0,
+   "color": 0,
+   "pattern": 0,
+   "count": 0,
+   "material": 0,
+   "median_seconds": null,
+   "rows": [
+    {
+     "product": "P002",
+     "seconds": 26.7,
+     "error": "rate limited: google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P017",
+     "seconds": 31.6,
+     "error": "rate limited: google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P007",
+     "seconds": 28.3,
+     "error": "rate limited: google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P055",
+     "seconds": 29.5,
+     "error": "rate limited: google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P008",
+     "seconds": 26.1,
+     "error": "rate limited: google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    },
+    {
+     "product": "P014",
+     "seconds": 33.9,
+     "error": "rate limited: google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+     "color_ok": false,
+     "pattern_ok": false,
+     "count_ok": false,
+     "material_ok": false,
+     "answer": {},
+     "output_tokens": 0
+    }
+   ]
+  }
+ },
+ "free_models": [
+  {
+   "id": "apodex/apodex-1.1-mini:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 262144
+  },
+  {
+   "id": "dots-studio/dots-3-note-preview:free",
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "context_length": 512000
+  },
+  {
+   "id": "liquid/lfm-2.5-2.6b:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 65536
+  },
+  {
+   "id": "nvidia/nemotron-3.5-lightning:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 1000000
+  },
+  {
+   "id": "thinkingmachines/inkling-small:free",
+   "input_modalities": [
+    "text",
+    "image",
+    "audio"
+   ],
+   "context_length": 1048576
+  },
+  {
+   "id": "poolside/laguna-s-2.1:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 262144
+  },
+  {
+   "id": "thinkingmachines/inkling:free",
+   "input_modalities": [
+    "text",
+    "image",
+    "audio"
+   ],
+   "context_length": 1048576
+  },
+  {
+   "id": "poolside/laguna-xs-2.1:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 262144
+  },
+  {
+   "id": "cohere/north-mini-code:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 256000
+  },
+  {
+   "id": "nvidia/nemotron-3.5-content-safety:free",
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "context_length": 128000
+  },
+  {
+   "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 1000000
+  },
+  {
+   "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+   "input_modalities": [
+    "text",
+    "audio",
+    "image",
+    "video"
+   ],
+   "context_length": 256000
+  },
+  {
+   "id": "google/gemma-4-26b-a4b-it:free",
+   "input_modalities": [
+    "image",
+    "text",
+    "video"
+   ],
+   "context_length": 262144
+  },
+  {
+   "id": "google/gemma-4-31b-it:free",
+   "input_modalities": [
+    "image",
+    "text",
+    "video"
+   ],
+   "context_length": 262144
+  },
+  {
+   "id": "nvidia/nemotron-3-super-120b-a12b:free",
+   "input_modalities": [
+    "text"
+   ],
+   "context_length": 262144
+  }
+ ]
+}

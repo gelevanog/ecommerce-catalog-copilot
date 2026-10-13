@@ -43,6 +43,8 @@ class Issue(BaseModel):
     """listing field ("title", "bullets[2]", "translations.de.title") or attribute ("color")."""
     span: str = ""
     """The offending text, when there is one."""
+    waived: str = ""
+    """Set when a reviewer accepted the issue on purpose: who and why ("ivan: price confirmed with supplier")."""
 
 
 class SourceRef(BaseModel):
@@ -197,7 +199,8 @@ class ProductRecord(BaseModel):
     error: str = ""
 
     def errors(self) -> list[Issue]:
-        return [i for i in self.issues if i.severity == "error"]
+        """Open errors: the listing cannot be approved while there are any."""
+        return [i for i in self.issues if i.severity == "error" and not i.waived]
 
     def decision(self, attribute: str) -> AttributeDecision | None:
         return next((d for d in self.decisions if d.attribute == attribute), None)

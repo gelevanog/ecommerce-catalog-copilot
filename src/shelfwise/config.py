@@ -16,11 +16,12 @@ LLMProviderKind = Literal["fake", "openrouter", "openai", "compat"]
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-# Chosen with `shelfwise eval smoke` on 2026-10-13 (results/smoke.json): free OpenRouter models only.
+# Chosen with `shelfwise eval smoke` on 2026-10-13 (results/smoke_*.json): free OpenRouter models only. The Gemma 4
+# vision models were rate-limited upstream on every request that day; the Inkling models refuse non-agent apps.
 DEFAULT_FREE_TEXT_MODEL = "nvidia/nemotron-3-super-120b-a12b:free"
 DEFAULT_FREE_TEXT_FALLBACKS = ["nvidia/nemotron-3-ultra-550b-a55b:free"]
-DEFAULT_FREE_VISION_MODEL = "google/gemma-4-31b-it:free"
-DEFAULT_FREE_VISION_FALLBACKS = ["google/gemma-4-26b-a4b-it:free"]
+DEFAULT_FREE_VISION_MODEL = "dots-studio/dots-3-note-preview:free"
+DEFAULT_FREE_VISION_FALLBACKS = ["nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"]
 DEFAULT_TEXT_MODELS: dict[str, str] = {
     "fake": "fake-rules",
     "openrouter": DEFAULT_FREE_TEXT_MODEL,

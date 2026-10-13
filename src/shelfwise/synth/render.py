@@ -116,10 +116,10 @@ def texture_layer(material: str | None, rng: random.Random) -> Image.Image:
     if material in {"cotton", "polyester", None, "wax"}:
         return _noise(rng, S, 1.0, 10 if material == "cotton" else 4)
     if material == "wool":
-        for x in range(0, S, 26):
-            for y in range(0, S, 30):
-                d.line((x, y, x + 13, y + 22), fill=104, width=5)
-                d.line((x + 26, y, x + 13, y + 22), fill=150, width=5)
+        for x in range(0, S, 14):
+            for y in range(0, S, 16):
+                d.line((x, y, x + 7, y + 12), fill=118, width=3)
+                d.line((x + 14, y, x + 7, y + 12), fill=138, width=3)
         return tex.filter(ImageFilter.GaussianBlur(1.5))
     if material == "denim":
         for k in range(-S, S, 9):
