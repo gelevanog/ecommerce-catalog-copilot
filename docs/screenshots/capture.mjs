@@ -61,8 +61,8 @@ for (const shot of shots) {
   } else if (shot === "import") {
     const page = await open(`${base}/import`, 1000);
     const input = await page.$('input[type="file"][accept*=".csv"]');
-    await input.uploadFile(path.join(repo, "data/demo/feeds/northbay_feed.csv"));
-    await page.waitForFunction(() => document.body.innerText.includes("Column mapping"), { timeout: 30000 });
+    await input.uploadFile(path.join(repo, "data/demo/feeds/larkspur_pricelist.xlsx"));
+    await page.waitForFunction(() => document.body.innerText.toLowerCase().includes("column mapping"), { timeout: 30000 });
     await sleep(800);
     await page.screenshot({ path: `${out}import.png` });
   } else if (shot === "export") {

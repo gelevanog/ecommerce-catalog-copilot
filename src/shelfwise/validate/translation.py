@@ -91,6 +91,22 @@ def glossary_hits(source: str, target: str, lang: str, terms: dict[str, dict[str
     return expected, found, missing
 
 
+def untranslated(source: Listing, target: TranslatedListing, keep: list[str]) -> list[str]:
+    """Fields (bullets included) that came back word for word in English. Brand names alone do not count."""
+    out = []
+    src = dict(_fields(source))
+    for name, text in _fields(target):
+        original = src.get(name)
+        if original is None or plain(text).strip().lower() != plain(original).strip().lower():
+            continue
+        words = plain(text)
+        for term in keep:
+            words = words.replace(term, " ")
+        if len(re.findall(r"[A-Za-z]{3,}", words)) >= 2:
+            out.append(name)
+    return out
+
+
 def check_translation(source: Listing, target: TranslatedListing, lang: str, store: StoreConfig) -> list[Issue]:
     issues: list[Issue] = []
     prefix = f"translations.{lang}"
@@ -116,6 +132,12 @@ def check_translation(source: Listing, target: TranslatedListing, lang: str, sto
                 severity="error",
                 field=prefix,
                 message=f"Reads as {detected.upper()} (stopword counts {scores}), expected {lang.upper()}",
+            )
+        )
+    for name in untranslated(source, target, store.glossary_keep):
+        issues.append(
+            Issue(
+                code="translation_untranslated", severity="warning", field=f"{prefix}.{name}", message="Left in English"
             )
         )
     missing_numbers = numbers(src_text) - numbers(tgt_text)

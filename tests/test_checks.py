@@ -279,3 +279,12 @@ def test_glossary_hits_allow_german_compounds() -> None:
     terms = {"cotton": {"de": "Baumwolle"}, "dishwasher safe": {"de": "spülmaschinen"}}
     assert glossary_hits("Cotton tee, dishwasher safe", "Baumwollshirt, spülmaschinenfest", "de", terms)[:2] == (2, 2)
     assert glossary_hits("Cotton tee", "Hemd aus Leinen", "de", terms)[2] == ["cotton → Baumwolle"]
+
+
+def test_fields_left_in_english_are_flagged(store: StoreConfig) -> None:
+    source = good_listing()
+    target = TranslatedListing(title="Larkspur Moss Becher", body_html="<p>Der Becher ist aus Steinzeug.</p>",
+                               bullets=["Glazed stoneware, 350 ml", "8 x 11 cm", "Spülmaschinenfest", "Set mit 2"],
+                               meta_title="Moss Becher", meta_description="Zwei Becher aus Steinzeug.")
+    flagged = [i.field for i in check_translation(source, target, "de", store) if i.code == "translation_untranslated"]
+    assert flagged == ["translations.de.bullets[0]"]

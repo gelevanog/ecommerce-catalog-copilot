@@ -372,11 +372,12 @@ def against_gold(matched: dict[str, tuple[dict[str, Any], ProductRecord]]) -> di
 
 
 def translation_metrics(records: list[ProductRecord], languages: list[str], store: Any) -> dict[str, Any]:
-    from shelfwise.validate.translation import detect_language, glossary_hits, numbers
+    from shelfwise.validate.translation import _fields, detect_language, glossary_hits, numbers, untranslated
 
     out: dict[str, Any] = {}
     for lang in languages:
         present = lang_ok = numbers_ok = length_ok = 0
+        fields_total = fields_english = 0
         g_expected = g_found = 0
         keep_total = keep_ok = 0
         for r in records:
@@ -386,6 +387,8 @@ def translation_metrics(records: list[ProductRecord], languages: list[str], stor
             if t is None:
                 continue
             present += 1
+            fields_total += len(_fields(t))
+            fields_english += len(untranslated(r.listing, t, store.glossary_keep))
             src = " ".join(
                 plain(x)
                 for x in [
@@ -418,6 +421,7 @@ def translation_metrics(records: list[ProductRecord], languages: list[str], stor
             "glossary_terms": g_expected,
             "brand_kept_pct": _pct(keep_ok, keep_total),
             "length_ok_pct": _pct(length_ok, present),
+            "fields_left_in_english_pct": _pct(fields_english, fields_total),
         }
     return out
 
