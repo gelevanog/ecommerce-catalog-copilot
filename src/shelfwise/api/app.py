@@ -7,8 +7,10 @@ import logging
 from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Annotated, Any, TypeVar
+from typing import Annotated, Any, TypeVar, cast
+from urllib.parse import urlsplit
 
+import httpx
 from fastapi import Body, FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, PlainTextResponse
@@ -323,7 +325,14 @@ def create_app(settings: Settings | None = None, copilot: Copilot | None = None)
 
     @app.post("/api/push/{target}")
     def push(target: str, batch_id: str | None = None) -> dict[str, Any]:
-        results = guard(lambda: cp.push(target, batch_id or cp.db.latest_batch_id()))
+        client: httpx.Client | None = None
+        if "/mock/" in settings.shopify_url and "/mock/" in settings.woocommerce_url:
+            # the mocks are mounted in this app: route the push in-process instead of over HTTP to ourselves
+            from fastapi.testclient import TestClient
+
+            origin = urlsplit(settings.shopify_url)
+            client = cast(httpx.Client, TestClient(app, base_url=f"{origin.scheme}://{origin.netloc}"))
+        results = guard(lambda: cp.push(target, batch_id or cp.db.latest_batch_id(), client=client))
         return {
             "target": target,
             "ok": sum(r.ok for r in results),

@@ -16,7 +16,10 @@ FEEDS = DEMO / "feeds"
 
 def _demo(store: StoreConfig):  # type: ignore[no-untyped-def]
     return import_feeds(
-        [FeedInput(FEEDS / "larkspur_pricelist.xlsx", vendor="Larkspur"), FeedInput(FEEDS / "northbay_feed.csv", vendor="Northbay")],
+        [
+            FeedInput(FEEDS / "larkspur_pricelist.xlsx", vendor="Larkspur"),
+            FeedInput(FEEDS / "northbay_feed.csv", vendor="Northbay"),
+        ],
         store,
     )
 
@@ -33,7 +36,7 @@ def test_csv_delimiter_is_sniffed() -> None:
 
 
 def test_mapping_by_column_names() -> None:
-    _, header, body, mapping = preview_feed(FEEDS / "northbay_feed.csv")
+    mapping = preview_feed(FEEDS / "northbay_feed.csv")[3]
     targets = {m.column: m.target for m in mapping}
     assert targets["rrp_usd"] == "price"
     assert targets["material_composition"] == "material"
@@ -77,7 +80,9 @@ def test_duplicates_across_suppliers_are_merged_with_a_note(store: StoreConfig) 
 
 def test_planted_variant_problems_are_errors(store: StoreConfig) -> None:
     result = _demo(store)
-    flagged = [p for p in result.products if any(i.code in {"variant_inconsistent", "variant_price_outlier"} for i in p.issues)]
+    flagged = [
+        p for p in result.products if any(i.code in {"variant_inconsistent", "variant_price_outlier"} for i in p.issues)
+    ]
     assert len(flagged) == 4
     outlier = next(i for p in flagged for i in p.issues if i.code == "variant_price_outlier")
     assert "the other variants about" in outlier.message

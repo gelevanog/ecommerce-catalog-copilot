@@ -163,9 +163,9 @@ def build_evidence(
         ev.texts.append((f.id, text))
         if f.key == "dimensions" and isinstance(f.value, list):
             ev.quantities += [("length", float(v), f.id) for v in f.value]
-        elif f.key == "weight":
+        elif f.key == "weight" and isinstance(f.value, int | float):
             ev.quantities.append(("weight", float(f.value), f.id))
-        elif f.key == "capacity":
+        elif f.key == "capacity" and isinstance(f.value, int | float):
             ev.quantities.append(("volume", float(f.value), f.id))
         else:
             _add_quantities(ev, f.display, f.id)
@@ -174,8 +174,8 @@ def build_evidence(
                 ev.materials.setdefault(m, f.id)
         if f.key == "origin":
             ev.origin = (str(f.value).lower(), f.id)
-        if f.key == "count":
-            ev.counts.setdefault(int(f.value), f.id)
+        if f.key == "count" and str(f.value).split()[0].isdigit():
+            ev.counts.setdefault(int(str(f.value).split()[0]), f.id)
     for d in decisions:
         if not usable(d):
             continue

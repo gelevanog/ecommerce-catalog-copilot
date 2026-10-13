@@ -15,13 +15,25 @@ from shelfwise.validate.translation import check_translation, detect_language, g
 
 
 def fact(key: str, value: Any, display: str | None = None, fid: str = "") -> Fact:
-    return Fact(key=key, value=value, display=display or str(value), id=fid or f"F_{key}",
-                evidence=[Evidence(source="feed", ref=f"feed.csv · row 2 · {key}", quote=str(value))])
+    return Fact(
+        key=key,
+        value=value,
+        display=display or str(value),
+        id=fid or f"F_{key}",
+        evidence=[Evidence(source="feed", ref=f"feed.csv · row 2 · {key}", quote=str(value))],
+    )
 
 
 def product(*facts: Fact) -> ImportedProduct:
-    return ImportedProduct(id="p1", handle="larkspur-harbor-mug", supplier_file="feed.csv", title_raw="Harbor Mug",
-                           vendor="Larkspur", facts=list(facts), images=["a.jpg"])
+    return ImportedProduct(
+        id="p1",
+        handle="larkspur-harbor-mug",
+        supplier_file="feed.csv",
+        title_raw="Harbor Mug",
+        vendor="Larkspur",
+        facts=list(facts),
+        images=["a.jpg"],
+    )
 
 
 def seen(**kw: Any) -> ImageAttributes:
@@ -165,25 +177,46 @@ def good_listing() -> Listing:
 
 
 def test_structure_rules(store: StoreConfig) -> None:
-    assert [i for i in check_structure(good_listing(), store, vendor="Larkspur", image_count=1) if i.severity == "error"] == []
-    bad = good_listing().model_copy(update={
-        "title": "x" * 90, "bullets": ["one"], "product_type": "Gadgets", "category_id": 999999,
-        "body_html": "<div onclick='x()'>Hi</div>", "alt_texts": [],
-    })
+    assert [
+        i for i in check_structure(good_listing(), store, vendor="Larkspur", image_count=1) if i.severity == "error"
+    ] == []
+    bad = good_listing().model_copy(
+        update={
+            "title": "x" * 90,
+            "bullets": ["one"],
+            "product_type": "Gadgets",
+            "category_id": 999999,
+            "body_html": "<div onclick='x()'>Hi</div>",
+            "alt_texts": [],
+        }
+    )
     codes = {i.code for i in check_structure(bad, store, vendor="Larkspur", image_count=1)}
-    assert {"too_long", "bullet_count", "product_type", "category_invalid", "html_tag", "html_unsafe", "alt_text_missing", "title_pattern"} <= codes
+    assert {
+        "too_long",
+        "bullet_count",
+        "product_type",
+        "category_invalid",
+        "html_tag",
+        "html_unsafe",
+        "alt_text_missing",
+        "title_pattern",
+    } <= codes
 
 
 def test_validate_listing_combines_claims_and_translations(evidence: Any, store: StoreConfig) -> None:
     p = product(
-        fact("composition", "Glazed stoneware", fid="F1"), fact("dimensions", [8.0, 11.0], "8 x 11 cm", fid="F2"),
-        fact("capacity", 350, "350 ml", fid="F3"), fact("care", "Dishwasher safe", fid="F4"),
-        fact("origin", "Portugal", "Made in Portugal", fid="F5"), fact("count", 2, "2 units", fid="F6"),
+        fact("composition", "Glazed stoneware", fid="F1"),
+        fact("dimensions", [8.0, 11.0], "8 x 11 cm", fid="F2"),
+        fact("capacity", 350, "350 ml", fid="F3"),
+        fact("care", "Dishwasher safe", fid="F4"),
+        fact("origin", "Portugal", "Made in Portugal", fid="F5"),
+        fact("count", 2, "2 units", fid="F6"),
         fact("color", "blue", fid="F7"),
     )
     decisions = decide(p, seen(color="blue", pattern="polka dot", count=2))
-    found, provenance = validate_listing(good_listing(), store, facts=p.facts, decisions=decisions, images=[],
-                                         vendor="Larkspur", name="Moss Mug")
+    found, provenance = validate_listing(
+        good_listing(), store, facts=p.facts, decisions=decisions, images=[], vendor="Larkspur", name="Moss Mug"
+    )
     assert [i for i in found if i.severity == "error"] == []
     assert {i.code for i in found} >= {"translation_missing"}
     assert "F3" in provenance["body_html"]
@@ -195,10 +228,21 @@ def test_catalog_duplicates() -> None:
     def rec(i: int, title: str, body: str) -> ProductRecord:
         p = product()
         p.id, p.handle = f"p{i}", f"h{i}"
-        return ProductRecord(id=p.id, batch_id="b", product=p, listing=good_listing().model_copy(update={"title": title, "body_html": body}))
+        return ProductRecord(
+            id=p.id,
+            batch_id="b",
+            product=p,
+            listing=good_listing().model_copy(update={"title": title, "body_html": body}),
+        )
 
     body = good_listing().body_html
-    out = catalog_issues([rec(1, "Same title here", body), rec(2, "Same title here", body), rec(3, "Other", "<p>completely different words in this one</p>")])
+    out = catalog_issues(
+        [
+            rec(1, "Same title here", body),
+            rec(2, "Same title here", body),
+            rec(3, "Other", "<p>completely different words in this one</p>"),
+        ]
+    )
     assert {i.code for i in out["p1"]} == {"duplicate_title", "near_duplicate_description"}
     assert "p3" not in out
 
@@ -224,7 +268,9 @@ def test_translation_checks(store: StoreConfig) -> None:
         meta_description="Zwei blaue Becher aus Steinzeug, je 350 ml, spülmaschinenfest und in Portugal hergestellt.",
     )
     assert [i for i in check_translation(source, good, "de", store) if i.severity == "error"] == []
-    bad = good.model_copy(update={"body_html": "<p>The mug holds 300 ml.</p>", "bullets": ["x"], "title": "Moss Becher"})
+    bad = good.model_copy(
+        update={"body_html": "<p>The mug holds 300 ml.</p>", "bullets": ["x"], "title": "Moss Becher"}
+    )
     codes = {i.code for i in check_translation(source, bad, "de", store)}
     assert {"translation_numbers", "translation_bullets", "translation_keep_term", "translation_html"} <= codes
 
