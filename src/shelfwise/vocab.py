@@ -377,6 +377,34 @@ def parse_count(text: str) -> int | None:
     return None
 
 
+CLOSE_COLORS: frozenset[frozenset[str]] = frozenset(
+    frozenset(pair)
+    for pair in (
+        ("navy", "blue"),
+        ("blue", "light blue"),
+        ("teal", "green"),
+        ("olive", "green"),
+        ("mustard", "yellow"),
+        ("mustard", "orange"),
+        ("beige", "white"),
+        ("beige", "brown"),
+        ("burgundy", "red"),
+        ("burgundy", "purple"),
+        ("pink", "red"),
+        ("gray", "black"),
+        ("gray", "white"),
+    )
+)
+"""Shades a supplier and a photo may reasonably name differently. Unlike the families, this is not transitive:
+pink~red and red~burgundy, but pink vs burgundy is a disagreement worth a look."""
+
+
+def colors_close(a: str | None, b: str | None) -> bool:
+    if a is None or b is None:
+        return False
+    return a == b or frozenset((a, b)) in CLOSE_COLORS
+
+
 def colors_match(a: str | None, b: str | None, *, lenient: bool = False) -> bool:
     if a is None or b is None:
         return False

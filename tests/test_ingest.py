@@ -135,3 +135,10 @@ def test_import_from_bytes_and_unknown_vendor(store: StoreConfig, tmp_path: Path
     assert product.fact("color") is not None
     assert any(i.code == "no_vendor" for i in product.issues)
     assert any(i.code == "no_image" for i in product.issues)
+
+
+def test_color_words_in_the_name_are_not_the_color(store: StoreConfig, tmp_path: Path) -> None:
+    csv = "title;sku;price\nMoss Side Plates Set of 4;P-1;19.99\nHarbor Tee NVY;P-2;9.99\n"
+    result = import_feeds([FeedInput(tmp_path / "x.csv", data=csv.encode())], store)
+    colors = {p.title_raw: (p.fact("color").value if p.fact("color") else None) for p in result.products}
+    assert colors == {"Moss Side Plates Set of 4": None, "Harbor Tee NVY": "navy"}

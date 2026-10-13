@@ -283,9 +283,13 @@ def test_glossary_hits_allow_german_compounds() -> None:
 
 def test_fields_left_in_english_are_flagged(store: StoreConfig) -> None:
     source = good_listing()
-    target = TranslatedListing(title="Larkspur Moss Becher", body_html="<p>Der Becher ist aus Steinzeug.</p>",
-                               bullets=["Glazed stoneware, 350 ml", "8 x 11 cm", "Spülmaschinenfest", "Set mit 2"],
-                               meta_title="Moss Becher", meta_description="Zwei Becher aus Steinzeug.")
+    target = TranslatedListing(
+        title="Larkspur Moss Becher",
+        body_html="<p>Der Becher ist aus Steinzeug.</p>",
+        bullets=["Glazed stoneware, 350 ml", "8 x 11 cm", "Spülmaschinenfest", "Set mit 2"],
+        meta_title="Moss Becher",
+        meta_description="Zwei Becher aus Steinzeug.",
+    )
     flagged = [i.field for i in check_translation(source, target, "de", store) if i.code == "translation_untranslated"]
     assert flagged == ["translations.de.bullets[0]"]
 
@@ -296,3 +300,10 @@ def test_flowers_and_names_are_not_pattern_claims(store: StoreConfig) -> None:
     assert [i.code for i in check_text("title", "Larkspur Sorrel Flower Pot – Green", ev, store).issues] == []
     assert [i.code for i in check_text("body_html", "A vase for fresh flowers.", ev, store).issues] == []
     assert "unsupported_pattern" in [i.code for i in check_text("body_html", "A floral print vase.", ev, store).issues]
+
+
+def test_distant_shades_are_a_conflict() -> None:
+    d = {x.attribute: x for x in decide(product(fact("color", "pink")), seen(color="burgundy"))}
+    assert d["color"].status == "conflict"
+    d = {x.attribute: x for x in decide(product(fact("color", "light blue")), seen(color="teal"))}
+    assert d["color"].status == "conflict"

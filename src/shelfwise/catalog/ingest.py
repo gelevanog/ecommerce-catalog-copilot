@@ -201,7 +201,10 @@ def _feed_facts(row: _Row, store: StoreConfig, issues: list[Issue]) -> tuple[lis
             for w in title.split()
             if w.strip(",.").upper() in COLOR_ABBREVIATIONS
         ]
-        found += [c for c in canonical_all("color", title) if c not in found]
+        # color words that are part of the product's name ("Moss Side Plates") are not its color
+        name_words = {w.lower() for w in base_title(title, size=row.cells.get("size"), vendors=[]).split()}
+        rest = " ".join(w for w in title.split() if w.lower().strip(",.") not in name_words)
+        found += [c for c in canonical_all("color", rest) if c not in found]
         if found:
             facts.append(
                 Fact(

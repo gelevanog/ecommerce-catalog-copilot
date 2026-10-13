@@ -13,7 +13,7 @@ from __future__ import annotations
 from typing import Any
 
 from shelfwise.catalog.models import AttributeDecision, Evidence, ImageAttributes, ImportedProduct
-from shelfwise.vocab import COLOR_FAMILIES, colors_match
+from shelfwise.vocab import COLOR_FAMILIES, colors_close, colors_match
 
 CONFIDENT = 0.7
 USABLE_IMAGE_ONLY = {"color", "pattern", "count", "style"}
@@ -49,9 +49,9 @@ def _same(attribute: str, a: Any, b: Any, attrs: ImageAttributes | None) -> tupl
     if attribute == "color":
         if colors_match(a, b):
             return True, ""
-        if colors_match(a, b, lenient=True):
+        if colors_close(a, b):
             return True, f"close colors: feed “{a}”, photo “{b}”"
-        if attrs is not None and attrs.secondary_color and colors_match(a, attrs.secondary_color, lenient=True):
+        if attrs is not None and attrs.secondary_color and colors_close(a, attrs.secondary_color):
             return True, f"the feed names the product's second color ({a}); main color in the photo: {b}"
         return False, ""
     return a == b, ""
