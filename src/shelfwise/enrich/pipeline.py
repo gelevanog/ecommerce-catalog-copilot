@@ -132,15 +132,27 @@ def enrich(
     langs = languages if languages is not None else store.languages
     if translate and langs:
         started = time.monotonic()
+        translator = models.translate or models.text
         try:
-            translations, completion = translate_step.translate(models.translate or models.text, store, listing, langs, max_tokens=settings.llm_max_tokens)
-            _track(stats, completion, started)
-            for lang in [x for x in langs if x not in translations]:
-                started = time.monotonic()
-                extra, completion = translate_step.translate(models.translate or models.text, store, listing, [lang], max_tokens=settings.llm_max_tokens)
+            try:
+                translations, completion = translate_step.translate(translator, store, listing, langs, max_tokens=settings.llm_max_tokens)
                 _track(stats, completion, started)
-                translations.update(extra)
-            record.translation_attempts = 1 + len([x for x in langs if x not in translations])
+            except (LLMError, JSONReplyError) as exc:
+                # a reasoning model can spend the whole budget thinking about three languages: one at a time
+                _track(stats, None, started)
+                log.warning("translation of %s in one call failed (%s); one call per language", p.id, str(exc)[:80])
+                translations = {}
+            missing = [x for x in langs if x not in translations]
+            for lang in missing:
+                started = time.monotonic()
+                try:
+                    extra, completion = translate_step.translate(translator, store, listing, [lang], max_tokens=2 * settings.llm_max_tokens)
+                    _track(stats, completion, started)
+                    translations.update(extra)
+                except (LLMError, JSONReplyError) as exc:
+                    _track(stats, None, started)
+                    log.warning("translation of %s into %s failed: %s", p.id, lang, str(exc)[:80])
+            record.translation_attempts = 1 + len(missing)
             too_long = translate_step.length_problems(store, translations)
             if too_long:
                 started = time.monotonic()

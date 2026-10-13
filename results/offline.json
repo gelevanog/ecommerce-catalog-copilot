@@ -36,7 +36,7 @@
     "total": 45
    },
    "weight": {
-    "correct": 59,
+    "correct": 64,
     "total": 64
    },
    "capacity": {
@@ -186,11 +186,11 @@
  },
  "throughput": {
   "products": 64,
-  "wall_seconds": 4.8,
+  "wall_seconds": 4.7,
   "workers": 2,
-  "products_per_hour": 47852.1,
+  "products_per_hour": 49125.4,
   "seconds_per_product_p50": 0.1,
-  "seconds_per_product_p90": 0.1,
+  "seconds_per_product_p90": 0.2,
   "model_calls": 192,
   "calls_per_product": 3.0,
   "cached_calls": 0,

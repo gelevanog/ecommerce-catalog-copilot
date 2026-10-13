@@ -340,9 +340,9 @@ class Copilot:
         self.db.log("export_csv", {"products": len(records)}, actor=actor)
         return products_csv, translations, len(records)
 
-    def _mock_credentials(self) -> dict[str, str]:
+    def _mock_credentials(self, client: httpx.Client | None = None) -> dict[str, str]:
         base = self.settings.shopify_url.rsplit("/shopify", 1)[0]
-        response = httpx.get(f"{base}/credentials", timeout=10)
+        response = (client or httpx.Client(timeout=10)).get(f"{base}/credentials")
         response.raise_for_status()
         data: dict[str, str] = response.json()
         return data
@@ -350,7 +350,7 @@ class Copilot:
     def push(self, target: str, batch_id: str | None = None, *, client: httpx.Client | None = None,
              credentials: dict[str, str] | None = None, actor: str = "reviewer") -> list[PushResult]:
         records = self.approved(batch_id)
-        creds = credentials or self._mock_credentials()
+        creds = credentials or self._mock_credentials(client)
         results: list[PushResult] = []
         if target == "shopify":
             shop = ShopifyClient(self.settings.shopify_url, self.settings.shopify_token or creds["shopify_token"],
