@@ -82,6 +82,9 @@ class Settings(BaseSettings):
     llm_timeout_seconds: float = 180.0
     llm_max_tokens: int = 8000
     llm_reasoning_effort: str = "low"
+    """OpenRouter reasoning effort for the vision and copy calls ("off" disables reasoning)."""
+    translate_reasoning_effort: str = "off"
+    """Translation needs no reasoning: with it off, a free reasoning model answers in about 10 s instead of 60 s."""
     llm_max_calls: int = 3000
     """Hard cap on real requests per ledger file (retries included)."""
     llm_min_seconds_between_requests: float = 3.0

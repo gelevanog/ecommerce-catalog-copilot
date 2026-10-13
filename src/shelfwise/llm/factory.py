@@ -21,6 +21,7 @@ def build_model(
     provider: LLMProviderKind | None = None,
     model: str | None = None,
     fallback_models: list[str] | None = None,
+    reasoning: str | None = None,
 ) -> ChatModel:
     kind: LLMProviderKind = provider or settings.llm_provider
     if model:
@@ -64,7 +65,9 @@ def build_model(
         fallback_models=fallbacks if kind == "openrouter" else (),
         require_free=settings.free_only,
         timeout_seconds=settings.llm_timeout_seconds,
-        reasoning_effort=settings.llm_reasoning_effort if kind == "openrouter" else "",
+        reasoning_effort=(settings.llm_reasoning_effort if reasoning is None else reasoning)
+        if kind == "openrouter"
+        else "",
         send_temperature=settings.llm_send_temperature,
     )
 

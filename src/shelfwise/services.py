@@ -71,7 +71,9 @@ class Copilot:
             self._models = Models(
                 vision=model_for(self.settings, "vision", tag="vision"),
                 text=model_for(self.settings, "text", tag="copy"),
-                translate=model_for(self.settings, "text", tag="translate"),
+                translate=model_for(
+                    self.settings, "text", tag="translate", reasoning=self.settings.translate_reasoning_effort
+                ),
             )
         return self._models
 

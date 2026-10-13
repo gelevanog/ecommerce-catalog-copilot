@@ -66,6 +66,12 @@ class OpenAICompatibleModel:
         return f"{self.kind}/{self.model}"
 
     @property
+    def cache_salt(self) -> str:
+        """Part of the disk-cache key for settings that change answers (the default reasoning effort adds nothing,
+        so caches from earlier runs stay valid)."""
+        return f"reasoning={self.reasoning_effort}" if self.reasoning_effort not in ("", "low") else ""
+
+    @property
     def is_local(self) -> bool:
         return False
 
@@ -83,7 +89,9 @@ class OpenAICompatibleModel:
         if self.kind == "openrouter":
             if self.fallback_models:
                 body["models"] = [self.model, *self.fallback_models]
-            if self.reasoning_effort:
+            if self.reasoning_effort == "off":
+                body["reasoning"] = {"enabled": False}
+            elif self.reasoning_effort:
                 body["reasoning"] = {"effort": self.reasoning_effort}
         if json_mode and self.kind == "openai":
             body["response_format"] = {"type": "json_object"}

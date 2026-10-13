@@ -279,8 +279,8 @@ def _clean(text: str) -> str:
 def canonical(attribute: str, value: object) -> str | None:
     """The canonical vocabulary value for free text, or None when nothing in the text maps onto the vocabulary.
 
-    Longer phrases win over shorter ones ("light blue" before "blue", "stainless steel" before "steel"), and the
-    earliest match in the text wins among equally long ones ("navy with white stripes" is navy)."""
+    The earliest match in the text wins ("navy with white stripes" is navy), and at the same position the longer
+    phrase wins ("light blue" before "blue", "stainless steel" before "steel")."""
     if value is None:
         return None
     if attribute == "count":
@@ -302,13 +302,13 @@ def canonical(attribute: str, value: object) -> str | None:
     if text in synonyms:
         return synonyms[text]
     phrases = [(p, p) for p in values] + list(synonyms.items())
-    best: tuple[int, int, str] | None = None
+    best: tuple[int, int, str] | None = None  # (position, -length, value)
     padded = f" {text} "
     for phrase, target in phrases:
         index = padded.find(f" {phrase} ")
         if index < 0:
             continue
-        rank = (-len(phrase), index, target)
+        rank = (index, -len(phrase), target)
         if best is None or rank < best:
             best = rank
     return best[2] if best else None

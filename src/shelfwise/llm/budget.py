@@ -35,10 +35,12 @@ class DiskCache:
         self.directory = directory
 
     @staticmethod
-    def key(label: str, messages: Sequence[Message], max_tokens: int, temperature: float, json_mode: bool) -> str:
+    def key(
+        label: str, messages: Sequence[Message], max_tokens: int, temperature: float, json_mode: bool, salt: str = ""
+    ) -> str:
         material = json.dumps(
             {
-                "model": label,
+                "model": label + (f"|{salt}" if salt else ""),
                 "messages": list(messages),
                 "max_tokens": max_tokens,
                 "temperature": temperature,
@@ -184,7 +186,9 @@ class BudgetedModel:
     ) -> Completion:
         if self.inner.is_local:
             return self.inner.complete(messages, max_tokens=max_tokens, temperature=temperature, json_mode=json_mode)
-        key = DiskCache.key(self.inner.label, messages, max_tokens, temperature, json_mode)
+        key = DiskCache.key(
+            self.inner.label, messages, max_tokens, temperature, json_mode, str(getattr(self.inner, "cache_salt", ""))
+        )
         if self.cache is not None and (hit := self.cache.get(key)) is not None:
             return hit
         last: LLMError | None = None
