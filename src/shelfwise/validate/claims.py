@@ -291,6 +291,18 @@ def check_text(field_name: str, text: str, ev: EvidenceSet, store: StoreConfig, 
         if kind == "length" and unit == "m" and n > 5:
             continue  # "m" after a large number is usually not metres in copy
         _check_quantity(field_name, kind, n * factor, match.group(0), ev, issues, use)
+    # a pack's weight stated per item ("each plate weighs 2 kg" when 2 kg is the set)
+    if max(ev.counts) > 1:
+        for match in re.finditer(r"\beach\b[^.;]{0,40}?\bweighs?\b", lowered):
+            issues.append(
+                Issue(
+                    code="unsupported_spec",
+                    severity="error",
+                    field=field_name,
+                    span=match.group(0),
+                    message="The feed gives the weight of the pack, not of each item",
+                )
+            )
     # pack sizes
     for match in _COUNT_RE.finditer(body):
         token = next(g for g in match.groups() if g)

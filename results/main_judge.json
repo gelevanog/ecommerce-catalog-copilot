@@ -1,0 +1,608 @@
+{
+ "name": "main_judge",
+ "judge_model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+ "sample": 20,
+ "answered": 20,
+ "products_agree": 1,
+ "products_judge_only": 19,
+ "products_checker_only": 0,
+ "judge_claims": 72,
+ "judge_claims_by_field": {
+  "body_html": 32,
+  "meta_title": 12,
+  "meta_body_html": 14,
+  "weight": 2,
+  "material": 1,
+  "feature": 3,
+  "care": 2,
+  "brand": 1,
+  "benefit": 4,
+  "retailer": 1
+ },
+ "rows": [
+  {
+   "id": "p_cdf73908a7",
+   "title": "Northbay Ember Baseball Cap – Green",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "making it lightweight for everyday wear",
+     "why": "Benefit claim 'lightweight' not in facts; only weight 94g given."
+    },
+    {
+     "field": "body_html",
+     "claim": "to maintain its shape and color",
+     "why": "Guarantee about wash results not in facts; care instruction only says 'Machine wash cold'."
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Retailer/brand name not in facts; product brand is Northbay."
+    },
+    {
+     "field": "meta_description",
+     "claim": "offers a lightweight fit for everyday wear",
+     "why": "Benefit claim 'lightweight fit' not in facts; only weight 94g given."
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_60d88c2cea",
+   "title": "Northbay Clover Plate Set – Green Ceramic",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "The smooth glazed surface resists stains",
+     "why": "Stain resistance not mentioned in facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "suitable for everyday use",
+     "why": "Everyday use suitability not in facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "Each plate weighs 2.006 kg",
+     "why": "Weight per plate not specified in facts; facts give weight 2.006 kg without per-unit clarification"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand not in facts; facts state brand is Northbay"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_c0d9e22744",
+   "title": "Larkspur Sorrel Pot – Green",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "helps prevent overwatering",
+     "why": "Benefit claim not stated in facts; only drainage hole feature is given"
+    },
+    {
+     "field": "body_html",
+     "claim": "suit various indoor and outdoor settings",
+     "why": "Suitability claim not supported by facts"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/retailer name not in facts; feed lists brand as Larkspur"
+    },
+    {
+     "field": "meta_description",
+     "claim": "ideal for planting",
+     "why": "Benefit claim not in facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_08aea53191",
+   "title": "Larkspur Sorrel Crew Socks - Red Wool",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "weight",
+     "claim": "Each sock weighs 115 g",
+     "why": "Fact weight 115 g does not specify per sock; may be pack weight."
+    },
+    {
+     "field": "weight",
+     "claim": "Weight 115 g per sock",
+     "why": "Fact weight 115 g does not specify per sock; may be pack weight."
+    },
+    {
+     "field": "material",
+     "claim": "a soft wool material",
+     "why": "Softness not mentioned in facts."
+    },
+    {
+     "field": "feature",
+     "claim": "for added durability",
+     "why": "Durability benefit not stated in facts."
+    },
+    {
+     "field": "care",
+     "claim": "to maintain the wool’s softness",
+     "why": "Softness maintenance benefit not in facts."
+    },
+    {
+     "field": "feature",
+     "claim": "for durability",
+     "why": "Durability benefit not in facts."
+    },
+    {
+     "field": "feature",
+     "claim": "offer durability",
+     "why": "Durability benefit not in facts."
+    },
+    {
+     "field": "care",
+     "claim": "maintain quality",
+     "why": "Quality maintenance benefit not in facts."
+    },
+    {
+     "field": "brand",
+     "claim": "Fernhill & Co.",
+     "why": "Brand in facts is Larkspur; Fernhill & Co. not mentioned."
+    }
+   ],
+   "judge_fields": [
+    "brand",
+    "care",
+    "feature",
+    "material",
+    "weight"
+   ]
+  },
+  {
+   "id": "p_41135f0f4e",
+   "title": "Northbay Alpine Chopping Board – Brown Oak",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "Use it for cutting vegetables, fruit, bread and meats.",
+     "why": "Benefit claim about suitable uses not in product facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "to keep it in good condition",
+     "why": "Benefit claim about care outcome not in product facts"
+    },
+    {
+     "field": "meta_description",
+     "claim": "ideal for cutting vegetables, fruit, bread and meats",
+     "why": "Superlative benefit claim about suitable uses not in product facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html"
+   ]
+  },
+  {
+   "id": "p_f6dde11fac",
+   "title": "Larkspur Larch Crewneck Jumper - Burgundy",
+   "checker_fields": [],
+   "judge": [],
+   "judge_fields": []
+  },
+  {
+   "id": "p_e3f6d09ee6",
+   "title": "Larkspur Juniper Daypack – Black Canvas",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "for comfortable carrying during daily use",
+     "why": "Benefit claim about comfort not supported by facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "to keep the canvas looking fresh",
+     "why": "Benefit claim about appearance not supported by facts"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Retailer name not in product facts; brand is Larkspur"
+    },
+    {
+     "field": "meta_description",
+     "claim": "holds a laptop and essentials",
+     "why": "Capacity claim not explicitly supported by facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_960a411874",
+   "title": "Northbay Thistle Market Tote – Blue",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "to keep the denim looking fresh",
+     "why": "benefit claim about care outcome not present in facts"
+    },
+    {
+     "field": "meta_description",
+     "claim": "ideal for shopping, picnics and everyday carry",
+     "why": "benefit claim about suitability not supported by product data"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html"
+   ]
+  },
+  {
+   "id": "p_6b6f0d9d75",
+   "title": "Northbay Heather Sneakers – Green",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Retailer name not present in product facts"
+    }
+   ],
+   "judge_fields": [
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_d5639270ed",
+   "title": "Larkspur Quarry Throw Blanket – Mustard Wool",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "extra warmth and texture",
+     "why": "Benefit claim not supported by facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "Ideal for living rooms or bedrooms",
+     "why": "Usage claim not supported by facts"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/origin not in facts (brand is Larkspur)"
+    },
+    {
+     "field": "meta_description",
+     "claim": "ideal for adding warmth to sofas or beds",
+     "why": "Benefit claim not supported by facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_1e6438cbe9",
+   "title": "Larkspur Cedar Square Cushion – Green Linen",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "the insert can be aired out",
+     "why": "Care instruction for insert not provided in facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "The cover's zip makes removal simple",
+     "why": "Zip closure not mentioned in facts; only removable cover stated"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/retailer not in facts; brand is Larkspur"
+    },
+    {
+     "field": "meta_description",
+     "claim": "adds comfort and style",
+     "why": "Benefit claim not supported by facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_d5a26eadcf",
+   "title": "Northbay Tidal Cutting Board – Beige Bamboo",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "Use it for chopping vegetables, fruits, bread and more.",
+     "why": "Benefit/use claim not present in product facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "hand wash only to preserve the bamboo",
+     "why": "Benefit claim 'preserve the bamboo' not in facts; only care instruction 'Hand wash only' is given"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/retailer name not in facts; only brand 'Northbay' and origin 'Made in India' are provided"
+    },
+    {
+     "field": "meta_description",
+     "claim": "ideal for chopping vegetables, fruits and bread",
+     "why": "Benefit/use claim not present in product facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_190b46b5b3",
+   "title": "Northbay Harbor Serving Board – Brown",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "designed for presenting cheeses, breads and small plates",
+     "why": "Benefit claim not supported by product facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "hand wash it with mild soap and dry it promptly",
+     "why": "Care instruction details (mild soap, dry promptly) not in facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "Occasionally rub the surface with food‑safe oil to maintain the wood’s natural finish",
+     "why": "Care instruction detail (food-safe oil) and benefit claim not in facts"
+    },
+    {
+     "field": "meta_description",
+     "claim": "ideal for presenting cheeses, breads and small plates",
+     "why": "Benefit claim not supported by product facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html"
+   ]
+  },
+  {
+   "id": "p_accfe7a18c",
+   "title": "Northbay Aster Square Cushion – Green Cotton",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "for soft support",
+     "why": "Benefit claim not supported by facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "for added comfort",
+     "why": "Benefit claim not supported by facts"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/origin not in facts (brand is Northbay)"
+    },
+    {
+     "field": "meta_description",
+     "claim": "adds soft comfort to sofas, chairs or beds",
+     "why": "Benefit claim not supported by facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_0fa6f56011",
+   "title": "Larkspur Marlow Six-Panel Cap – Navy",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "benefit",
+     "claim": "provides shade",
+     "why": "not stated in facts; only curved brim feature listed"
+    },
+    {
+     "field": "benefit",
+     "claim": "make it easy to pair with casual outfits",
+     "why": "subjective benefit not in facts"
+    },
+    {
+     "field": "retailer",
+     "claim": "Fernhill & Co.",
+     "why": "not mentioned in product facts"
+    },
+    {
+     "field": "benefit",
+     "claim": "for shade",
+     "why": "benefit not in facts"
+    },
+    {
+     "field": "benefit",
+     "claim": "comfortable fit for everyday wear",
+     "why": "comfort and everyday wear not in facts"
+    }
+   ],
+   "judge_fields": [
+    "benefit",
+    "retailer"
+   ]
+  },
+  {
+   "id": "p_e9f02691f2",
+   "title": "Larkspur Fjord Mug – Orange Ceramic",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "making it convenient for daily use",
+     "why": "Benefit claim not supported by facts; facts only state dishwasher and microwave safe."
+    },
+    {
+     "field": "body_html",
+     "claim": "ready for serving hot or cold beverages",
+     "why": "Benefit claim about temperature suitability not explicitly in facts."
+    }
+   ],
+   "judge_fields": [
+    "body_html"
+   ]
+  },
+  {
+   "id": "p_e683bfe6c3",
+   "title": "Larkspur Moss Table Lamp – Gray",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/seller name not present in facts; only brand Larkspur is provided."
+    }
+   ],
+   "judge_fields": [
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_48c54b48fb",
+   "title": "Larkspur Kestrel T-Shirt – Pink Linen",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "relaxed fit",
+     "why": "No fact mentions fit; only style is 'modern' from photo"
+    },
+    {
+     "field": "body_html",
+     "claim": "suitable for everyday wear",
+     "why": "Benefit claim not supported by any fact"
+    },
+    {
+     "field": "body_html",
+     "claim": "feels breathable",
+     "why": "Breathability not stated in facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "softens with each wash",
+     "why": "No fact describes fabric change over time"
+    },
+    {
+     "field": "meta_description",
+     "claim": "breathable",
+     "why": "Breathability not stated in facts"
+    },
+    {
+     "field": "meta_description",
+     "claim": "relaxed fit",
+     "why": "No fact mentions fit"
+    },
+    {
+     "field": "meta_description",
+     "claim": "for everyday wear",
+     "why": "Benefit claim not supported by any fact"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html"
+   ]
+  },
+  {
+   "id": "p_1a503f53fe",
+   "title": "Larkspur Dune Pillar Candles – Pink",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "Always place on a heat‑resistant surface",
+     "why": "Care instruction not present in facts"
+    },
+    {
+     "field": "body_html",
+     "claim": "Keep away from drafts and flammable items",
+     "why": "Care instruction not present in facts"
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/retailer not in facts; facts state brand is Larkspur"
+    },
+    {
+     "field": "meta_description",
+     "claim": "for decorative lighting",
+     "why": "Benefit/usage claim not in facts"
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_body_html",
+    "meta_title"
+   ]
+  },
+  {
+   "id": "p_1c322df91d",
+   "title": "Northbay Ember Throw Pillow – Pink Wool",
+   "checker_fields": [],
+   "judge": [
+    {
+     "field": "body_html",
+     "claim": "feather‑filled insert provides extra loft",
+     "why": "Benefit claim 'extra loft' not supported by facts; only 'Feather-filled insert included' is stated."
+    },
+    {
+     "field": "meta_title",
+     "claim": "Fernhill & Co.",
+     "why": "Brand/retailer 'Fernhill & Co.' not present in facts; only brand 'Northbay' is given."
+    }
+   ],
+   "judge_fields": [
+    "body_html",
+    "meta_title"
+   ]
+  }
+ ]
+}

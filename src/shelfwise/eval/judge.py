@@ -24,7 +24,8 @@ You audit e-commerce listings for claims that are not supported by the product d
 supplier feed and the product photo) and the listing. List every statement in the listing that states a fact NOT
 given in the facts: an invented dimension, weight, capacity, material, color, pattern, pack size, feature, care
 instruction, certification, origin or benefit. Ignore general wording that states no fact ("a cozy addition to your
-home"). Also list superlatives, guarantees and health or environmental claims.
+home"). The store's own name and the product's brand are given and may appear anywhere. Also list
+superlatives, guarantees and health or environmental claims.
 Answer with JSON only: {{"unsupported": [{{"field": "<field name>", "claim": "<the words>", "why": "<short>"}}]}}
 Use [] when everything is supported."""
 
@@ -35,6 +36,8 @@ def judge_messages(record: ProductRecord) -> list[Message]:
 
     listing = record.listing
     payload: dict[str, Any] = {
+        "store": "Fernhill & Co.",
+        "brand": record.product.vendor or "",
         "product_name": display_title(record.product),
         "facts": facts_for_prompt(record.product.facts, record.decisions),
         "listing": {
@@ -53,7 +56,9 @@ def judge_messages(record: ProductRecord) -> list[Message]:
 
 
 def _field_key(field: str) -> str:
-    field = field.strip().lower().replace("description_html", "body_html").replace("description", "body_html")
+    field = field.strip().lower()
+    if field in {"description", "description_html", "body"}:
+        field = "body_html"
     m = re.match(r"(bullets|alt_texts)\s*\[?\s*(\d+)", field)
     if m:
         return f"{m.group(1)}[{m.group(2)}]"

@@ -77,3 +77,13 @@ claims:
     drainage: ["drainage hole", "drainage"]
     saucer: ["saucer"]
     burn time: ["burn time", "hours of burn"]
+    # added after the LLM judge's spot check found these in otherwise clean listings (README > LLM judge)
+    stain resistant: ["stain-resistant", "stain resistant", "resists stains", "stain resistance"]
+    fit: ["relaxed fit", "regular fit", "slim fit", "oversized fit", "regular-fit", "relaxed-fit"]
+    breathable: ["breathable", "moisture-wicking", "wicks moisture"]
+    softening: ["softens with", "gets softer"]
+    zip: ["zip", "zipper", "zipped"]
+    food safe: ["food-safe", "food safe"]
+    heat resistant: ["heat-resistant", "heat resistant", "oven safe", "oven-safe"]
+    fade resistant: ["fade-resistant", "fade resistant", "colorfast", "colourfast"]
+    wrinkle resistant: ["wrinkle-free", "wrinkle resistant", "crease-resistant"]

@@ -307,3 +307,23 @@ def test_distant_shades_are_a_conflict() -> None:
     assert d["color"].status == "conflict"
     d = {x.attribute: x for x in decide(product(fact("color", "light blue")), seen(color="teal"))}
     assert d["color"].status == "conflict"
+
+
+def test_pack_weight_stated_per_item_and_judge_found_phrases(store: StoreConfig) -> None:
+    p = product(
+        fact("weight", 2006, "2.006 kg", fid="F1"),
+        fact("count", 4, "4 units", fid="F2"),
+        fact("feature", "Removable cover", fid="F3"),
+    )
+    ev = build_evidence(p.facts, decide(p, seen(count=4)), [], "Moss Plates")
+    codes = [i.code for i in check_text("body_html", "Each plate weighs 2.006 kg.", ev, store).issues]
+    assert codes == ["unsupported_spec"]
+    for text in (
+        "Resists stains.",
+        "A relaxed fit.",
+        "Breathable cotton.",
+        "The zip makes removal simple.",
+        "Food-safe finish.",
+    ):
+        assert "unsupported_claim" in [i.code for i in check_text("body_html", text, ev, store).issues], text
+    assert check_text("body_html", "The set weighs 2.006 kg.", ev, store).issues == []

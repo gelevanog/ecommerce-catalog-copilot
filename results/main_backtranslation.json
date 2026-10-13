@@ -1,0 +1,237 @@
+{
+ "name": "main_backtranslation",
+ "model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+ "products": 10,
+ "by_language": {
+  "de": {
+   "n": 10,
+   "chrf_mean": 87.3,
+   "chrf_min": 74.3,
+   "numbers_kept_pct": 100.0
+  },
+  "es": {
+   "n": 10,
+   "chrf_mean": 90.6,
+   "chrf_min": 81.4,
+   "numbers_kept_pct": 100.0
+  },
+  "fr": {
+   "n": 10,
+   "chrf_mean": 89.1,
+   "chrf_min": 76.9,
+   "numbers_kept_pct": 100.0
+  }
+ },
+ "rows": [
+  {
+   "id": "p_1c322df91d",
+   "lang": "de",
+   "chrf": 74.3,
+   "numbers_kept": true,
+   "back": "Northbay Ember Cushion – Pink Wool The Ember cushion is a 45 x 45 cm square cushion made from 100% lambswool. It weighs 405 g. Use it to add a soft touch to your sofa or bed; the hidden zipper allows the cover to be removed, and the sprung filling provides extra volume. Care: Hand wash cold and dry flat. Dimensions 45 x 45 cm Weight 405 g Material 100% lambswool Care: Hand wash cold, dry flat Feat"
+  },
+  {
+   "id": "p_1c322df91d",
+   "lang": "es",
+   "chrf": 81.4,
+   "numbers_kept": true,
+   "back": "Northbay Ember Pillow – Pink Wool The Ember pillow is a 45 x 45 cm square pillow made of 100% lambswool. It weighs 405 g. Use it to add a soft touch to your sofa or bed; the hidden zipper allows you to remove the cover, and the feather filling provides extra volume. Care: hand wash cold and dry flat. Dimensions 45 x 45 cm Weight 405 g Material 100% lambswool Care: Hand wash cold, dry flat Feature:"
+  },
+  {
+   "id": "p_1c322df91d",
+   "lang": "fr",
+   "chrf": 76.9,
+   "numbers_kept": true,
+   "back": "Northbay Ember Cushion – Rose Wool The Ember cushion is a square cushion measuring 45 x 45 cm made from 100% lambswool. It weighs 405 g. Use it to add a soft touch to your sofa or bed; the hidden zip allows you to remove the cover, and the feather filling provides extra plumpness. Care: hand wash cold and dry flat. Dimensions 45 x 45 cm Weight 405 g Material 100% lambswool Care: Hand wash cold, dr"
+  },
+  {
+   "id": "p_1116b8f05e",
+   "lang": "de",
+   "chrf": 94.0,
+   "numbers_kept": true,
+   "back": "Northbay Pebble Water Glasses – Teal Glass The Northbay Pebble Water Glasses are tinted borosilicate glasses. Each glass measures 7 x 10 cm and holds 350 ml. Made in India. They are dishwasher safe, making cleaning easy. Ideal for serving cold drinks. Use them for water, juice, or any cold beverage, and enjoy the clear tinted look. Borosilicate glass construction Tinted glass finish Capacity of 35"
+  },
+  {
+   "id": "p_1116b8f05e",
+   "lang": "es",
+   "chrf": 91.9,
+   "numbers_kept": true,
+   "back": "Northbay Pebble Water Glasses – Teal Glass The Northbay Pebble Water Glasses are tinted borosilicate glass glasses. Each glass measures 7 x 10 cm and holds 350 ml. Made in India. They are dishwasher safe, making cleaning easy. Ideal for serving cold drinks. Use them for water, juice, or any cold beverage, and enjoy the clear tinted look. Borosilicate glass construction Tinted glass finish 350 ml c"
+  },
+  {
+   "id": "p_1116b8f05e",
+   "lang": "fr",
+   "chrf": 91.7,
+   "numbers_kept": true,
+   "back": "Northbay Pebble Water Glasses – Teal Glass The Northbay Pebble water glasses are tinted borosilicate glasses. Each glass measures 7 x 10 cm and holds 350 ml. Made in India. They are dishwasher safe, making cleaning simple. Ideal for serving cold drinks. Use them for water, juice, or any cold beverage, and enjoy the clear tinted appearance. Borosilicate glass construction Tinted glass finish 350 ml"
+  },
+  {
+   "id": "p_3772721477",
+   "lang": "de",
+   "chrf": 86.9,
+   "numbers_kept": true,
+   "back": "Northbay Willow Candle Set – Green The Northbay Willow Candle Set includes four unscented candles in uniform green. Each candle measures 7 x 15 cm and has a total weight of 1.102 kg. They feature a cotton wick for even burning. Light the cotton wick. The set contains four candles. Never leave a burning candle unattended. Dimensions 7 x 15 cm Weight 1.102 kg Color Green Cotton wick Unscented Unscen"
+  },
+  {
+   "id": "p_3772721477",
+   "lang": "es",
+   "chrf": 92.4,
+   "numbers_kept": true,
+   "back": "Northbay Willow Candle Set – Green The Northbay Willow Candle Set includes four unscented candles in a solid green finish. Each candle measures 7 x 15 cm and the set weighs 1,102 kg in total. They feature a cotton wick for a stable burn. Light the cotton wick. The set contains four candles. Never leave a burning candle unattended. Dimensions 7 x 15 cm Weight 1,102 kg Color green Cotton wick Unscen"
+  },
+  {
+   "id": "p_3772721477",
+   "lang": "fr",
+   "chrf": 98.5,
+   "numbers_kept": true,
+   "back": "Northbay Willow Candle Set – Green The Northbay Willow Candle Set includes four unscented candles in a solid green finish. Each candle measures 7 x 15 cm and weighs 1.102 kg in total. They feature a cotton wick for a steady burn. Light the cotton wick. The set contains four candles. Never leave a burning candle unattended. Dimensions 7 x 15 cm Weight 1.102 kg Color green Cotton wick Unscented Unsc"
+  },
+  {
+   "id": "p_49db14f08c",
+   "lang": "de",
+   "chrf": 86.4,
+   "numbers_kept": true,
+   "back": "Northbay Driftwood Daypack – grey polyester The Driftwood Daypack is a backpack made from 100% recycled polyester. It measures 44 x 30 cm, weighs 972 g, and is available in a uniform grey with a minimalist style. It features a padded laptop compartment, padded shoulder straps, and a front zip pocket for organized storage. Machine wash cold is the recommended care instruction. 100% recycled polyest"
+  },
+  {
+   "id": "p_49db14f08c",
+   "lang": "es",
+   "chrf": 95.2,
+   "numbers_kept": true,
+   "back": "Northbay Driftwood Daypack – grey polyester The Driftwood Daypack is a backpack made of 100% recycled polyester. It measures 44 x 30 cm, weighs 972 g, and comes in a solid grey color with a minimalist style. It includes a padded laptop sleeve, padded shoulder straps, and a front zippered pocket for organized storage. Machine wash cold is the recommended care instruction. 100% recycled polyester co"
+  },
+  {
+   "id": "p_49db14f08c",
+   "lang": "fr",
+   "chrf": 95.3,
+   "numbers_kept": true,
+   "back": "Northbay Driftwood Daypack – grey polyester The Driftwood Daypack is a backpack made from 100% recycled polyester. It measures 44 x 30 cm, weighs 972 g and is available in a solid grey colour with a minimalist style. It includes a padded laptop sleeve, padded shoulder straps and a front zip pocket for organised storage. Machine wash cold is the recommended care instruction. 100% recycled polyester"
+  },
+  {
+   "id": "p_acad48577f",
+   "lang": "de",
+   "chrf": 93.8,
+   "numbers_kept": true,
+   "back": "Northbay Brook Pillar Candle Trio – White Soy Wax The Brook Pillar Candle Trio is a set of two unscented pillar candles made from soy wax. Each candle measures 7 x 15 cm. The set weighs 801 g. Light the candle and enjoy up to 40 hours of burn time. The unscented soy wax produces a clean flame. Never leave a burning candle unattended. Soy wax composition Dimensions 7 x 15 cm Weight 801 g Burn time "
+  },
+  {
+   "id": "p_acad48577f",
+   "lang": "es",
+   "chrf": 96.7,
+   "numbers_kept": true,
+   "back": "Northbay Brook Pillar Candle Trio – White Soy Wax The Brook Pillar Candle Trio is a set of two unscented pillar candles made from soy wax. Each candle measures 7 x 15 cm. The set weighs 801 g. Light the candle and enjoy up to 40 hours of burn time. The unscented soy wax produces a clean flame. Never leave a burning candle unattended. Soy wax composition Dimensions 7 x 15 cm Weight 801 g Burn time "
+  },
+  {
+   "id": "p_acad48577f",
+   "lang": "fr",
+   "chrf": 92.9,
+   "numbers_kept": true,
+   "back": "Northbay Brook Pillar Candle Trio – White Soy Wax The Brook Pillar Candle Trio is a set of two unscented pillar candles made from soy wax. Each candle measures 7 x 15 cm. The set weighs 801 g. Light the candle and enjoy up to 40 hours of burn time. The unscented soy wax produces a clean flame. Never leave a burning candle unattended. Soy wax composition Dimensions 7 x 15 cm Weight 801 g Burn time "
+  },
+  {
+   "id": "p_a8372e185a",
+   "lang": "de",
+   "chrf": 91.1,
+   "numbers_kept": true,
+   "back": "Northbay Bramble Bottle Vase – Mustard Terracotta The Bramble Bottle Vase is a vase. It is made of terracotta and has a handcrafted glaze. The vase is watertight. It holds water securely. Its dimensions are 12 x 24 cm. It weighs 631 g. The material is terracotta. The glaze is handcrafted. The Bramble Bottle Vase holds water securely. Terracotta material Handcrafted glaze Watertight design Dimensio"
+  },
+  {
+   "id": "p_a8372e185a",
+   "lang": "es",
+   "chrf": 90.5,
+   "numbers_kept": true,
+   "back": "Northbay Bramble Bottle Vase – Mustard Terracotta The Bramble Bottle Vase is a vase. It is made of terracotta and has an artisanal glaze. The vase is watertight. It holds water securely. Its dimensions are 12 x 24 cm. It weighs 631 g. The material is terracotta. The glaze is artisanal. The Bramble Bottle Vase holds water securely. Terracotta material Artisanal glaze Watertight design Dimensions: 1"
+  },
+  {
+   "id": "p_a8372e185a",
+   "lang": "fr",
+   "chrf": 87.4,
+   "numbers_kept": true,
+   "back": "Northbay Bramble Bottle Vase – Mustard Terracotta The Bramble Bottle Vase is a vase. It is made of terracotta and features a hand-applied glaze. The vase is watertight. It holds water safely. Its dimensions are 12 x 24 cm. It weighs 631 g. The material is terracotta. The glaze is hand-applied. The Bramble Bottle Vase holds water safely. Terracotta material Hand-applied glaze Watertight design Dime"
+  },
+  {
+   "id": "p_8d1c191227",
+   "lang": "de",
+   "chrf": 88.5,
+   "numbers_kept": true,
+   "back": "Larkspur Marlow Side Plates – Pink Ceramic These Marlow Side Plates come in a set of four, each plate is pink with a uniform surface and minimalist style. They are made of stoneware, which is also described as ceramic, and measure 21.1 x 2 cm each. Each plate weighs a portion of the total weight of 1.783 kg, making the set stable yet manageable. They are microwave-safe and dishwasher-safe, and are"
+  },
+  {
+   "id": "p_8d1c191227",
+   "lang": "es",
+   "chrf": 93.3,
+   "numbers_kept": true,
+   "back": "Larkspur Marlow Side Plates – Pink Ceramic These Marlow side plates come in a set of four, each plate is pink with a solid finish and a minimalist style. They are made of stoneware, which is also described as ceramic, and measure 21.1 x 2 cm each. Each plate weighs a portion of the total 1.783 kg, making the set sturdy yet manageable. They are microwave and dishwasher safe, and made in Italy. Use "
+  },
+  {
+   "id": "p_8d1c191227",
+   "lang": "fr",
+   "chrf": 89.4,
+   "numbers_kept": true,
+   "back": "Larkspur Marlow Side Plates – Pink Ceramic These Marlow dessert plates are sold in a set of four, each plate is pink with a solid finish and a minimalist style. They are made of stoneware, also described as ceramic, and measure 21.1 x 2 cm each. Each plate accounts for a portion of the total weight of 1.783 kg, making the set sturdy yet manageable. They are microwave and dishwasher safe, and are m"
+  },
+  {
+   "id": "p_0ea492025a",
+   "lang": "de",
+   "chrf": 81.8,
+   "numbers_kept": true,
+   "back": "Larkspur Linden Cup – Yellow The Larkspur Linden Cup is a porcelain cup. It measures 8 x 11 cm and weighs 367 g. Made of porcelain, it holds 400 ml of liquid. It is dishwasher- and microwave-safe. Use it for hot or cold beverages and wash it on a normal cycle. Its capacity of 400 ml corresponds to a standard serving. Porcelain construction 8 x 11 cm dimensions 367 g weight 400 ml capacity Dishwash"
+  },
+  {
+   "id": "p_0ea492025a",
+   "lang": "es",
+   "chrf": 84.0,
+   "numbers_kept": true,
+   "back": "Larkspur Linden Mug – Yellow The Larkspur Linden mug is a porcelain mug. It measures 8 x 11 cm and weighs 367 g. Made of porcelain, it holds 400 ml of liquid. It is dishwasher and microwave safe. Use it for hot or cold beverages and wash on a normal cycle. Its 400 ml capacity corresponds to a standard serving. Porcelain construction Dimensions 8 x 11 cm Weight 367 g Capacity 400 ml Dishwasher safe"
+  },
+  {
+   "id": "p_0ea492025a",
+   "lang": "fr",
+   "chrf": 83.9,
+   "numbers_kept": true,
+   "back": "Mug Larkspur Linden – Yellow The Larkspur Linden mug is a porcelain mug. It measures 8 x 11 cm and weighs 367 g. Made of porcelain, it holds 400 ml of liquid. It is dishwasher and microwave safe. Use it for hot or cold beverages and wash it on a normal cycle. Its 400 ml capacity corresponds to a standard serving. Porcelain construction Dimensions 8 x 11 cm Weight 367 g Capacity 400 ml Dishwasher s"
+  },
+  {
+   "id": "p_accfe7a18c",
+   "lang": "de",
+   "chrf": 84.8,
+   "numbers_kept": true,
+   "back": "Northbay Aster Square Pillow – Green Cotton The Northbay Aster Square Pillow is a 45 x 45 cm square pillow weighing 285 g. It features a removable 100% cotton cover and includes a feather filling for soft support. To keep it fresh, machine wash the cover in cold water and tumble dry on low. The pillow is ready to be placed on a sofa, chair, or bed for added comfort. Composition: 100% Cotton Dimens"
+  },
+  {
+   "id": "p_accfe7a18c",
+   "lang": "es",
+   "chrf": 88.7,
+   "numbers_kept": true,
+   "back": "Northbay Aster Square Cushion – Green Cotton The Northbay Aster Square Cushion is a 45 x 45 cm square cushion weighing 285 g. It features a removable 100% cotton cover and includes a feather filling for soft support. To keep it fresh, machine wash the cover in cold water and tumble dry on low. The cushion is ready to place on a sofa, chair, or bed for added comfort. Composition: 100% cotton Dimens"
+  },
+  {
+   "id": "p_accfe7a18c",
+   "lang": "fr",
+   "chrf": 84.2,
+   "numbers_kept": true,
+   "back": "Northbay Aster Square Cushion – Green Cotton The Northbay Aster square cushion measures 45 x 45 cm and weighs 285 g. It features a removable cover made of 100% cotton and includes a feather filling for soft support. To keep it fresh, machine wash the cover in cold water and tumble dry on low heat. The cushion is ready to be placed on a sofa, chair, or bed for added comfort. Composition: 100% cotto"
+  },
+  {
+   "id": "p_60d88c2cea",
+   "lang": "de",
+   "chrf": 91.1,
+   "numbers_kept": true,
+   "back": "Northbay Clover Plate Set – Green Ceramic The Northbay Clover Plate Set includes plates made of glazed stoneware. Each plate measures 21 x 2 cm and weighs 2.006 kg. They are microwave-safe and can be cleaned in the dishwasher. Use them to serve hot or cold meals, from soups to salads. The smooth glazed surface is stain-resistant and suitable for everyday use. Glazed stoneware 21 x 2 cm 2.006 kg Mi"
+  },
+  {
+   "id": "p_60d88c2cea",
+   "lang": "es",
+   "chrf": 92.0,
+   "numbers_kept": true,
+   "back": "Northbay Clover Plate Set – Green Ceramic The Northbay Clover Plate Set includes plates made of glazed stoneware. Each plate measures 21 x 2 cm and weighs 2.006 kg. They are microwave-safe and can be cleaned in the dishwasher. Use them to serve hot or cold meals, from soups to salads. The smooth glazed surface resists stains and is suitable for daily use. Glazed stoneware 21 x 2 cm 2.006 kg Microw"
+  },
+  {
+   "id": "p_60d88c2cea",
+   "lang": "fr",
+   "chrf": 90.4,
+   "numbers_kept": true,
+   "back": "Northbay Clover Plate Set – Green Ceramic The Northbay Clover plate set includes stoneware plates with a glazed finish. Each plate measures 21 x 2 cm and weighs 2.006 kg. They are microwave-safe and can be cleaned in the dishwasher. Use them to serve hot or cold meals, from soups to salads. The smooth glazed surface resists stains and is suitable for everyday use. Glazed stoneware 21 x 2 cm 2.006 "
+  }
+ ]
+}
