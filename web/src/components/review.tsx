@@ -114,11 +114,11 @@ export function IssueLine({ issue, onWaive }: { issue: Issue; onWaive?: () => vo
   const tone = issue.severity === "error" ? "border-rose/40 bg-rose-soft/60" : issue.severity === "warning" ? "border-amber/30 bg-amber-soft/60" : "border-line bg-stone-50";
   return (
     <div className={`rounded-lg border px-2.5 py-1.5 text-[12px] ${tone} ${issue.waived ? "opacity-55" : ""}`}>
-      <div className="flex items-center gap-1.5">
-        <span className={`font-semibold ${issue.severity === "error" ? "text-rose" : issue.severity === "warning" ? "text-amber" : "text-muted"}`}>{issue.code}</span>
-        {issue.field ? <span className="mono text-[11px] text-muted">{issue.field}</span> : null}
+      <div className="flex min-w-0 items-center gap-1.5">
+        <span className={`shrink-0 font-semibold ${issue.severity === "error" ? "text-rose" : issue.severity === "warning" ? "text-amber" : "text-muted"}`}>{issue.code}</span>
+        {issue.field ? <span className="mono min-w-0 truncate text-[11px] text-muted" title={issue.field}>{issue.field}</span> : null}
         {onWaive && !issue.waived ? (
-          <button type="button" onClick={onWaive} className="ml-auto text-[11px] text-muted underline hover:text-ink">
+          <button type="button" onClick={onWaive} className="ml-auto shrink-0 text-[11px] text-muted underline hover:text-ink">
             accept
           </button>
         ) : null}

@@ -230,7 +230,9 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
                 </div>
               ))}
               <div className="pt-1 text-muted">
-                {record.stats.calls} model calls · {(record.stats.input_tokens + record.stats.output_tokens).toLocaleString()} tokens · {record.stats.seconds.toFixed(0)} s
+                {record.stats.calls} model calls · {(record.stats.input_tokens + record.stats.output_tokens).toLocaleString()} tokens
+                {record.stats.seconds >= 1 ? ` · ${record.stats.seconds.toFixed(0)} s` : ""}
+                {record.stats.models.length ? <div className="mono truncate">{record.stats.models.map((m) => m.split("/").pop()).join(" · ")}</div> : null}
               </div>
             </div>
           </Card>

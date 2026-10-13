@@ -111,6 +111,7 @@ export type StoreConfigInfo = {
   product_types: string[];
   limits: Record<string, number | number[]>;
   models: Record<string, string>;
+  listing_models: string[];
   taxonomy: string;
   voice: string;
   banned: string[];

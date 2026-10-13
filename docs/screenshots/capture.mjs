@@ -46,11 +46,12 @@ for (const shot of shots) {
   if (shot === "hero" || shot === "translations") {
     const page = await open(`${base}/products/${process.env.HERO_ID}`, shot === "hero" ? 1000 : 1000);
     if (shot === "translations") await clickText(page, "button", process.env.LANG_TAB || "DE");
-    if (shot === "hero" && process.env.HOVER_CHIP) {
-      const chips = await page.$$("span.relative");
-      const idx = Number(process.env.HOVER_CHIP);
-      if (chips[idx]) {
-        await chips[idx].hover();
+    if (shot === "hero" && process.env.HOVER_TEXT) {
+      // hover the first evidence chip with this text, to show where a stated fact came from
+      const handle = await page.evaluateHandle((t) => [...document.querySelectorAll("span.relative")].find((s) => s.innerText.trim() === t), process.env.HOVER_TEXT);
+      const el = handle.asElement();
+      if (el) {
+        await el.hover();
         await sleep(500);
       }
     }

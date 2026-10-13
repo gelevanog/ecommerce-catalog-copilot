@@ -47,11 +47,13 @@ export function Sidebar() {
         <div>
           Languages: {config?.languages.map((l) => l.toUpperCase()).join(" · ") ?? "-"}
         </div>
+        {config?.listing_models?.length ? (
+          <div className="break-words">
+            Listings by: <span className="text-white/80">{config.listing_models.map((m) => m.split("/").pop()).join(", ")}</span>
+          </div>
+        ) : null}
         <div className="break-words">
-          Vision: <span className="text-white/80">{config?.models.vision?.replace("openrouter/", "") ?? "-"}</span>
-        </div>
-        <div className="break-words">
-          Copy: <span className="text-white/80">{config?.models.text?.replace("openrouter/", "") ?? "-"}</span>
+          Re-enrich with: <span className="text-white/80">{config?.models.provider === "fake" ? "offline model" : config?.models.text?.replace("openrouter/", "") ?? "-"}</span>
         </div>
         <div>{config?.models.free_only === "true" ? "Free-only guard on" : "Paid models allowed"}</div>
       </div>

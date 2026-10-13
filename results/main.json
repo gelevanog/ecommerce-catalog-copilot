@@ -58,10 +58,10 @@
    "image_accuracy": 75.0,
    "image_correct": 48,
    "n": 64,
-   "feed_coverage": 68.8,
-   "feed_accuracy": 81.8,
+   "feed_coverage": 67.2,
+   "feed_accuracy": 83.7,
    "merged_coverage": 100.0,
-   "merged_accuracy": 78.1,
+   "merged_accuracy": 82.8,
    "image_accuracy_lenient": 92.2
   },
   "pattern": {
@@ -102,10 +102,10 @@
   },
   "conflicts": {
    "planted_feed_errors": 11,
-   "caught": 9,
-   "recall": 81.8,
-   "feed_values_right": 49,
-   "false_alarms": 2
+   "caught": 11,
+   "recall": 100.0,
+   "feed_values_right": 48,
+   "false_alarms": 0
   }
  },
  "listings": {
@@ -150,13 +150,11 @@
    }
   },
   "against_gold": {
-   "listings_with_wrong_color": 1,
+   "listings_with_wrong_color": 0,
    "listings_with_wrong_count": 0,
    "listings_with_wrong_material": 0,
-   "listings_with_any": 1,
-   "examples": [
-    "P022: color 'Gray' (true white)"
-   ]
+   "listings_with_any": 0,
+   "examples": []
   },
   "status": {
    "ready": 38,
@@ -215,16 +213,16 @@
  },
  "throughput_rerun_from_cache": {
   "products": 64,
-  "wall_seconds": 23.6,
+  "wall_seconds": 109.6,
   "workers": 3,
-  "products_per_hour": 9755.0,
+  "products_per_hour": 2102.0,
   "seconds_per_product_p50": 0.0,
   "seconds_per_product_p90": 0.1,
-  "model_calls": 198,
-  "calls_per_product": 3.09,
-  "cached_calls": 194,
-  "input_tokens_per_product": 3393,
-  "output_tokens_per_product": 6583,
+  "model_calls": 199,
+  "calls_per_product": 3.11,
+  "cached_calls": 190,
+  "input_tokens_per_product": 3413,
+  "output_tokens_per_product": 6557,
   "models": [
    "dots-studio/dots-3-note-preview:free",
    "nvidia/nemotron-3-super-120b-a12b:free"
