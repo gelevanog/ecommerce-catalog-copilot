@@ -1,0 +1,1143 @@
+{
+ "measured_on": "2026-10-13",
+ "main": {
+  "name": "main",
+  "provider": {
+   "provider": "openrouter",
+   "vision": "openrouter/dots-studio/dots-3-note-preview:free",
+   "text": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+   "free_only": "true"
+  },
+  "import": {
+   "rows": 107,
+   "products_expected": 64,
+   "products_imported": 64,
+   "products_matched": 64,
+   "column_mapping": {
+    "correct": 29,
+    "total": 29,
+    "wrong": []
+   },
+   "variants_grouped": {
+    "correct": 64,
+    "total": 64
+   },
+   "duplicates": {
+    "expected": 6,
+    "merged_rows": 6,
+    "found": 6
+   },
+   "variant_problems": {
+    "planted": 4,
+    "flagged": 4,
+    "false_flags": 0
+   },
+   "units": {
+    "dimensions": {
+     "correct": 45,
+     "total": 45
+    },
+    "weight": {
+     "correct": 64,
+     "total": 64
+    },
+    "capacity": {
+     "correct": 9,
+     "total": 9
+    },
+    "price": {
+     "correct": 63,
+     "total": 64
+    }
+   },
+   "supplier_claims_kept_as_facts": {
+    "leaked": 0,
+    "total": 22
+   }
+  },
+  "attributes": {
+   "color": {
+    "image_accuracy": 75.0,
+    "image_correct": 48,
+    "n": 64,
+    "feed_coverage": 67.2,
+    "feed_accuracy": 83.7,
+    "merged_coverage": 100.0,
+    "merged_accuracy": 82.8,
+    "image_accuracy_lenient": 92.2
+   },
+   "pattern": {
+    "image_accuracy": 90.6,
+    "image_correct": 58,
+    "n": 64,
+    "feed_coverage": 10.9,
+    "feed_accuracy": 71.4,
+    "merged_coverage": 100.0,
+    "merged_accuracy": 90.6
+   },
+   "material": {
+    "image_accuracy": 23.4,
+    "image_correct": 15,
+    "n": 64,
+    "feed_coverage": 79.7,
+    "feed_accuracy": 98.0,
+    "merged_coverage": 87.5,
+    "merged_accuracy": 96.4
+   },
+   "count": {
+    "image_accuracy": 100.0,
+    "image_correct": 64,
+    "n": 64,
+    "feed_coverage": 25.0,
+    "feed_accuracy": 75.0,
+    "merged_coverage": 100.0,
+    "merged_accuracy": 100.0
+   },
+   "style": {
+    "image_accuracy": 32.8,
+    "image_correct": 21,
+    "n": 64,
+    "feed_coverage": 0.0,
+    "feed_accuracy": null,
+    "merged_coverage": 100.0,
+    "merged_accuracy": 32.8
+   },
+   "conflicts": {
+    "planted_feed_errors": 11,
+    "caught": 11,
+    "recall": 100.0,
+    "feed_values_right": 48,
+    "false_alarms": 0
+   }
+  },
+  "listings": {
+   "listings": 64,
+   "category": {
+    "exact": 56,
+    "exact_pct": 87.5,
+    "same_branch_pct": 100.0,
+    "product_type_pct": 100.0
+   },
+   "claims": {
+    "english_fields": 626,
+    "fields_with_unsupported_claim": 1,
+    "hallucination_rate_pct": 0.2,
+    "products_with_unsupported_claim_first_draft": 9,
+    "unsupported_claims_first_draft": 14,
+    "products_with_unsupported_claim_final": 1,
+    "products_corrected": 10,
+    "banned_claims_final": 0,
+    "by_code_final": {
+     "unsupported_spec": 1
+    }
+   },
+   "seo_length": {
+    "title": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    },
+    "meta_title": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    },
+    "meta_description": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    },
+    "all_three": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    }
+   },
+   "against_gold": {
+    "listings_with_wrong_color": 0,
+    "listings_with_wrong_count": 0,
+    "listings_with_wrong_material": 0,
+    "listings_with_any": 0,
+    "examples": []
+   },
+   "status": {
+    "ready": 37,
+    "blocked": 4,
+    "needs_review": 23
+   }
+  },
+  "translations": {
+   "de": {
+    "translated": 64,
+    "language_ok_pct": 100.0,
+    "numbers_kept_pct": 100.0,
+    "glossary_pct": 98.3,
+    "glossary_terms": 60,
+    "brand_kept_pct": 100.0,
+    "length_ok_pct": 100.0,
+    "fields_left_in_english_pct": 0.9
+   },
+   "es": {
+    "translated": 64,
+    "language_ok_pct": 100.0,
+    "numbers_kept_pct": 100.0,
+    "glossary_pct": 100.0,
+    "glossary_terms": 60,
+    "brand_kept_pct": 100.0,
+    "length_ok_pct": 100.0,
+    "fields_left_in_english_pct": 0.5
+   },
+   "fr": {
+    "translated": 64,
+    "language_ok_pct": 100.0,
+    "numbers_kept_pct": 100.0,
+    "glossary_pct": 100.0,
+    "glossary_terms": 60,
+    "brand_kept_pct": 100.0,
+    "length_ok_pct": 100.0,
+    "fields_left_in_english_pct": 0.4
+   }
+  },
+  "throughput": {
+   "products": 64,
+   "wall_seconds": 1564.9,
+   "workers": 3,
+   "products_per_hour": 147.2,
+   "seconds_per_product_p50": 71.7,
+   "seconds_per_product_p90": 106.1,
+   "model_calls": 194,
+   "calls_per_product": 3.03,
+   "cached_calls": 14,
+   "input_tokens_per_product": 3338,
+   "output_tokens_per_product": 6484,
+   "models": [
+    "dots-studio/dots-3-note-preview:free",
+    "nvidia/nemotron-3-super-120b-a12b:free"
+   ]
+  },
+  "throughput_rerun_from_cache": {
+   "products": 64,
+   "wall_seconds": 121.9,
+   "workers": 3,
+   "products_per_hour": 1889.6,
+   "seconds_per_product_p50": 0.0,
+   "seconds_per_product_p90": 38.7,
+   "model_calls": 207,
+   "calls_per_product": 3.23,
+   "cached_calls": 190,
+   "input_tokens_per_product": 3671,
+   "output_tokens_per_product": 6923,
+   "models": [
+    "dots-studio/dots-3-note-preview:free",
+    "nvidia/nemotron-3-super-120b-a12b:free"
+   ]
+  }
+ },
+ "offline": {
+  "name": "offline",
+  "provider": {
+   "provider": "fake",
+   "vision": "fake/fake-pixels",
+   "text": "fake/fake-rules",
+   "free_only": "true"
+  },
+  "import": {
+   "rows": 107,
+   "products_expected": 64,
+   "products_imported": 64,
+   "products_matched": 64,
+   "column_mapping": {
+    "correct": 29,
+    "total": 29,
+    "wrong": []
+   },
+   "variants_grouped": {
+    "correct": 64,
+    "total": 64
+   },
+   "duplicates": {
+    "expected": 6,
+    "merged_rows": 6,
+    "found": 6
+   },
+   "variant_problems": {
+    "planted": 4,
+    "flagged": 4,
+    "false_flags": 0
+   },
+   "units": {
+    "dimensions": {
+     "correct": 45,
+     "total": 45
+    },
+    "weight": {
+     "correct": 64,
+     "total": 64
+    },
+    "capacity": {
+     "correct": 9,
+     "total": 9
+    },
+    "price": {
+     "correct": 63,
+     "total": 64
+    }
+   },
+   "supplier_claims_kept_as_facts": {
+    "leaked": 0,
+    "total": 22
+   }
+  },
+  "attributes": {
+   "color": {
+    "image_accuracy": 62.5,
+    "image_correct": 40,
+    "n": 64,
+    "feed_coverage": 68.8,
+    "feed_accuracy": 81.8,
+    "merged_coverage": 100.0,
+    "merged_accuracy": 73.4,
+    "image_accuracy_lenient": 76.6
+   },
+   "pattern": {
+    "image_accuracy": 29.7,
+    "image_correct": 19,
+    "n": 64,
+    "feed_coverage": 10.9,
+    "feed_accuracy": 71.4,
+    "merged_coverage": 100.0,
+    "merged_accuracy": 32.8
+   },
+   "material": {
+    "image_accuracy": 0.0,
+    "image_correct": 0,
+    "n": 64,
+    "feed_coverage": 79.7,
+    "feed_accuracy": 98.0,
+    "merged_coverage": 79.7,
+    "merged_accuracy": 98.0
+   },
+   "count": {
+    "image_accuracy": 93.8,
+    "image_correct": 60,
+    "n": 64,
+    "feed_coverage": 25.0,
+    "feed_accuracy": 75.0,
+    "merged_coverage": 100.0,
+    "merged_accuracy": 93.8
+   },
+   "style": {
+    "image_accuracy": 0.0,
+    "image_correct": 0,
+    "n": 64,
+    "feed_coverage": 0.0,
+    "feed_accuracy": null,
+    "merged_coverage": 0.0,
+    "merged_accuracy": null
+   },
+   "conflicts": {
+    "planted_feed_errors": 11,
+    "caught": 9,
+    "recall": 81.8,
+    "feed_values_right": 49,
+    "false_alarms": 9
+   }
+  },
+  "listings": {
+   "listings": 64,
+   "category": {
+    "exact": 46,
+    "exact_pct": 71.9,
+    "same_branch_pct": 84.4,
+    "product_type_pct": 92.2
+   },
+   "claims": {
+    "english_fields": 604,
+    "fields_with_unsupported_claim": 0,
+    "hallucination_rate_pct": 0.0,
+    "products_with_unsupported_claim_first_draft": 0,
+    "unsupported_claims_first_draft": 0,
+    "products_with_unsupported_claim_final": 0,
+    "products_corrected": 0,
+    "banned_claims_final": 0,
+    "by_code_final": {}
+   },
+   "seo_length": {
+    "title": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    },
+    "meta_title": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    },
+    "meta_description": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    },
+    "all_three": {
+     "ok": 64,
+     "total": 64,
+     "pct": 100.0
+    }
+   },
+   "against_gold": {
+    "listings_with_wrong_color": 11,
+    "listings_with_wrong_count": 4,
+    "listings_with_wrong_material": 0,
+    "listings_with_any": 15,
+    "examples": [
+     "P007: color 'Gray' (true burgundy)",
+     "P018: color 'Black' (true navy)",
+     "P021: color 'Gray' (true green)",
+     "P023: color 'Gray' (true olive)",
+     "P026: 'Set of 4' (true 2)",
+     "P027: color 'Black' (true navy)",
+     "P031: color 'Gray' (true white)",
+     "P034: color 'Purple' (true navy)",
+     "P037: color 'Gray' (true white)",
+     "P053: color 'Brown' (true burgundy)",
+     "P054: color 'Black' (true brown)",
+     "P058: 'Set of 4' (true 2)"
+    ]
+   },
+   "status": {
+    "ready": 43,
+    "blocked": 4,
+    "needs_review": 17
+   }
+  },
+  "translations": {
+   "de": {
+    "translated": 64,
+    "language_ok_pct": 100.0,
+    "numbers_kept_pct": 100.0,
+    "glossary_pct": 100.0,
+    "glossary_terms": 61,
+    "brand_kept_pct": 100.0,
+    "length_ok_pct": 100.0,
+    "fields_left_in_english_pct": 19.8
+   },
+   "es": {
+    "translated": 64,
+    "language_ok_pct": 100.0,
+    "numbers_kept_pct": 100.0,
+    "glossary_pct": 100.0,
+    "glossary_terms": 61,
+    "brand_kept_pct": 100.0,
+    "length_ok_pct": 100.0,
+    "fields_left_in_english_pct": 19.4
+   },
+   "fr": {
+    "translated": 64,
+    "language_ok_pct": 100.0,
+    "numbers_kept_pct": 100.0,
+    "glossary_pct": 100.0,
+    "glossary_terms": 61,
+    "brand_kept_pct": 100.0,
+    "length_ok_pct": 100.0,
+    "fields_left_in_english_pct": 20.6
+   }
+  },
+  "throughput": {
+   "products": 64,
+   "wall_seconds": 5.4,
+   "workers": 2,
+   "products_per_hour": 42634.5,
+   "seconds_per_product_p50": 0.1,
+   "seconds_per_product_p90": 0.2,
+   "model_calls": 192,
+   "calls_per_product": 3.0,
+   "cached_calls": 0,
+   "input_tokens_per_product": 0,
+   "output_tokens_per_product": 0,
+   "models": [
+    "fake-pixels",
+    "fake-rules"
+   ]
+  }
+ },
+ "vision_alt": {
+  "name": "vision_alt",
+  "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+  "attributes": {
+   "color": {
+    "image_accuracy": 78.1,
+    "image_correct": 50,
+    "n": 64,
+    "feed_coverage": 68.8,
+    "feed_accuracy": 81.8,
+    "merged_coverage": 98.4,
+    "merged_accuracy": 88.9,
+    "image_accuracy_lenient": 85.9
+   },
+   "pattern": {
+    "image_accuracy": 71.9,
+    "image_correct": 46,
+    "n": 64,
+    "feed_coverage": 10.9,
+    "feed_accuracy": 71.4,
+    "merged_coverage": 92.2,
+    "merged_accuracy": 78.0
+   },
+   "material": {
+    "image_accuracy": 12.5,
+    "image_correct": 8,
+    "n": 64,
+    "feed_coverage": 79.7,
+    "feed_accuracy": 98.0,
+    "merged_coverage": 85.9,
+    "merged_accuracy": 94.5
+   },
+   "count": {
+    "image_accuracy": 87.5,
+    "image_correct": 56,
+    "n": 64,
+    "feed_coverage": 25.0,
+    "feed_accuracy": 75.0,
+    "merged_coverage": 93.8,
+    "merged_accuracy": 95.0
+   },
+   "style": {
+    "image_accuracy": 29.7,
+    "image_correct": 19,
+    "n": 64,
+    "feed_coverage": 0.0,
+    "feed_accuracy": null,
+    "merged_coverage": 92.2,
+    "merged_accuracy": 32.2
+   },
+   "conflicts": {
+    "planted_feed_errors": 11,
+    "caught": 9,
+    "recall": 81.8,
+    "feed_values_right": 49,
+    "false_alarms": 2
+   }
+  },
+  "errors": 5,
+  "seconds_p50": 19.4
+ },
+ "judge": {
+  "name": "main_judge",
+  "judge_model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+  "sample": 20,
+  "answered": 20,
+  "products_agree": 1,
+  "products_judge_only": 19,
+  "products_checker_only": 0,
+  "judge_claims": 72,
+  "judge_claims_by_field": {
+   "body_html": 32,
+   "meta_title": 12,
+   "meta_body_html": 14,
+   "weight": 2,
+   "material": 1,
+   "feature": 3,
+   "care": 2,
+   "brand": 1,
+   "benefit": 4,
+   "retailer": 1
+  },
+  "examples": [
+   {
+    "id": "p_cdf73908a7",
+    "title": "Northbay Ember Baseball Cap – Green",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "body_html",
+      "claim": "making it lightweight for everyday wear",
+      "why": "Benefit claim 'lightweight' not in facts; only weight 94g given."
+     },
+     {
+      "field": "body_html",
+      "claim": "to maintain its shape and color",
+      "why": "Guarantee about wash results not in facts; care instruction only says 'Machine wash cold'."
+     },
+     {
+      "field": "meta_title",
+      "claim": "Fernhill & Co.",
+      "why": "Retailer/brand name not in facts; product brand is Northbay."
+     },
+     {
+      "field": "meta_description",
+      "claim": "offers a lightweight fit for everyday wear",
+      "why": "Benefit claim 'lightweight fit' not in facts; only weight 94g given."
+     }
+    ],
+    "judge_fields": [
+     "body_html",
+     "meta_body_html",
+     "meta_title"
+    ]
+   },
+   {
+    "id": "p_60d88c2cea",
+    "title": "Northbay Clover Plate Set – Green Ceramic",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "body_html",
+      "claim": "The smooth glazed surface resists stains",
+      "why": "Stain resistance not mentioned in facts"
+     },
+     {
+      "field": "body_html",
+      "claim": "suitable for everyday use",
+      "why": "Everyday use suitability not in facts"
+     },
+     {
+      "field": "body_html",
+      "claim": "Each plate weighs 2.006 kg",
+      "why": "Weight per plate not specified in facts; facts give weight 2.006 kg without per-unit clarification"
+     },
+     {
+      "field": "meta_title",
+      "claim": "Fernhill & Co.",
+      "why": "Brand not in facts; facts state brand is Northbay"
+     }
+    ],
+    "judge_fields": [
+     "body_html",
+     "meta_title"
+    ]
+   },
+   {
+    "id": "p_c0d9e22744",
+    "title": "Larkspur Sorrel Pot – Green",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "body_html",
+      "claim": "helps prevent overwatering",
+      "why": "Benefit claim not stated in facts; only drainage hole feature is given"
+     },
+     {
+      "field": "body_html",
+      "claim": "suit various indoor and outdoor settings",
+      "why": "Suitability claim not supported by facts"
+     },
+     {
+      "field": "meta_title",
+      "claim": "Fernhill & Co.",
+      "why": "Brand/retailer name not in facts; feed lists brand as Larkspur"
+     },
+     {
+      "field": "meta_description",
+      "claim": "ideal for planting",
+      "why": "Benefit claim not in facts"
+     }
+    ],
+    "judge_fields": [
+     "body_html",
+     "meta_body_html",
+     "meta_title"
+    ]
+   },
+   {
+    "id": "p_08aea53191",
+    "title": "Larkspur Sorrel Crew Socks - Red Wool",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "weight",
+      "claim": "Each sock weighs 115 g",
+      "why": "Fact weight 115 g does not specify per sock; may be pack weight."
+     },
+     {
+      "field": "weight",
+      "claim": "Weight 115 g per sock",
+      "why": "Fact weight 115 g does not specify per sock; may be pack weight."
+     },
+     {
+      "field": "material",
+      "claim": "a soft wool material",
+      "why": "Softness not mentioned in facts."
+     },
+     {
+      "field": "feature",
+      "claim": "for added durability",
+      "why": "Durability benefit not stated in facts."
+     },
+     {
+      "field": "care",
+      "claim": "to maintain the wool’s softness",
+      "why": "Softness maintenance benefit not in facts."
+     },
+     {
+      "field": "feature",
+      "claim": "for durability",
+      "why": "Durability benefit not in facts."
+     },
+     {
+      "field": "feature",
+      "claim": "offer durability",
+      "why": "Durability benefit not in facts."
+     },
+     {
+      "field": "care",
+      "claim": "maintain quality",
+      "why": "Quality maintenance benefit not in facts."
+     },
+     {
+      "field": "brand",
+      "claim": "Fernhill & Co.",
+      "why": "Brand in facts is Larkspur; Fernhill & Co. not mentioned."
+     }
+    ],
+    "judge_fields": [
+     "brand",
+     "care",
+     "feature",
+     "material",
+     "weight"
+    ]
+   },
+   {
+    "id": "p_41135f0f4e",
+    "title": "Northbay Alpine Chopping Board – Brown Oak",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "body_html",
+      "claim": "Use it for cutting vegetables, fruit, bread and meats.",
+      "why": "Benefit claim about suitable uses not in product facts"
+     },
+     {
+      "field": "body_html",
+      "claim": "to keep it in good condition",
+      "why": "Benefit claim about care outcome not in product facts"
+     },
+     {
+      "field": "meta_description",
+      "claim": "ideal for cutting vegetables, fruit, bread and meats",
+      "why": "Superlative benefit claim about suitable uses not in product facts"
+     }
+    ],
+    "judge_fields": [
+     "body_html",
+     "meta_body_html"
+    ]
+   },
+   {
+    "id": "p_e3f6d09ee6",
+    "title": "Larkspur Juniper Daypack – Black Canvas",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "body_html",
+      "claim": "for comfortable carrying during daily use",
+      "why": "Benefit claim about comfort not supported by facts"
+     },
+     {
+      "field": "body_html",
+      "claim": "to keep the canvas looking fresh",
+      "why": "Benefit claim about appearance not supported by facts"
+     },
+     {
+      "field": "meta_title",
+      "claim": "Fernhill & Co.",
+      "why": "Retailer name not in product facts; brand is Larkspur"
+     },
+     {
+      "field": "meta_description",
+      "claim": "holds a laptop and essentials",
+      "why": "Capacity claim not explicitly supported by facts"
+     }
+    ],
+    "judge_fields": [
+     "body_html",
+     "meta_body_html",
+     "meta_title"
+    ]
+   },
+   {
+    "id": "p_960a411874",
+    "title": "Northbay Thistle Market Tote – Blue",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "body_html",
+      "claim": "to keep the denim looking fresh",
+      "why": "benefit claim about care outcome not present in facts"
+     },
+     {
+      "field": "meta_description",
+      "claim": "ideal for shopping, picnics and everyday carry",
+      "why": "benefit claim about suitability not supported by product data"
+     }
+    ],
+    "judge_fields": [
+     "body_html",
+     "meta_body_html"
+    ]
+   },
+   {
+    "id": "p_6b6f0d9d75",
+    "title": "Northbay Heather Sneakers – Green",
+    "checker_fields": [],
+    "judge": [
+     {
+      "field": "meta_title",
+      "claim": "Fernhill & Co.",
+      "why": "Retailer name not present in product facts"
+     }
+    ],
+    "judge_fields": [
+     "meta_title"
+    ]
+   }
+  ]
+ },
+ "backtranslation": {
+  "name": "main_backtranslation",
+  "model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+  "products": 10,
+  "by_language": {
+   "de": {
+    "n": 10,
+    "chrf_mean": 87.3,
+    "chrf_min": 74.3,
+    "numbers_kept_pct": 100.0
+   },
+   "es": {
+    "n": 10,
+    "chrf_mean": 90.6,
+    "chrf_min": 81.4,
+    "numbers_kept_pct": 100.0
+   },
+   "fr": {
+    "n": 10,
+    "chrf_mean": 89.1,
+    "chrf_min": 76.9,
+    "numbers_kept_pct": 100.0
+   }
+  },
+  "examples": [
+   {
+    "id": "p_1c322df91d",
+    "lang": "de",
+    "chrf": 74.3,
+    "numbers_kept": true,
+    "back": "Northbay Ember Cushion – Pink Wool The Ember cushion is a 45 x 45 cm square cushion made from 100% lambswool. It weighs 405 g. Use it to add a soft touch to your sofa or bed; the hidden zipper allows the cover to be removed, and the sprung filling provides extra volume. Care: Hand wash cold and dry flat. Dimensions 45 x 45 cm Weight 405 g Material 100% lambswool Care: Hand wash cold, dry flat Feat"
+   },
+   {
+    "id": "p_1c322df91d",
+    "lang": "es",
+    "chrf": 81.4,
+    "numbers_kept": true,
+    "back": "Northbay Ember Pillow – Pink Wool The Ember pillow is a 45 x 45 cm square pillow made of 100% lambswool. It weighs 405 g. Use it to add a soft touch to your sofa or bed; the hidden zipper allows you to remove the cover, and the feather filling provides extra volume. Care: hand wash cold and dry flat. Dimensions 45 x 45 cm Weight 405 g Material 100% lambswool Care: Hand wash cold, dry flat Feature:"
+   },
+   {
+    "id": "p_1c322df91d",
+    "lang": "fr",
+    "chrf": 76.9,
+    "numbers_kept": true,
+    "back": "Northbay Ember Cushion – Rose Wool The Ember cushion is a square cushion measuring 45 x 45 cm made from 100% lambswool. It weighs 405 g. Use it to add a soft touch to your sofa or bed; the hidden zip allows you to remove the cover, and the feather filling provides extra plumpness. Care: hand wash cold and dry flat. Dimensions 45 x 45 cm Weight 405 g Material 100% lambswool Care: Hand wash cold, dr"
+   },
+   {
+    "id": "p_1116b8f05e",
+    "lang": "de",
+    "chrf": 94.0,
+    "numbers_kept": true,
+    "back": "Northbay Pebble Water Glasses – Teal Glass The Northbay Pebble Water Glasses are tinted borosilicate glasses. Each glass measures 7 x 10 cm and holds 350 ml. Made in India. They are dishwasher safe, making cleaning easy. Ideal for serving cold drinks. Use them for water, juice, or any cold beverage, and enjoy the clear tinted look. Borosilicate glass construction Tinted glass finish Capacity of 35"
+   },
+   {
+    "id": "p_1116b8f05e",
+    "lang": "es",
+    "chrf": 91.9,
+    "numbers_kept": true,
+    "back": "Northbay Pebble Water Glasses – Teal Glass The Northbay Pebble Water Glasses are tinted borosilicate glass glasses. Each glass measures 7 x 10 cm and holds 350 ml. Made in India. They are dishwasher safe, making cleaning easy. Ideal for serving cold drinks. Use them for water, juice, or any cold beverage, and enjoy the clear tinted look. Borosilicate glass construction Tinted glass finish 350 ml c"
+   },
+   {
+    "id": "p_1116b8f05e",
+    "lang": "fr",
+    "chrf": 91.7,
+    "numbers_kept": true,
+    "back": "Northbay Pebble Water Glasses – Teal Glass The Northbay Pebble water glasses are tinted borosilicate glasses. Each glass measures 7 x 10 cm and holds 350 ml. Made in India. They are dishwasher safe, making cleaning simple. Ideal for serving cold drinks. Use them for water, juice, or any cold beverage, and enjoy the clear tinted appearance. Borosilicate glass construction Tinted glass finish 350 ml"
+   },
+   {
+    "id": "p_3772721477",
+    "lang": "de",
+    "chrf": 86.9,
+    "numbers_kept": true,
+    "back": "Northbay Willow Candle Set – Green The Northbay Willow Candle Set includes four unscented candles in uniform green. Each candle measures 7 x 15 cm and has a total weight of 1.102 kg. They feature a cotton wick for even burning. Light the cotton wick. The set contains four candles. Never leave a burning candle unattended. Dimensions 7 x 15 cm Weight 1.102 kg Color Green Cotton wick Unscented Unscen"
+   },
+   {
+    "id": "p_3772721477",
+    "lang": "es",
+    "chrf": 92.4,
+    "numbers_kept": true,
+    "back": "Northbay Willow Candle Set – Green The Northbay Willow Candle Set includes four unscented candles in a solid green finish. Each candle measures 7 x 15 cm and the set weighs 1,102 kg in total. They feature a cotton wick for a stable burn. Light the cotton wick. The set contains four candles. Never leave a burning candle unattended. Dimensions 7 x 15 cm Weight 1,102 kg Color green Cotton wick Unscen"
+   }
+  ]
+ },
+ "smoke_vision": {
+  "products": [
+   "P002",
+   "P017",
+   "P007",
+   "P055",
+   "P008",
+   "P014"
+  ],
+  "models": {
+   "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+    "answered": 6,
+    "color": 6,
+    "pattern": 5,
+    "count": 6,
+    "material": 0,
+    "median_seconds": 21.9
+   },
+   "dots-studio/dots-3-note-preview:free": {
+    "answered": 6,
+    "color": 6,
+    "pattern": 5,
+    "count": 6,
+    "material": 2,
+    "median_seconds": 21.4
+   },
+   "google/gemma-4-31b-it:free": {
+    "answered": 0,
+    "color": 0,
+    "pattern": 0,
+    "count": 0,
+    "material": 0,
+    "median_seconds": null
+   },
+   "google/gemma-4-26b-a4b-it:free": {
+    "answered": 0,
+    "color": 0,
+    "pattern": 0,
+    "count": 0,
+    "material": 0,
+    "median_seconds": null
+   }
+  },
+  "free_models": [
+   {
+    "id": "apodex/apodex-1.1-mini:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 262144
+   },
+   {
+    "id": "dots-studio/dots-3-note-preview:free",
+    "input_modalities": [
+     "text",
+     "image"
+    ],
+    "context_length": 512000
+   },
+   {
+    "id": "liquid/lfm-2.5-2.6b:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 65536
+   },
+   {
+    "id": "nvidia/nemotron-3.5-lightning:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 1000000
+   },
+   {
+    "id": "thinkingmachines/inkling-small:free",
+    "input_modalities": [
+     "text",
+     "image",
+     "audio"
+    ],
+    "context_length": 1048576
+   },
+   {
+    "id": "poolside/laguna-s-2.1:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 262144
+   },
+   {
+    "id": "thinkingmachines/inkling:free",
+    "input_modalities": [
+     "text",
+     "image",
+     "audio"
+    ],
+    "context_length": 1048576
+   },
+   {
+    "id": "poolside/laguna-xs-2.1:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 262144
+   },
+   {
+    "id": "cohere/north-mini-code:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 256000
+   },
+   {
+    "id": "nvidia/nemotron-3.5-content-safety:free",
+    "input_modalities": [
+     "text",
+     "image"
+    ],
+    "context_length": 128000
+   },
+   {
+    "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 1000000
+   },
+   {
+    "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "input_modalities": [
+     "text",
+     "audio",
+     "image",
+     "video"
+    ],
+    "context_length": 256000
+   },
+   {
+    "id": "google/gemma-4-26b-a4b-it:free",
+    "input_modalities": [
+     "image",
+     "text",
+     "video"
+    ],
+    "context_length": 262144
+   },
+   {
+    "id": "google/gemma-4-31b-it:free",
+    "input_modalities": [
+     "image",
+     "text",
+     "video"
+    ],
+    "context_length": 262144
+   },
+   {
+    "id": "nvidia/nemotron-3-super-120b-a12b:free",
+    "input_modalities": [
+     "text"
+    ],
+    "context_length": 262144
+   }
+  ]
+ },
+ "ledger": {
+  "requests": 546,
+  "first": "2026-10-13T04:34:26+00:00",
+  "last": "2026-10-13T07:21:25+00:00",
+  "status": {
+   "retryable_error": 160,
+   "ok": 374,
+   "error": 12
+  },
+  "by_tag": {
+   "smoke": 62,
+   "try": 6,
+   "vision": 62,
+   "copy": 85,
+   "translate": 101,
+   "eval:vision_alt": 135,
+   "eval:judge": 65,
+   "eval:backtranslate": 30
+  },
+  "requested_models": {
+   "google/gemma-4-31b-it:free": 23,
+   "google/gemma-4-26b-a4b-it:free": 20,
+   "dots-studio/dots-3-note-preview:free": 71,
+   "thinkingmachines/inkling-small:free": 1,
+   "thinkingmachines/inkling:free": 1,
+   "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": 144,
+   "nvidia/nemotron-3-super-120b-a12b:free": 221,
+   "nvidia/nemotron-3-ultra-550b-a55b:free": 65
+  },
+  "served_models": {
+   "dots-studio/dots-3-note-preview:free": 70,
+   "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": 67,
+   "nvidia/nemotron-3-super-120b-a12b:free": 213,
+   "nvidia/nemotron-3-ultra-550b-a55b:free": 24
+  },
+  "all_free": true,
+  "input_tokens": 360862,
+  "output_tokens": 661197
+ },
+ "cost_per_1000_products": {
+  "free_models_usd": 0.0,
+  "tokens_per_product": {
+   "input": 3338,
+   "output": 6484
+  },
+  "anthropic/claude-haiku-5.5": 3.58,
+  "anthropic/claude-sonnet-5.5": 71.52,
+  "google/gemini-3.5-flash-lite": 17.21,
+  "google/gemma-4-31b-it": 2.5,
+  "openai/gpt-5.4-mini": 31.68,
+  "nvidia/nemotron-3-super-120b-a12b": 3.18
+ },
+ "prices": {
+  "source": "https://openrouter.ai/api/v1/models",
+  "prices": {
+   "anthropic/claude-haiku-5.5": {
+    "input_per_million": 0.1,
+    "output_per_million": 0.5
+   },
+   "anthropic/claude-sonnet-5.5": {
+    "input_per_million": 2.0,
+    "output_per_million": 10.0
+   },
+   "google/gemini-3.5-flash-lite": {
+    "input_per_million": 0.3,
+    "output_per_million": 2.5
+   },
+   "google/gemma-4-31b-it": {
+    "input_per_million": 0.09,
+    "output_per_million": 0.34
+   },
+   "openai/gpt-5.4-mini": {
+    "input_per_million": 0.75,
+    "output_per_million": 4.5
+   },
+   "nvidia/nemotron-3-super-120b-a12b": {
+    "input_per_million": 0.08,
+    "output_per_million": 0.45
+   }
+  }
+ },
+ "headline": {
+  "products": 64,
+  "color_accuracy_image": 75.0,
+  "pattern_accuracy_image": 90.6,
+  "count_accuracy_image": 100.0,
+  "material_accuracy_image": 23.4,
+  "conflicts_caught": {
+   "planted_feed_errors": 11,
+   "caught": 11,
+   "recall": 100.0,
+   "feed_values_right": 48,
+   "false_alarms": 0
+  },
+  "category_exact": 87.5,
+  "hallucination_rate_final": 0.2,
+  "seo_all_three": 100.0,
+  "requests": 546,
+  "all_free": true
+ }
+}

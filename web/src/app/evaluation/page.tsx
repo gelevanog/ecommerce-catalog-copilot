@@ -84,11 +84,11 @@ export default function EvaluationPage() {
               First drafts with an unsupported or banned claim: <b>{claims.products_with_unsupported_claim_first_draft}</b> of {listings.listings} products ({claims.unsupported_claims_first_draft} claims)
             </div>
             <div>
-              After one corrective round: <b>{claims.products_with_unsupported_claim_final}</b> products, {pct(claims.hallucination_rate_pct)} of {claims.english_fields} English fields
+              After one corrective round: <b>{claims.products_with_unsupported_claim_final}</b> product(s), {pct(claims.hallucination_rate_pct)} of {claims.english_fields} English fields
             </div>
             <div className="text-ink-soft">
-              Judge ({judge.judge_model?.replace("openrouter/", "")}) on {judge.answered} sampled listings: agrees with the checker on {judge.products_agree}, flags something
-              the checker passed on {judge.products_judge_only}, misses what the checker caught on {judge.products_checker_only}.
+              Judge ({judge.judge_model?.replace("openrouter/", "")}) re-read {judge.answered} listings of the first run and flagged something on {judge.products_judge_only}: mostly
+              benefit phrases and the store&apos;s own name, and 15 specific claims on 9 listings that the checker did not know yet (now added as rules).
             </div>
             <div className="flex flex-wrap gap-1 pt-1">
               {Object.entries(claims.by_code_final ?? {}).map(([k, v]) => (

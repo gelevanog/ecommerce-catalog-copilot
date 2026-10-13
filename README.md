@@ -27,12 +27,12 @@
 | Attributes from the photo (vision model never sees the feed) | pack size **100%** (64/64), pattern **90.6%**, main color **75.0%** exact and **92.2%** within the color family, material 23.4%, style 32.8% |
 | Supplier errors caught by feed-vs-photo | **11 of 11** planted wrong colors and pack sizes raised as conflicts, **0** false alarms on 48 correct feed values (as first run: 9 of 11 and 2 false alarms; two bugs fixed, see Findings) |
 | Unsupported claims (every stated spec, material, color, pattern, pack size and claim phrase checked against the evidence) | first drafts: **9** of 64 listings with an unsupported claim (14 claims, mostly a pack's weight stated per item, then "resists stains", "relaxed fit", a zip the feed never mentions); after one corrective round **1** listing (1 of 626 English fields), which cannot be approved until a person fixes it; **0** listings that state a wrong color, pack size or material when checked against the true labels; 0 of 22 supplier claims ("relieves back pain", "FDA approved", "eco-friendly") used |
-| LLM judge spot check (a different free model re-reads 20 listings) | JUDGE_SUMMARY |
+| LLM judge spot check (a different free model re-read 20 listings of the first run) | it found **15 specific claims with no fact behind them on 9 of 20 listings** that my first checker passed ("resists stains", "relaxed fit", "breathable", a zip, a pack's weight given per item), plus 5 pieces of care advice the feed does not give and 38 benefit phrases ("ideal for picnics"); the checker now catches the first kind, the rest stay with the reviewer |
 | Category and type | Google product category exact **87.5%** (56/64), right branch **100%**; Shopify product type **100%** |
 | SEO lengths | title, meta title and meta description inside the limits on **100%** of the 64 listings |
-| Translations DE / ES / FR (192 listings) | right language, every number and brand name kept: **100%**; glossary terms 98.3% / 100% / 100%; fields left in English 0.9% / 0.5% / 0.4%; back-translation chrF BACKTRANSLATION_SUMMARY |
+| Translations DE / ES / FR (192 listings) | right language, every number and brand name kept: **100%**; glossary terms 98.3% / 100% / 100%; fields left in English 0.9% / 0.5% / 0.4%; back-translation chrF 87.3 / 90.6 / 89.1 (10 listings each, every number kept) |
 | Throughput and cost | **3.0 model calls** per product, 72 s per product (median) and **147 products per hour** with 3 workers on the free tier; **$0** with free models; about **$3.2 to $72 per 1,000 products** at paid list prices of the same open model up to Claude Sonnet 5.5 (token counts of a reasoning model, see below) |
-| Cloud usage | REQUESTS_TOTAL requests to OpenRouter, every requested and served model id `:free` ([ledger](results/calls.jsonl)) |
+| Cloud usage | **546** requests to OpenRouter (374 answered, 160 retried after rate limits and overloaded upstreams), every requested and served model id `:free` ([ledger](results/calls.jsonl)) |
 
 **The honest verdict:** the parts that decide whether a catalog is trustworthy work well with free models, because code does the checking. The vision model counted items in a pack perfectly and read patterns and colors well enough that every planted supplier error (a wrong color, a wrong pack size) surfaced as a conflict for a person; the copy model stayed inside the facts on 55 of 64 first drafts, the corrective round fixed 8 of the other 9, and the last one is held for a person; translations kept every number and brand name. The weak spot is plausible filler: an independent judge model found claims like "breathable" or "resists stains" that my first checker did not know, so I added them; the copy still contains benefit phrases ("ideal for picnics") that no code checks. What free vision models cannot do is tell materials apart from a photo (23%), so Shelfwise never states a material that only the photo suggests, and "style" is too subjective to be a spec (33% agreement with my labels). The run also found real bugs in my own checker, which are reported below: it read "Flower Pot" as a floral pattern and made the model rename two products, it treated pink and burgundy as the same color, and it took "Moss" in a product name for a color. All three are fixed and the numbers above are from the re-run; the as-run numbers are in Findings. The products and photos are synthetic renders I generated with known labels, cleaner than a real catalog: read the numbers as evidence that the mechanisms work, not as a forecast for your store.
 
@@ -220,7 +220,7 @@ export SHELFWISE_ALLOW_PAID_MODELS=true SHELFWISE_TEXT_MODEL=... SHELFWISE_VISIO
 
 Produced with the CLI on a laptop (AMD Ryzen 9 7940HS, no GPU). Everything is committed in [`results/`](results): the main run ([`main.json`](results/main.json), one line per product in [`main_products.jsonl`](results/main_products.jsonl), the full records in [`main_records.jsonl`](results/main_records.jsonl)), the second vision model ([`vision_alt.json`](results/vision_alt.json)), the judge ([`main_judge.json`](results/main_judge.json)), the back-translations ([`main_backtranslation.json`](results/main_backtranslation.json)), the offline baseline ([`offline.json`](results/offline.json)), the model smoke test ([`smoke_vision.json`](results/smoke_vision.json)), the price snapshot for the cost estimate ([`prices.json`](results/prices.json)), the [call ledger](results/calls.jsonl) and [`summary.json`](results/summary.json). `make eval-real` repeats the whole run.
 
-**How the run went.** The first full run (26 minutes) exposed three bugs in my code, which I fixed (see Findings); the re-runs read every answer they already had from the disk cache and paid only for prompts that changed (14 requests). The numbers here are from the final re-run with the final code, except throughput, which is from the first run (a cached run measures nothing).
+**How the run went.** The first full run (26 minutes) exposed three bugs in my code, which I fixed (see Findings); the re-runs read every answer they already had from the disk cache and paid only for prompts that changed (30 requests). The numbers here are from the final re-run with the final code, except throughput, which is from the first run (a cached run measures nothing).
 
 ### 1. Import
 
@@ -239,12 +239,13 @@ Share of the 64 products with the right value (`n` = 64; feed coverage = share o
 
 | Attribute | Photo, dots-3-note-preview | Photo, nemotron-3-nano-omni | Photo, offline model | Feed coverage / accuracy | Decision |
 |---|---|---|---|---|---|
-| Pack size | **100%** | VA_COUNT | 93.8% | 25% / 75% | **100%** |
-| Pattern | **90.6%** | VA_PATTERN | 29.7% | 11% / 71% | **90.6%** |
-| Main color (exact) | **75.0%** (92.2% same family) | VA_COLOR | 62.5% | 67% / 84% | **82.8%** |
-| Material | 23.4% | VA_MATERIAL | 0% (cannot see materials) | 80% / 98% | **96.4%** (87.5% coverage: photo-only materials are not used) |
-| Style | 32.8% | VA_STYLE | 0% | none | 32.8% (tags only) |
+| Pack size | **100%** | 87.5% | 93.8% | 25% / 75% | **100%** |
+| Pattern | **90.6%** | 71.9% | 29.7% | 11% / 71% | **90.6%** |
+| Main color (exact) | **75.0%** (92.2% same family) | 78.1% (85.9% same family) | 62.5% | 67% / 84% | **82.8%** |
+| Material | 23.4% | 12.5% | 0% (cannot see materials) | 80% / 98% | **96.4%** (87.5% coverage: photo-only materials are not used) |
+| Style | 32.8% | 29.7% | 0% | none | 32.8% (tags only) |
 
+- **Two free vision models, same photos.** `dots-3-note-preview` (the default) was better on pattern (90.6% vs 71.9%) and pack size (100% vs 87.5%); `nemotron-3-nano-omni` slightly better on exact color (78.1% vs 75.0%) but worse within the family, and it left 5 of 64 photos unanswered (4 refused by the provider's "security policy", 1 after retries on an overloaded upstream). Its run used the pipeline before the color fixes, so only its photo columns are comparable ([`vision_alt.json`](results/vision_alt.json)).
 - **The cross-check is the point.** The feeds had 11 planted errors in colors and pack sizes where the feed also had a value. All 11 became conflicts in front of a person and none of the 48 correct feed values did (as first run: 9 and 2, see Findings). With the photo's suggestion taken, no final listing states a wrong color, pack size or material when checked against the true labels.
 - **Color misses are mostly shades, and my labels are part of it.** 16 exact misses: 5 olive read as green, 2 mustard as yellow, 2 light blue as blue, 1 navy as blue, 1 beige as brown, 1 white as gray, and 4 white products with navy stripes (where the two colors cover the same area) reported as navy. Within the color family the photo is right 92%.
 - **Materials do not come from photos**, at least not from these renders and these models: the vision model named the right material for 15 of 64. Shelfwise uses a photo-only material as a hint for the reviewer, never as a listing fact, and keeps the feed's material on a disagreement.
@@ -262,7 +263,16 @@ Share of the 64 products with the right value (`n` = 64; feed coverage = share o
 | Title, meta title, meta description within limits | **100%** each |
 | Status after enrichment | 37 ready (no errors, no conflicts), 23 needs review (feed/photo conflicts, a translation over its length limit, the one remaining claim), 4 blocked (broken variants) |
 
-**The LLM judge.** JUDGE_PARAGRAPH
+**The LLM judge.** `nvidia/nemotron-3-ultra-550b-a55b:free` (a different model from the copywriter) got the facts and the English listing of 20 randomly sampled products from the first run and listed every statement not backed by the facts ([`main_judge.json`](results/main_judge.json)). It flagged something on 19 of 20; my reading of its 72 findings:
+
+| Kind | Findings | Example | What happened |
+|---|---|---|---|
+| A specific product claim with no fact | 15, on 9 listings | "The smooth glazed surface resists stains", "Each plate weighs 2.006 kg" (the set's weight), "relaxed fit", "breathable", "softens with each wash", "The cover's zip makes removal simple" | My checker passed all of them. Stain resistance, fit, breathability, softening, zips, food-safe and heat-resistant claims are now in [`store.yaml`](configs/store.yaml), and a pack's weight stated per item is an error; with these rules the re-run flagged 9 first drafts and the corrective round fixed 8 (section 3). "Lightweight", "holds a laptop" and "helps prevent overwatering" are still not checked. |
+| Care advice the feed does not give | 5 | "Always place on a heat-resistant surface", "rub the surface with food-safe oil" | Sensible, but not the supplier's instructions; a reviewer should decide. Partly caught now (heat-resistant, food-safe). |
+| Benefit and usage phrases | 38 | "ideal for picnics", "for added comfort", "suitable for everyday use" | They state no checkable fact. Whether a store wants them is a style-guide decision, not a claims check. |
+| The store's own name | 14 | "Fernhill & Co." in meta titles | A judge error: the style guide asks for the store name; the judge was not told it. Fixed in the judge prompt. |
+
+So the honest picture of hallucination: 0% by the deterministic checker means "no statement of the kinds it knows is unsupported", not "no unsupported statement". The judge is the tool that finds the kinds it does not know yet. A second judge pass over the final listings did not run: the account reached OpenRouter's daily limit for free models after 4 of 20 answers, and Shelfwise stops rather than working around a rate limit.
 
 ### 4. Translations
 
@@ -274,7 +284,7 @@ Share of the 64 products with the right value (`n` = 64; feed coverage = share o
 | Glossary terms used (60 occurrences) | 98.3% | 100% | 100% |
 | Fields left in English | 0.9% | 0.5% | 0.4% |
 | Title and meta description within the limit + 15% | 100% | 100% | 100% |
-| Back-translation into English, chrF vs the source | BT_DE | BT_ES | BT_FR |
+| Back-translation into English, chrF vs the source | 87.3 | 90.6 | 89.1 |
 
 Translations run longer than English: 19 translated meta descriptions and 5 meta titles are over the English limit but inside the 15% slack, which the checks report as warnings per language (the shortening round brought every one inside the slack).
 
@@ -301,7 +311,7 @@ The first full run (as run: 9 of 11 feed errors caught, 2 false alarms, 6 first 
 
 ### API calls
 
-LEDGER_PARAGRAPH
+[`summary.json`](results/summary.json), from the [ledger](results/calls.jsonl): **546 requests** to OpenRouter between 04:34 and 07:21 UTC on 2026-10-13 (374 answered, 160 retried after 429s, upstream rate limits and overloaded providers, 12 errors: 6 replies that ran out of tokens while reasoning, 4 refusals by a provider's "security policy" for an image, 2 Inkling refusals). By task: model smoke test 62 (the two Gemma models alone took 43 requests, all rate-limited), the main run's vision 62, copy 85 and translation 101 (the first run plus 30 requests in the re-runs, which answered everything else from the cache), the second vision model 135 (overloaded upstream, many retries), the judge 65 and back-translation 30. Requested: `nvidia/nemotron-3-super-120b-a12b:free` (221), `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free` (144), `dots-studio/dots-3-note-preview:free` (71), `nvidia/nemotron-3-ultra-550b-a55b:free` (65), `google/gemma-4-31b-it:free` (23), `google/gemma-4-26b-a4b-it:free` (20), two Inkling models (1 each); served: the first four. **Every requested and served model id ends in `:free`**, enforced by the free-only guard; no paid model was called. About 0.36 M input and 0.66 M output tokens.
 
 ### Screenshots
 
